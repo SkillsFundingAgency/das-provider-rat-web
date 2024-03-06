@@ -13,10 +13,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
         public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
-            services.Configure<ProviderRequestApprenticeTrainingOuterApiConfig>(configuration.GetSection(nameof(ProviderRequestApprenticeTrainingOuterApiConfig)));;
+            services.Configure<ProviderRequestApprenticeTrainingOuterApiConfiguration>(configuration.GetSection(nameof(ProviderRequestApprenticeTrainingOuterApiConfiguration)));;
             services.Configure<ProviderSharedUIConfiguration>(configuration.GetSection(nameof(ProviderSharedUIConfiguration)));
 
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRequestApprenticeTrainingOuterApiConfig>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRequestApprenticeTrainingOuterApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderSharedUIConfiguration>>().Value);
 
             return services;

@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             return services;
         }
 
-        public static IServiceCollection AddOuterApi(this IServiceCollection services, ProviderRequestApprenticeTrainingOuterApiConfig configuration)
+        public static IServiceCollection AddOuterApi(this IServiceCollection services, ProviderRequestApprenticeTrainingOuterApiConfiguration configuration)
         {
             services.AddHealthChecks();
             services.AddScoped<Http.MessageHandlers.DefaultHeadersHandler>();

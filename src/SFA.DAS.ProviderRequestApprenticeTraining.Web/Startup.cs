@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
 
             services.AddConfigurationOptions(_configuration);
 
-            var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfig>();
+            var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfiguration>();
 
             services
                 .AddSingleton(configurationOuterApi);

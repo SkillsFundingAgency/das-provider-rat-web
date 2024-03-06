@@ -4,7 +4,7 @@ using SFA.DAS.Http.Configuration;
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration
 {
     [ExcludeFromCodeCoverage]
-    public class ProviderRequestApprenticeTrainingOuterApiConfig : IApimClientConfiguration
+    public class ProviderRequestApprenticeTrainingOuterApiConfiguration : IApimClientConfiguration
     {
         public string ApiBaseUrl { get; set; }
         public string SubscriptionKey { get; set; }
