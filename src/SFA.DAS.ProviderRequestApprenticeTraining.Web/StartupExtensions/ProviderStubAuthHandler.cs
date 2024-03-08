@@ -15,8 +15,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProviderStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpContextAccessor httpContextAccessor) 
-            : base(options, logger, encoder, clock)
+        public ProviderStubAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, IHttpContextAccessor httpContextAccessor) 
+            : base(options, logger, encoder)
         {
             _httpContextAccessor = httpContextAccessor;
         }

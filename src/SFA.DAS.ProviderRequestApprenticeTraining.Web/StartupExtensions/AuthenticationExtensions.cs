@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -21,7 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                     configuration,
                     "SFA.DAS.ProviderApprenticeshipService",
                     typeof(CustomServiceRole),
-                    "ProviderRoATP",
+                    ClientName.ProviderRoatp,
                     "/sign-out",
                     "");
             }
