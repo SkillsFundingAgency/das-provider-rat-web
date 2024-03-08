@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Attributes;
+using SFA.DAS.Provider.Shared.UI.Models;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.Error;
-using System;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
@@ -10,11 +11,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     [Route("[controller]")]
     public class ErrorController : Controller
     {
-        private readonly IConfiguration _configuration;
+        private readonly ProviderRequestApprenticeTrainingWebConfiguration _configuration;
+        private readonly ProviderSharedUIConfiguration _providerSharedUIConfiguration;
 
-        public ErrorController(IConfiguration configuration)
+        public ErrorController(
+            IOptions<ProviderRequestApprenticeTrainingWebConfiguration> configuration,
+            IOptions<ProviderSharedUIConfiguration> providerSharedUIConfiguration)
         {
-            _configuration = configuration;
+            _configuration = configuration?.Value;
+            _providerSharedUIConfiguration = providerSharedUIConfiguration?.Value;
         }
 
         [Route("{statusCode?}")]
@@ -23,12 +28,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             switch (statusCode)
             {
                 case 403:
-                    return View(statusCode.ToString(), new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+                    return View(statusCode.ToString(), new Error403ViewModel()
                     {
-                        UseDfESignIn = _configuration["UseDfESignIn"] != null && 
-                                       _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase),
-                        DashboardLink = _configuration["ProviderSharedUIConfiguration:DashboardUrl"],
-                    });
+                        RoleRequestHelpLink = _configuration.RoleRequestHelpLink,
+                        DashboardLink = _providerSharedUIConfiguration.DashboardUrl
+                    }); ;
                 case 404:
                     return View(statusCode.ToString());
                 default:
