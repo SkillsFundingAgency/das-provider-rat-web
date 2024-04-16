@@ -66,6 +66,9 @@
         "utcValue": {
             "type": "string",
             "defaultValue": "[utcNow()]"
+        },
+        "cdnUrl": {
+            "type": "string"
         }
     },
     "variables": {
@@ -193,6 +196,10 @@
                                 {
                                     "name": "ResourceEnvironmentName",
                                     "value": "[parameters('resourceEnvironmentName')]"
+                                },
+                                {
+                                  "name": "Cdn:Url",
+                                  "value": "[parameters('cdnUrl')]"
                                 },
                                 {
                                     "name": "ConfigurationStorageConnectionString",
