@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             var result = (ViewResult)sut.Error(403);
 
             // Assert
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
             result.ViewName.Should().Be("403");
             
             var model = result.Model as Error403ViewModel;
@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             var result = (ViewResult)sut.Error(403);
 
             // Assert
-            Assert.That(result, Is.Not.Null);
+            result.Should().NotBeNull();
             result.ViewName.Should().Be("403");
 
             var model = result.Model as Error403ViewModel;

@@ -61,7 +61,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .AddMvc(options =>
                 {
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                    options.Filters.Add(new TypeFilterAttribute(typeof(GoogleAnalyticsFilter)));
+                    options.Filters.Add(new TypeFilterAttribute(typeof(GoogleAnalyticsFilterAttribute)));
 
                 })
                 .AddControllersAsServices()

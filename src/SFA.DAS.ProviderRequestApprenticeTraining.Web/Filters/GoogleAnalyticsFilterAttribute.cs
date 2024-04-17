@@ -4,27 +4,29 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters
 {
-    public class GoogleAnalyticsFilter : ActionFilterAttribute
+    [ExcludeFromCodeCoverage]
+    public class GoogleAnalyticsFilterAttribute : ActionFilterAttribute
     {
-        private readonly ILogger<GoogleAnalyticsFilter> _logger;
+        private readonly ILogger<GoogleAnalyticsFilterAttribute> _logger;
 
-        public GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger)
+        public GoogleAnalyticsFilterAttribute(ILogger<GoogleAnalyticsFilterAttribute> logger)
         {
             _logger = logger;
         }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             try
             {
-                var userId = filterContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ProviderClaims.DisplayName))?.Value;
-                var ukprn = filterContext.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ProviderClaims.ProviderUkprn))?.Value;
+                var userId = context.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ProviderClaims.DisplayName))?.Value;
+                var ukprn = context.HttpContext.User.Claims.FirstOrDefault(c => c.Type.Equals(ProviderClaims.ProviderUkprn))?.Value;
 
-                var controller = filterContext.Controller as Controller;
+                var controller = context.Controller as Controller;
                 if (controller != null)
                 {
                     controller.ViewBag.GaData = new GaData
@@ -39,7 +41,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters
                 _logger.LogError(ex, $"GoogleAnalyticsFilter Cannot set GaData for Provider");
             }
 
-            base.OnActionExecuting(filterContext);
+            base.OnActionExecuting(context);
         }
     }
 }
