@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Api\Requests\**" />
+    <Compile Remove="Api\Types\**" />
+    <EmbeddedResource Remove="Api\Requests\**" />
+    <EmbeddedResource Remove="Api\Types\**" />
+    <None Remove="Api\Requests\**" />
+    <None Remove="Api\Types\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="RestEase" Version="1.6.4" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
@@ -14,11 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Domain\SFA.DAS.ProviderRequestApprenticeTraining.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Api\Requests\" />
-    <Folder Include="Api\Types\" />
   </ItemGroup>
 
 </Project>
