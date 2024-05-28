@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         [Get("/employerrequest/{employerRequestId}")]
         Task<EmployerRequest> GetEmployerRequest([Path] Guid employerRequestId);
 
-        [Get("/employerrequest/requesttype/{requestType}")]
+        [Get("/employerrequests/requesttype/{requestType}")]
         Task<List<EmployerRequest>> GetEmployerRequests([Path] string requestType);
 
         [Get("/provideraccounts/{ukprn}")]
