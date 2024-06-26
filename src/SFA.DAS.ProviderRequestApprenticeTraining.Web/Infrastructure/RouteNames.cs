@@ -9,5 +9,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Infrastructure
         
         // exact route name is required by the SFA.DAS.Provider.Shared.UI menu link
         public const string ProviderSignOut = "provider-signout";
+
+        public const string AggregatedEmployerRequests = "aggregated-employer-requests";
     }
 }
