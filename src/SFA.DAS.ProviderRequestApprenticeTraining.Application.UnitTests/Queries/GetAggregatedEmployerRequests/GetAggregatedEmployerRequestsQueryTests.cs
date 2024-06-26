@@ -1,12 +1,10 @@
-﻿
-
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetEmployerRequests
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetAggregatedEmployerRequests
 {
     [TestFixture]
     public class GetAggregatedEmployerRequestsQueryTests
