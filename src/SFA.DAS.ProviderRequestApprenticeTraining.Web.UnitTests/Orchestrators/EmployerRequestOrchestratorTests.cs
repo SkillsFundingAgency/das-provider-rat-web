@@ -60,7 +60,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Orchestrators
 
             // Assert
             result.Should().NotBeNull();
-            result.AggregatedEmployerRequests.Count.Should().Be(2);
+            result.AggregatedEmployerRequests.Should().HaveCount(2);
+            result.RequestCount.Should().Be(2);
         }
     }
 }
