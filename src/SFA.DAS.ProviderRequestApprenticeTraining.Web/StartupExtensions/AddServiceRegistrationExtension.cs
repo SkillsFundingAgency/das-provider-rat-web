@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RestEase.HttpClientFactory;
-using SFA.DAS.EmployerRequestApprenticeTraining.Web.Orchestrators;
 using SFA.DAS.Http.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
@@ -23,7 +22,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnAllowedAccessAuthorizationHandler>();
-            services.AddTransient<IAggregatedEmployerRequestOrchestrator, AggregatedEmployerRequestOrchestrator>();
 
             return services;
         }

@@ -1,26 +1,30 @@
 ﻿using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerRequestApprenticeTraining.Web.Orchestrators;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 {
     [TestFixture]
     public class AggregatedEmployerRequestsControllerTests
     {
-        private Mock<IAggregatedEmployerRequestOrchestrator> _orchestratorMock;
+        private Mock<IMediator> _mediator;
         private AggregatedEmployerRequestController _controller;
 
         [SetUp]
         public void Setup()
         {
-            _orchestratorMock = new Mock<IAggregatedEmployerRequestOrchestrator>();
+            _mediator = new Mock<IMediator>();
 
-            _controller = new AggregatedEmployerRequestController(_orchestratorMock.Object);
+            _controller = new AggregatedEmployerRequestController(_mediator.Object);
         }
         [TearDown]
         public void TearDown()
@@ -28,43 +32,22 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             _controller?.Dispose();
         }
 
-        [Test]
-        public async Task AggregatedEmployerRequests_ShouldReturnViewWithViewModel()
+        [Test, MoqAutoData]
+        public async Task AggregatedEmployerRequests_ShouldReturnViewWithViewModel(
+            GetAggregatedEmployerRequestsResult aggregatedRequestResult)
         {
             // Arrange
-            var viewModel = new GetViewAggregatedEmployerRequestsViewModel
-            {
-                AggregatedEmployerRequests = new List<AggregatedEmployerRequest> 
-                { 
-                    new AggregatedEmployerRequest
-                    { 
-                        StandardReference = "ST0001",
-                        StandardTitle = "Actuarial technician",
-                        StandardSector = "Business and administration",
-                        StandardLevel = 1,
-                        NumberOfApprentices = 3,
-                        NumberOfEmployers = 2,
-                    },
-                    new AggregatedEmployerRequest
-                    {
-                        StandardReference = "ST0002",
-                        StandardTitle = "Aerospace engineer",
-                        StandardSector = "Engineering",
-                        StandardLevel = 3,
-                        NumberOfApprentices = 5,
-                        NumberOfEmployers = 1,
-                    },
-                }
-            };
-
-            _orchestratorMock.Setup(o => o.GetViewAggregatedEmployerRequestsViewModel()).ReturnsAsync(viewModel);
+            _mediator.Setup(o => o.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
+                .ReturnsAsync(aggregatedRequestResult);
 
             // Act
             var result = await _controller.AggregatedEmployerRequests() as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
-            result.Model.Should().BeEquivalentTo(viewModel);
+            result.Model.Should().BeOfType<AggregatedEmployerRequestsViewModel>();
+            ((AggregatedEmployerRequestsViewModel)result.Model).RequestCount.Should().Be(aggregatedRequestResult.AggregatedEmployerRequests.Count);
+
         }
     }
 }
