@@ -1,5 +1,5 @@
 ﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
-@model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.GetViewAggregatedEmployerRequestsViewModel
+@model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.AggregatedEmployerRequestsViewModel
 
 @{
     ViewData["Title"] = "Employer requests for apprenticeship training";
@@ -28,21 +28,15 @@
                             @foreach (var aggregatedEmployerRequest in Model.AggregatedEmployerRequests)
                             {
                                 <li class="das-search-results__list-item">
-                                    <h4 class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller">NEW</h4>
-                                    <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller">NEW</strong>
+                                    <strong class="govuk-tag govuk-tag--light-blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller">New</strong>
                                     <div class="govuk-grid-row">
                                         <div class="govuk-grid-column-two-thirds">
                                             <h2 class="govuk-heading-m das-search-results__heading">
                                                 @aggregatedEmployerRequest.StandardTitle <span class="das-no-wrap">(level @aggregatedEmployerRequest.StandardLevel)</span>
                                             </h2>
-                                            <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-2">
-                                                <dt class="das-definition-list__title">Sector</dt>
-                                                <dd class="das-definition-list__definition govuk-!-margin-bottom-1">@aggregatedEmployerRequest.StandardSector</dd>
-                                                <dt class="das-definition-list__title">Apprentice</dt>
-                                                <dd class="das-definition-list__definition govuk-!-margin-bottom-1">@aggregatedEmployerRequest.NumberOfApprentices</dd>
-                                                <dt class="das-definition-list__title">Employers</dt>
-                                                <dd class="das-definition-list__definition">@aggregatedEmployerRequest.NumberOfEmployers</dd>
-                                            </dl>
+                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Sector:</b> @aggregatedEmployerRequest.StandardSector</p>
+                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Apprentices:</b> @aggregatedEmployerRequest.NumberOfApprentices</p>
+                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Employers:</b> @aggregatedEmployerRequest.NumberOfEmployers</p>
                                         </div>
                                         <div class="govuk-grid-column-one-third govuk-body govuk-!-text-align-right">
                                             <a class="govuk-link govuk-link--no-visited-state govuk-body" href="">View requests<span class="govuk-visually-hidden">looking for requests for @aggregatedEmployerRequest.StandardTitle</span></a>

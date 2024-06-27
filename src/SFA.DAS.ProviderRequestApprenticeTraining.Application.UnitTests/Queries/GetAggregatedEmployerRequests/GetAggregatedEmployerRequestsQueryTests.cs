@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
 using Moq;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
-using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetAggregatedEmployerRequests
 {
@@ -25,27 +26,30 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         public async Task Handle_ShouldReturnAggregatedEmployerRequests_WhenRequestsExist()
         {
             // Arrange
-            var expectedRequests = new List<AggregatedEmployerRequest>
+            var expectedResult = new GetAggregatedEmployerRequestsResult()
             {
-                new AggregatedEmployerRequest
+                AggregatedEmployerRequests= new List<AggregatedEmployerRequestResponse>
                 {
-                    StandardReference = "ST0032",
-                    StandardTitle = "ST0108",
-                    StandardSector = "Digital",
-                    StandardLevel = 3,
-                    NumberOfApprentices = 2,
-                    NumberOfEmployers = 1,
+                    new AggregatedEmployerRequestResponse
+                    {
+                        StandardReference = "ST0032",
+                        StandardTitle = "ST0108",
+                        StandardSector = "Digital",
+                        StandardLevel = 3,
+                        NumberOfApprentices = 2,
+                        NumberOfEmployers = 1,
+                    }
                 }
             };
 
             _mockOuterApi.Setup(x => x.GetAggregatedEmployerRequests())
-                .ReturnsAsync(expectedRequests);
+                .ReturnsAsync(expectedResult.AggregatedEmployerRequests);
 
             // Act
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedRequests);
+            result.Should().BeEquivalentTo(expectedResult);
             _mockOuterApi.Verify(x => x.GetAggregatedEmployerRequests(), Times.Once);
         }
 
