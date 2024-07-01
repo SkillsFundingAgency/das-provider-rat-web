@@ -13,7 +13,7 @@ using System.Linq;
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
     [Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
-    [SetNavigationSection(NavigationSection.EmployerDemand)]
+    [SetNavigationSection(NavigationSection.Home)]
     public class AggregatedEmployerRequestController : Controller
     {
         private readonly IMediator _mediator;
