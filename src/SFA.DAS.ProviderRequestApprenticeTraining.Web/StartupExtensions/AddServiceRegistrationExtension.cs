@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Http.Configuration;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services;
@@ -15,6 +16,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
     {
         public static IServiceCollection AddServiceRegistrations(this IServiceCollection services)
         {
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAggregatedEmployerRequestsQuery).Assembly));
+
             services.AddHttpContextAccessor();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();

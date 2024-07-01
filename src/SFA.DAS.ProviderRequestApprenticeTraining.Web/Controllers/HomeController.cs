@@ -28,7 +28,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return Redirect(_configuration.DashboardUrl);
         }
 
-        [HttpGet("{ukprn}/start", Name = RouteNames.HomeGetStart)]
+        [HttpGet("start", Name = RouteNames.HomeGetStart)]
         public IActionResult Start()
         {
             return View();

@@ -7,7 +7,14 @@
 
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
