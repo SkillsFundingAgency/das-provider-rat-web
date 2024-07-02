@@ -1,0 +1,119 @@
+﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
+@model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.SelectEmployerRequestsViewModel
+
+@{
+    ViewData["Title"] = "Select requests to share your information";
+    ViewBag.GaData.Vpv = "/aggregatedemployerrequests/select";
+}
+<a asp-route="@Model.BackRoute" class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+            <p class="govuk-text">
+                Employers are looking for a training provider for these apprenticeship training courses.
+            </p>
+            <p class="govuk-text">
+                View requests to select the employers you want to share your contact details with.
+            </p>
+
+        </div>
+        <div class="govuk-grid-column-full">
+            <p class="govuk-body">
+                @Model.SelectEmployerRequests.Count()<text> results </text>
+            </p>
+            <!-- tabs -->
+            <div class="govuk-tabs" data-module="tabs">
+                <ul class="govuk-tabs__list">
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                        <a class="govuk-tabs__tab" href="#notcontacted">
+                            Not Contacted (@Model.SelectEmployerRequests.Count() results)
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item">
+                        <a class="govuk-tabs__tab" href="#contacted">
+                            Contacted (0 results)
+                        </a>
+                    </li>
+                </ul>
+                <section class="govuk-tabs__panel" id="notcontacted">
+                    <div id="not-contacted-requests">
+                        <form asp-route="@AggregatedEmployerRequestController.SelectEmployerRequestsRoutePost" asp-route-ids="@Model.SelectedRequests" novalidate>    
+                        <h2 class="govuk-heading-m">Employers looking for @Model.StandardTitle (level @Model.StandardLevel)</h2>
+                            @if(Model.SelectEmployerRequests.Any())
+                            {
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    @foreach (var selectEmployerRequest in Model.SelectEmployerRequests)
+                                    {
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
+                                                   value="@selectEmployerRequest.EmployerRequestId" @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked" : "") />
+                                            <label class="govuk-label govuk-checkboxes__label">
+                                                Request date @selectEmployerRequest.DateOfRequest
+                                                <div class="govuk-body">
+                                                    <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller">New</strong>
+                                                    <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices</b> @selectEmployerRequest.NumberOfApprentices</p>
+                                                    @if (selectEmployerRequest.Locations.Count == 1)
+                                                    {
+                                                        <p><b>Location</b> @selectEmployerRequest.Locations.FirstOrDefault()</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <b>Locations</b>
+                                                        <ul class="govuk-list">
+                                                            @foreach (var location in selectEmployerRequest.Locations)
+                                                            {
+                                                                <li>@location</li>
+                                                            }
+                                                        </ul>
+                                                    }
+
+                                                    @if (selectEmployerRequest.DeliveryMethods.Count == 1)
+                                                    {
+                                                        <p><b>Delivery method</b> @selectEmployerRequest.DeliveryMethods.FirstOrDefault()</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <b>Delivery methods</b>
+                                                        <ul class="govuk-list">
+                                                            @foreach (var deliveryMethod in selectEmployerRequest.DeliveryMethods)
+                                                            {
+                                                                <li>@deliveryMethod</li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </div>
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="govuk-body">
+                                    There are no active requests
+                                </div>
+                            }
+
+                            <div class="govuk-button-group">
+                                <button type="submit" class="govuk-button" data-module="govuk-button">
+                                    Continue
+                                </button>
+                                <a class="govuk-link" id="cancel" asp-route="@AggregatedEmployerRequestController.CancelSelectEmployerRequestRouteGet">
+                                    Cancel
+                                </a>
+                            </div>
+                       </form>
+                    </div>
+                </section>
+                <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="contacted">
+                    <div id="contacted-requests">
+                        Contacted tab
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>     
