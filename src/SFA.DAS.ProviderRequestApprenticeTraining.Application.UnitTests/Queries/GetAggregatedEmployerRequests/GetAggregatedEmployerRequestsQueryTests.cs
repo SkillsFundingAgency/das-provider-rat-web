@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 

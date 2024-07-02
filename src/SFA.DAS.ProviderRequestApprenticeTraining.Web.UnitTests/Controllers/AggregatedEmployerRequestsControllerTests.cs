@@ -1,12 +1,10 @@
 ﻿using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
-using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -17,6 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
     public class AggregatedEmployerRequestsControllerTests
     {
         private Mock<IMediator> _mediator;
+        private Mock<IHttpContextAccessor> _contextAccessor;
         private AggregatedEmployerRequestController _controller;
 
         [SetUp]
@@ -24,7 +23,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             _mediator = new Mock<IMediator>();
 
-            _controller = new AggregatedEmployerRequestController(_mediator.Object);
+            _controller = new AggregatedEmployerRequestController(_mediator.Object, _contextAccessor.Object);
         }
         [TearDown]
         public void TearDown()
