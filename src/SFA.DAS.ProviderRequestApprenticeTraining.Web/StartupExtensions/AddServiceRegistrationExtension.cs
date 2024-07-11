@@ -8,6 +8,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
 {
@@ -39,6 +40,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                 .AddHttpMessageHandler<Http.MessageHandlers.ApimHeadersHandler>()
                 .AddHttpMessageHandler<Http.MessageHandlers.LoggingMessageHandler>();
 
+            services.AddTransient<IEmployerRequestOrchestrator, EmployerRequestOrchestrator>();
             services.AddTransient<IApimClientConfiguration>((_) => configuration);
 
             return services;

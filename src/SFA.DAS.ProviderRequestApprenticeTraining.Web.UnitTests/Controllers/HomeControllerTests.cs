@@ -1,46 +1,57 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Controllers
 {
-    [TestFixture]
     public class HomeControllerTests
     {
-        [Test, MoqAutoData]
-        public void Given_IndexCalled_ThenRedirectToDashboardUrl(
-            [Frozen] IOptions<ProviderSharedUIConfiguration> providerSharedUIConfiguration)
+        private HomeController _sut;
+        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockOptions;
+        private ProviderSharedUIConfiguration _config;
+
+        [SetUp]
+        public void SetUp()
         {
-            // Arrange
-            var sut = new HomeController(providerSharedUIConfiguration);
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
-
-            // Act
-            var result = (RedirectResult)sut.Index();
-
-            // Assert
-            result.Should().NotBeNull();
-            result.Url.Should().Be(providerSharedUIConfiguration.Value.DashboardUrl);
+            _config = new ProviderSharedUIConfiguration
+            {
+                DashboardUrl = "http://dashboard.url"
+            };
+            _mockOptions = new Mock<IOptions<ProviderSharedUIConfiguration>>();
+            _mockOptions.Setup(x => x.Value).Returns(_config);
+            _sut = new HomeController(_mockOptions.Object);
         }
 
-        [Test, MoqAutoData]
-        public void Given_StartCalled_ThenViewShouldBeReturned(
-            [Frozen] IOptions<ProviderSharedUIConfiguration> providerSharedUIConfiguration)
+        [TearDown]
+        public void TearDown()
         {
-            // Arrange
-            var sut = new HomeController(providerSharedUIConfiguration);
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
+            _sut?.Dispose();
+        }
 
+        [Test]
+        public void Index_ShouldRedirectToDashboardUrl()
+        {
             // Act
-            var result = (ViewResult)sut.Start();
+            var result = _sut.Index() as RedirectResult;
 
             // Assert
             result.Should().NotBeNull();
+            result.Url.Should().Be(_config.DashboardUrl);
+        }
+
+        [Test]
+        public void Start_ShouldRedirectToActiveRoute()
+        {
+            // Act
+            var result = _sut.Start() as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.ActiveRouteGet);
         }
     }
 }

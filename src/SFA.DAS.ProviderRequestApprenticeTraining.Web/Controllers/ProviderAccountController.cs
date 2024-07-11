@@ -10,7 +10,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     public class ProviderAccountController : ControllerBase
     {
         #region Routes
-        public const string ProviderSignOutRouteGet = nameof(ProviderSignOutRouteGet);
+        // exact route name is required by the SFA.DAS.Provider.Shared.UI menu link
+        public const string ProviderSignOutRouteGet = "provider-signout";
         #endregion Routes
 
         public ProviderAccountController()
