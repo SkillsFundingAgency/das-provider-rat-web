@@ -15,6 +15,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     {
         private readonly ProviderSharedUIConfiguration _configuration;
 
+        #region Routes
+        public const string StartRouteGet = nameof(StartRouteGet);
+        #endregion Routes
+
         public HomeController(IOptions<ProviderSharedUIConfiguration> configuration)
         {
             _configuration = configuration?.Value;
@@ -28,7 +32,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return Redirect(_configuration.DashboardUrl);
         }
 
-        [HttpGet("start", Name = RouteNames.HomeGetStart)]
+        [HttpGet("start", Name = StartRouteGet)]
         public IActionResult Start()
         {
             return View();
