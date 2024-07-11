@@ -1,10 +1,8 @@
-﻿using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
-using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
-using System.Collections.Generic;
+﻿using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
 {
-    public class AggregatedEmployerRequestViewModel
+    public class ActiveEmployerRequestViewModel
     {
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
@@ -13,9 +11,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public int NumberOfApprentices { get; set; }
         public int NumberOfEmployers { get; set; }
 
-        public static implicit operator AggregatedEmployerRequestViewModel(AggregatedEmployerRequestResponse source)
+        public static implicit operator ActiveEmployerRequestViewModel(AggregatedEmployerRequestResponse source)
         {
-            return new AggregatedEmployerRequestViewModel
+            return new ActiveEmployerRequestViewModel
             {
                 NumberOfApprentices = source.NumberOfApprentices,
                 StandardLevel = source.StandardLevel,   

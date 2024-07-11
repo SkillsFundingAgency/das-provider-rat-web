@@ -5,12 +5,11 @@ using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Infrastructure;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
     [Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
-    [SetNavigationSection(NavigationSection.EmployerDemand)]
+    [SetNavigationSection(NavigationSection.Home)]
     public class HomeController : Controller
     {
         private readonly ProviderSharedUIConfiguration _configuration;
@@ -35,7 +34,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpGet("start", Name = RouteNames.HomeGetStart)]
         public IActionResult Start()
         {
-            return View();
+            return RedirectToRoute(EmployerRequestController.ActiveRouteGet);
         }
     }
 }
