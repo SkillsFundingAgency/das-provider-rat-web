@@ -6,8 +6,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
-        [Get("/employerrequests/aggregated")]
-        Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests();
+        [Get("/employerrequests/provider/{ukprn}/aggregated")]
+        Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);
 
         [Get("/employerrequest/{employerRequestId}")]
         Task<EmployerRequest> GetEmployerRequest([Path] Guid employerRequestId);

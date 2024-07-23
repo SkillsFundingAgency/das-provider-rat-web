@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 .ReturnsAsync(queryResult);
 
             // Act
-            var result = await _sut.GetActiveEmployerRequestsViewModel();
+            var result = await _sut.GetActiveEmployerRequestsViewModel(123456789);
 
             // Assert
             result.Should().NotBeNull();

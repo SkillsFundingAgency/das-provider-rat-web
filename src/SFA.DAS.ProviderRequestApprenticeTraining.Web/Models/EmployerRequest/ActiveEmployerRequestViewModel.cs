@@ -10,6 +10,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public string StandardSector { get; set; }
         public int NumberOfApprentices { get; set; }
         public int NumberOfEmployers { get; set; }
+        public bool IsNew { get; set; }
 
         public static implicit operator ActiveEmployerRequestViewModel(AggregatedEmployerRequestResponse source)
         {
@@ -21,6 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
                 NumberOfEmployers = source.NumberOfEmployers,
                 StandardReference = source.StandardReference,
                 StandardTitle = source.StandardTitle,
+                IsNew = source.IsNew,
             };
         }
     }

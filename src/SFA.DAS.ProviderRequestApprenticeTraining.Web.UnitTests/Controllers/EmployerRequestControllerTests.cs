@@ -35,7 +35,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             // Arrange
             _orchestratorMock
-                .Setup(o => o.GetActiveEmployerRequestsViewModel())
+                .Setup(o => o.GetActiveEmployerRequestsViewModel(123456789))
                 .ReturnsAsync(new ActiveEmployerRequestsViewModel { });
 
             // Act
