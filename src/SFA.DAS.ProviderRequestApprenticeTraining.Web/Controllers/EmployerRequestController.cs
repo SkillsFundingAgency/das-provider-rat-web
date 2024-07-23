@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using System.Threading.Tasks;
 
@@ -26,7 +27,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpGet("active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active()
         {
-            return View(await _orchestrator.GetActiveEmployerRequestsViewModel());
+            var ukprn = HttpContext.User.GetUkprn();
+            
+            return View(await _orchestrator.GetActiveEmployerRequestsViewModel(long.Parse(ukprn)));
         }
     }
 }

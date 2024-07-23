@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.TagHelpers
 @model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.ActiveEmployerRequestsViewModel
 
 @{
@@ -28,7 +29,7 @@
                             @foreach (var aggregatedEmployerRequest in Model.AggregatedEmployerRequests)
                             {
                                 <li class="das-search-results__list-item">
-                                    <strong class="govuk-tag govuk-tag--light-blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller">New</strong>
+                                    <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller" asp-show="@aggregatedEmployerRequest.IsNew">New</strong>
                                     <div class="govuk-grid-row">
                                         <div class="govuk-grid-column-two-thirds">
                                             <h2 class="govuk-heading-m das-search-results__heading">

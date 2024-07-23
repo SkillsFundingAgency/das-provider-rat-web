@@ -15,9 +15,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             _mediator = mediator;
         }
 
-        public async Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel()
+        public async Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn)
         {
-            var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery());
+            var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery(ukprn));
 
             var model = new ActiveEmployerRequestsViewModel()
             {

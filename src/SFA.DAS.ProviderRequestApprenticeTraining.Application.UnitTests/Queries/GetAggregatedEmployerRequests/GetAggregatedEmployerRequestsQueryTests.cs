@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         {
             _mockOuterApi = new Mock<IProviderRequestApprenticeTrainingOuterApi>();
             _handler = new GetAggregatedEmployerRequestsQueryHandler(_mockOuterApi.Object);
-            _query = new GetAggregatedEmployerRequestsQuery();
+            _query = new GetAggregatedEmployerRequestsQuery(12345);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                 }
             };
 
-            _mockOuterApi.Setup(x => x.GetAggregatedEmployerRequests())
+            _mockOuterApi.Setup(x => x.GetAggregatedEmployerRequests(It.IsAny<long>()))
                 .ReturnsAsync(expectedResult.AggregatedEmployerRequests);
 
             // Act
@@ -50,14 +50,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
-            _mockOuterApi.Verify(x => x.GetAggregatedEmployerRequests(), Times.Once);
+            _mockOuterApi.Verify(x => x.GetAggregatedEmployerRequests(It.IsAny<long>()), Times.Once);
         }
 
         [Test]
         public void Handle_WhenApiThrowsException_ShouldRethrowIt()
         {
             // Arrange
-            _mockOuterApi.Setup(x => x.GetAggregatedEmployerRequests())
+            _mockOuterApi.Setup(x => x.GetAggregatedEmployerRequests(123456))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act

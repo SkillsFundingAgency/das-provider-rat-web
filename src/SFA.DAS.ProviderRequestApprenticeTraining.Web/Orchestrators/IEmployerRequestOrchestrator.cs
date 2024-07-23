@@ -5,6 +5,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 {
     public interface IEmployerRequestOrchestrator
     {
-        Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel();
+        Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn);
     }
 }
