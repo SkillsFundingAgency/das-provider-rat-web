@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelec
 
         public async Task<GetSelectEmployerRequestsResult> Handle(GetSelectEmployerRequestsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _outerApi.GetSelectEmployerRequests(request.StandardReference, request.Ukprn);
+            var result = await _outerApi.GetSelectEmployerRequests(request.Ukprn, request.StandardReference);
 
             return new GetSelectEmployerRequestsResult
             {
