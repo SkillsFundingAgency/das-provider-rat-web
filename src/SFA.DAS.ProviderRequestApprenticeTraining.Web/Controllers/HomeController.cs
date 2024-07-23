@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return Redirect(_configuration.DashboardUrl);
         }
 
-        [HttpGet("start", Name = RouteNames.HomeGetStart)]
+        [HttpGet("start", Name = StartRouteGet)]
         public IActionResult Start()
         {
             return RedirectToRoute(EmployerRequestController.ActiveRouteGet);
