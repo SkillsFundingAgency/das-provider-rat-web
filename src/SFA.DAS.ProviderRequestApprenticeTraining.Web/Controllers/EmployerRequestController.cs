@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
@@ -14,20 +15,22 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     public class EmployerRequestController : Controller
     {
         private readonly IEmployerRequestOrchestrator _orchestrator;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         #region Routes
         public const string ActiveRouteGet = nameof(ActiveRouteGet);
         #endregion Routes
 
-        public EmployerRequestController(IEmployerRequestOrchestrator orchestrator)
+        public EmployerRequestController(IEmployerRequestOrchestrator orchestrator, IHttpContextAccessor contextAccessor)
         {
             _orchestrator = orchestrator;
+            _contextAccessor = contextAccessor;
         }
 
         [HttpGet("active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active()
         {
-            var ukprn = HttpContext.User.GetUkprn();
+            var ukprn = _contextAccessor.HttpContext.User.GetUkprn();
             
             return View(await _orchestrator.GetActiveEmployerRequestsViewModel(long.Parse(ukprn)));
         }

@@ -1,12 +1,15 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using SFA.DAS.Testing.AutoFixture;
+using System.Security.Claims;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 {
@@ -15,12 +18,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
     {
         private Mock<IEmployerRequestOrchestrator> _orchestratorMock;
         private EmployerRequestController _controller;
+        private Mock<IHttpContextAccessor> _httpContextMock;
 
         [SetUp]
         public void Setup()
         {
             _orchestratorMock = new Mock<IEmployerRequestOrchestrator>();
-            _controller = new EmployerRequestController(_orchestratorMock.Object);
+            _httpContextMock = new Mock<IHttpContextAccessor>();
+            _controller = new EmployerRequestController(_orchestratorMock.Object, _httpContextMock.Object);
         }
 
         [TearDown]
@@ -34,6 +39,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             GetAggregatedEmployerRequestsResult aggregatedRequestResult)
         {
             // Arrange
+            var claims = new List<Claim>
+            {
+                new Claim(ProviderClaims.ProviderUkprn, "123456789")
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var user = new ClaimsPrincipal(identity);
+            _httpContextMock.Setup(h => h.HttpContext.User).Returns(user);
             _orchestratorMock
                 .Setup(o => o.GetActiveEmployerRequestsViewModel(123456789))
                 .ReturnsAsync(new ActiveEmployerRequestsViewModel { });
