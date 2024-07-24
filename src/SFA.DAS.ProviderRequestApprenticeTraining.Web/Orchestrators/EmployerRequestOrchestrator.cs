@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using System.Linq;
@@ -9,10 +11,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
     public class EmployerRequestOrchestrator : IEmployerRequestOrchestrator
     {
         private readonly IMediator _mediator;
+        private readonly ProviderSharedUIConfiguration _providerSharedUIConfiguration;
 
-        public EmployerRequestOrchestrator(IMediator mediator)
+        public EmployerRequestOrchestrator(IMediator mediator, IOptions<ProviderSharedUIConfiguration> sharedUIConfiguration)
         {
             _mediator = mediator;
+            _providerSharedUIConfiguration = sharedUIConfiguration.Value;
         }
 
         public async Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn)
@@ -21,7 +25,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 
             var model = new ActiveEmployerRequestsViewModel()
             {
-                AggregatedEmployerRequests = result.AggregatedEmployerRequests.Select(request => (ActiveEmployerRequestViewModel)request).ToList()
+                AggregatedEmployerRequests = result.AggregatedEmployerRequests.Select(request => (ActiveEmployerRequestViewModel)request).ToList(),
+                BackLink = _providerSharedUIConfiguration.DashboardUrl
             };
 
             return model;

@@ -7,5 +7,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public List<ActiveEmployerRequestViewModel> AggregatedEmployerRequests { get; set; }
 
         public int RequestCount { get { return AggregatedEmployerRequests.Count; } }
+
+        public string BackLink { get; set; }
     }
 }

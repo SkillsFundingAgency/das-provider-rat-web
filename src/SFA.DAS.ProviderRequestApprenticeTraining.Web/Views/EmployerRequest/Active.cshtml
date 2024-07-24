@@ -6,49 +6,56 @@
     ViewData["Title"] = "Employer requests for apprenticeship training";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/view";
 }
-
+<a href="@Model.BackLink" class="govuk-back-link">Back</a>
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
-            <p class="govuk-text">
+            <p class="govuk-body">
                 Employers are looking for a training provider for these apprenticeship training courses.
             </p>
-            <p class="govuk-text">
+            <p class="govuk-body">
                 View requests to select the employers you want to share your contact details with.
             </p>
-                <div class="govuk-grid-column-full">
-                @if(Model.AggregatedEmployerRequests.Any())
-                {
-                    <p class="govuk-body">
-                        <text> Showing 1 - </text> @Model.RequestCount<text> of </text> @Model.RequestCount <text> results</text>
-                    </p>
-                     <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-0">
-                    <div class="das-search-results">
-                        <ol class="das-search-results__list">
-                            @foreach (var aggregatedEmployerRequest in Model.AggregatedEmployerRequests)
-                            {
-                                <li class="das-search-results__list-item">
-                                    <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller" asp-show="@aggregatedEmployerRequest.IsNew">New</strong>
-                                    <div class="govuk-grid-row">
-                                        <div class="govuk-grid-column-two-thirds">
-                                            <h2 class="govuk-heading-m das-search-results__heading">
-                                                @aggregatedEmployerRequest.StandardTitle <span class="das-no-wrap">(level @aggregatedEmployerRequest.StandardLevel)</span>
-                                            </h2>
-                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Sector:</b> @aggregatedEmployerRequest.StandardSector</p>
-                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Apprentices:</b> @aggregatedEmployerRequest.NumberOfApprentices</p>
-                                            <p class="govuk-body govuk-!-margin-bottom-1"><b>Employers:</b> @aggregatedEmployerRequest.NumberOfEmployers</p>
-                                        </div>
-                                        <div class="govuk-grid-column-one-third govuk-body govuk-!-text-align-right">
-                                            <a class="govuk-link govuk-link--no-visited-state govuk-body" href="">View requests<span class="govuk-visually-hidden"> for @aggregatedEmployerRequest.StandardTitle</span></a>
-                                        </div>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @if (Model.AggregatedEmployerRequests.Any())
+            {
+                <p class="govuk-body">
+                    <text> Showing </text>@Model.RequestCount<text> results</text>
+                </p>
+                <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-0">
+                <div class="das-search-results">
+                    <ol class="das-search-results__list">
+                        @foreach (var aggregatedEmployerRequest in Model.AggregatedEmployerRequests)
+                        {
+                            <li class="das-search-results__list-item">
+                                <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller" asp-show="@aggregatedEmployerRequest.IsNew">New</strong>
+                                <div class="govuk-grid-row">
+                                    <div class="govuk-grid-column-two-thirds govuk-!-margin-left-0">
+                                        <h2 class="govuk-heading-m das-search-results__heading">
+                                            @aggregatedEmployerRequest.StandardTitle <span class="das-no-wrap">(level @aggregatedEmployerRequest.StandardLevel)</span>
+                                        </h2>
+                                        <p class="govuk-body request-item"><b>Sector:</b> @aggregatedEmployerRequest.StandardSector</p>
+                                        <p class="govuk-body request-item"><b>Apprentices:</b> @aggregatedEmployerRequest.NumberOfApprentices</p>
+                                        <p class="govuk-body request-item"><b>Employers:</b> @aggregatedEmployerRequest.NumberOfEmployers</p>
                                     </div>
-                                </li>
-                            }
-                        </ol>
-                    </div>
-                }
-            </div>
+                                    <div class="govuk-grid-column-one-third govuk-body govuk-!-text-align-right--from-tablet">
+                                        <a class="govuk-link govuk-link--no-visited-state govuk-body" href="">View requests<span class="govuk-visually-hidden"> for @aggregatedEmployerRequest.StandardTitle</span></a>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            }
         </div>
     </div>
 </main>
+<style>
+    .request-item {
+        margin-bottom: 1px;
+    }
+</style>
