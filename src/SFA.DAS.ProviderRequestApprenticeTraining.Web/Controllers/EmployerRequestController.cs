@@ -27,12 +27,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             _contextAccessor = contextAccessor;
         }
 
-        [HttpGet("active", Name = ActiveRouteGet)]
-        public async Task<IActionResult> Active()
+        [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
+        public async Task<IActionResult> Active(long ukprn)
         {
-            var ukprn = _contextAccessor.HttpContext.User.GetUkprn();
-            
-            return View(await _orchestrator.GetActiveEmployerRequestsViewModel(long.Parse(ukprn)));
+            return View(await _orchestrator.GetActiveEmployerRequestsViewModel(ukprn));
         }
     }
 }
