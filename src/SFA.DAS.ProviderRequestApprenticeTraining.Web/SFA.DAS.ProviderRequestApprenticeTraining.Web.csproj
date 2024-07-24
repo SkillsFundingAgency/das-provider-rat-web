@@ -19,6 +19,7 @@
         <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
         <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.89" />
+        <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
         <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.30" />
         <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
@@ -43,5 +44,8 @@
       <None Include="Views\Error\403.cshtml" />
       <None Include="Views\Error\404.cshtml" />
       <None Include="Views\Home\Error.cshtml" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Views\AggregatedEmployerRequest\" />
     </ItemGroup>
 </Project>

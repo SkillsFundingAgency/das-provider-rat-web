@@ -7,6 +7,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregate
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 
@@ -23,7 +24,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnAllowedAccessAuthorizationHandler>();
-
+            services.AddTransient<ISessionStorageService, SessionStorageService>();
             return services;
         }
 

@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 
@@ -12,13 +13,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
     public class EmployerRequestOrchestratorTests
     {
         private Mock<IMediator> _mockMediator;
+        private Mock<ISessionStorageService> _mockSessionService;
         private EmployerRequestOrchestrator _sut;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>();
-            _sut = new EmployerRequestOrchestrator(_mockMediator.Object);
+            _mockSessionService = new Mock<ISessionStorageService>();
+            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockSessionService.Object);
         }
 
         [Test]

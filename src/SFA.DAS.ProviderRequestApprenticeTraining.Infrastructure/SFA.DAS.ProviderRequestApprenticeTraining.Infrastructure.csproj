@@ -25,4 +25,8 @@
     <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Domain\SFA.DAS.ProviderRequestApprenticeTraining.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>

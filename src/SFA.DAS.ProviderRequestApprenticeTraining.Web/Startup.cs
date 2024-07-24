@@ -77,6 +77,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             services
                 .AddProviderAuthentication(_configuration)
                 .AddAuthorizationPolicies()
+                .AddSession()
                 .AddCookieTempDataProvider()
                 .AddDasHealthChecks()
                 .AddServiceRegistrations()
@@ -110,6 +111,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<SecurityHeadersMiddleware>();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

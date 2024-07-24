@@ -12,12 +12,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public List<SelectEmployerRequestViewModel> SelectEmployerRequests { get; set; }
-        public List<Guid> SelectedRequests { get; set; }
         public string BackRoute
         {
-            get { return AggregatedEmployerRequestController.AggregatedEmployerRequestsRouteGet; }
+            get { return EmployerRequestController.ActiveRouteGet; }
         }
-
 
         public static implicit operator SelectEmployerRequestsViewModel(GetSelectEmployerRequestsResult source)
         {
@@ -28,7 +26,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
                 StandardLevel = source.SelectEmployerRequestsResponse.StandardLevel,
                 SelectEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
                     .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
-                SelectedRequests = new List<Guid>()
             };
         }
     }

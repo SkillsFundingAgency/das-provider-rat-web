@@ -11,12 +11,16 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-caption-xl">
+                @Model.StandardTitle (level @Model.StandardLevel)
+            </h2>
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
             <p class="govuk-text">
-                Employers are looking for a training provider for these apprenticeship training courses.
+                If you're able to offer the course, we'll share your contact details with the employers you select.  
+                The employers name and contact details are not shown in the requests.
             </p>
             <p class="govuk-text">
-                View requests to select the employers you want to share your contact details with.
+                You can also view the requests from employers you've already contacted.
             </p>
 
         </div>
@@ -40,34 +44,39 @@
                 </ul>
                 <section class="govuk-tabs__panel" id="notcontacted">
                     <div id="not-contacted-requests">
-                        <form asp-route="@AggregatedEmployerRequestController.SelectEmployerRequestsRoutePost" asp-route-ids="@Model.SelectedRequests" novalidate>    
-                        <h2 class="govuk-heading-m">Employers looking for @Model.StandardTitle (level @Model.StandardLevel)</h2>
+                        <form asp-route="@EmployerRequestController.SelectRequestsRoutePost" method="post">    
+                        
                             @if(Model.SelectEmployerRequests.Any())
                             {
+                                <h2 class="govuk-heading-m">Which requests for @Model.StandardTitle (level @Model.StandardLevel) do you want to respond to?</h2>
+                                <h2 class="govuk-heading-m">Select all that apply</h2>
+                                
                                 <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                                     @foreach (var selectEmployerRequest in Model.SelectEmployerRequests)
                                     {
                                         <div class="govuk-checkboxes__item">
                                             <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
-                                                   value="@selectEmployerRequest.EmployerRequestId" @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked" : "") />
+                                                   value="@selectEmployerRequest.EmployerRequestId" @* @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked" : "") *@ />
                                             <label class="govuk-label govuk-checkboxes__label">
                                                 Request date @selectEmployerRequest.DateOfRequest
                                                 <div class="govuk-body">
                                                     <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller">New</strong>
-                                                    <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices</b> @selectEmployerRequest.NumberOfApprentices</p>
+                                                    <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices </b> @selectEmployerRequest.NumberOfApprentices</p>
                                                     @if (selectEmployerRequest.Locations.Count == 1)
                                                     {
                                                         <p><b>Location</b> @selectEmployerRequest.Locations.FirstOrDefault()</p>
                                                     }
                                                     else
                                                     {
-                                                        <b>Locations</b>
-                                                        <ul class="govuk-list">
-                                                            @foreach (var location in selectEmployerRequest.Locations)
-                                                            {
-                                                                <li>@location</li>
-                                                            }
-                                                        </ul>
+                                                        <div class="container">
+                                                            <b class="text">Location</b>
+                                                            <ul class="govuk-list govuk-list--bullet">
+                                                                @foreach (var location in selectEmployerRequest.Locations)
+                                                                {
+                                                                    <li>@location</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
                                                     }
 
                                                     @if (selectEmployerRequest.DeliveryMethods.Count == 1)
@@ -76,13 +85,15 @@
                                                     }
                                                     else
                                                     {
-                                                        <b>Delivery methods</b>
-                                                        <ul class="govuk-list">
-                                                            @foreach (var deliveryMethod in selectEmployerRequest.DeliveryMethods)
-                                                            {
-                                                                <li>@deliveryMethod</li>
-                                                            }
-                                                        </ul>
+                                                        <div class="container">
+                                                            <b class="text">Delivery methods</b>
+                                                            <ul class="govuk-list govuk-list--bullet">
+                                                                @foreach (var deliveryMethod in selectEmployerRequest.DeliveryMethods)
+                                                                {
+                                                                    <li>@deliveryMethod</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
                                                     }
                                                 </div>
                                             </label>
@@ -101,7 +112,7 @@
                                 <button type="submit" class="govuk-button" data-module="govuk-button">
                                     Continue
                                 </button>
-                                <a class="govuk-link" id="cancel" asp-route="@AggregatedEmployerRequestController.CancelSelectEmployerRequestRouteGet">
+                                <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet">
                                     Cancel
                                 </a>
                             </div>
@@ -116,4 +127,15 @@
             </div>
         </div>
     </div>
-</main>     
+</main>  
+
+<style >
+    .container {
+        display: flex;
+        align-items: flex-start; /* Align items vertically in the center */
+    }
+
+    .text {
+        margin-right: 5px; /* Space between text and list */
+    }
+</style>
