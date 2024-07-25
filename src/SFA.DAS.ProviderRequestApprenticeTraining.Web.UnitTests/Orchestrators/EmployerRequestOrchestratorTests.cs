@@ -59,7 +59,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().NotBeNull();
             result.AggregatedEmployerRequests.Should().HaveCount(aggregatedRequests.Count);
             result.AggregatedEmployerRequests.Should().BeEquivalentTo(aggregatedRequests.Select(request => (ActiveEmployerRequestViewModel)request));
-            result.BackLink.Should().Be(_config.DashboardUrl);
+            result.BackLink.Should().Be(_config.DashboardUrl + "account");
         }
     }
 }
