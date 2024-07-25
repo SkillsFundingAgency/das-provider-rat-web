@@ -36,22 +36,23 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task AggregatedEmployerRequests_ShouldReturnViewWithViewModel(
-            GetAggregatedEmployerRequestsResult aggregatedRequestResult)
+            GetAggregatedEmployerRequestsResult aggregatedRequestResult,
+            long ukprn)
         {
             // Arrange
             var claims = new List<Claim>
             {
-                new Claim(ProviderClaims.ProviderUkprn, "123456789")
+                new Claim(ProviderClaims.ProviderUkprn, ukprn.ToString())
             };
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var user = new ClaimsPrincipal(identity);
             _httpContextMock.Setup(h => h.HttpContext.User).Returns(user);
             _orchestratorMock
-                .Setup(o => o.GetActiveEmployerRequestsViewModel(123456789))
+                .Setup(o => o.GetActiveEmployerRequestsViewModel(ukprn))
                 .ReturnsAsync(new ActiveEmployerRequestsViewModel { });
 
             // Act
-            var result = await _controller.Active() as ViewResult;
+            var result = await _controller.Active(ukprn) as ViewResult;
 
             // Assert
             result.Should().NotBeNull();
