@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var model = new ActiveEmployerRequestsViewModel()
             {
                 AggregatedEmployerRequests = result.AggregatedEmployerRequests.Select(request => (ActiveEmployerRequestViewModel)request).ToList(),
-                BackLink = _providerSharedUIConfiguration.DashboardUrl
+                BackLink = _providerSharedUIConfiguration.DashboardUrl + "account"
             };
 
             return model;
