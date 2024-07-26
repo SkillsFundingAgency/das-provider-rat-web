@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
 {
     public class SelectEmployerRequestViewModel
     {
@@ -13,6 +13,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public List<string> DeliveryMethods { get; set; }
         public bool IsNew { get; set; }
         public bool IsContacted { get; set; }
+        public bool IsSelected { get; set; }
 
         public static implicit operator SelectEmployerRequestViewModel(SelectEmployerRequestResponse source)
         {

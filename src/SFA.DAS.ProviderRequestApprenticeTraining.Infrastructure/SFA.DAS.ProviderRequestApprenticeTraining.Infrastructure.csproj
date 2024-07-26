@@ -6,11 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Api\Requests\**" />
     <Compile Remove="Api\Types\**" />
-    <EmbeddedResource Remove="Api\Requests\**" />
     <EmbeddedResource Remove="Api\Types\**" />
-    <None Remove="Api\Requests\**" />
     <None Remove="Api\Types\**" />
   </ItemGroup>
 

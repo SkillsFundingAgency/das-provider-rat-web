@@ -6,7 +6,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmp
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.SelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using System.Threading.Tasks;
 
@@ -20,8 +20,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         #region Routes
         public const string ActiveRouteGet = nameof(ActiveRouteGet);
-        public const string SelectRequestsRouteGet = nameof(SelectRequestsRouteGet);
-        public const string SelectRequestsRoutePost = nameof(SelectRequestsRoutePost);
+        public const string SelectRequestsToContactRouteGet = nameof(SelectRequestsToContactRouteGet);
+        public const string SelectRequestsToContactRoutePost = nameof(SelectRequestsToContactRoutePost);
         public const string CancelSelectRequestsRouteGet = nameof(CancelSelectRequestsRouteGet);
         #endregion Routes
 
@@ -30,28 +30,29 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("active", Name = ActiveRouteGet)]
-        public async Task<IActionResult> Active()
-        {
-            var ukprn = HttpContext.User.GetUkprn();
-            
-            return View(await _orchestrator.GetActiveEmployerRequestsViewModel(long.Parse(ukprn)));
+        [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
+        public async Task<IActionResult> Active(long ukprn)
+        {          
+            return View(await _orchestrator.GetActiveEmployerRequestsViewModel(ukprn));
         }
 
-        [HttpGet("select/{standardReference}", Name = SelectRequestsRouteGet)]
-        public async Task<IActionResult> SelectEmployerRequests(string standardReference)
+        [HttpGet("select", Name = SelectRequestsToContactRouteGet)]
+        public async Task<IActionResult> SelectRequestsToContact(EmployerRequestsParameters parameters)
         {
-            var ukprn = HttpContext.User.GetUkprn();
-
-            return View(await _orchestrator.GetSelectEmployerRequestsViewModel(long.Parse(ukprn), standardReference));
+            return View(await _orchestrator.GetEmployerRequestsByStandardViewModel(parameters, ModelState));
         }
 
-        [HttpPost("select/{standardReference}", Name = SelectRequestsRoutePost)]
-        public IActionResult SelectEmployerRequests(SelectedRequestsViewModel viewModel)
+        [HttpPost("select", Name = SelectRequestsToContactRoutePost)]
+        public async Task<IActionResult> SelectRequestsToContact(EmployerRequestsToContactViewModel viewModel)
         {
+            if (!await _orchestrator.ValidateEmployerRequestsToContactViewModel(viewModel, ModelState))
+            {
+                return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference, viewModel.MySelectedRequests });
+            }
+
             _orchestrator.UpdateSelectedRequests(viewModel);
-            
-            return RedirectToRoute(nameof(SelectRequestsRouteGet));
+
+            return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
         [HttpGet]

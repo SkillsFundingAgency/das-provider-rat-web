@@ -32,7 +32,8 @@
                             {
                                 var requestRouteData = new Dictionary<string, string>()
                                 {
-                                    { "standardReference", aggregatedEmployerRequest.StandardReference }
+                                    { "standardReference", aggregatedEmployerRequest.StandardReference },
+                                    { "ukprn", Model.Ukprn.ToString()}
                                 };
                                 
                                 <li class="das-search-results__list-item">
@@ -47,7 +48,7 @@
                                             <p class="govuk-body govuk-!-margin-bottom-1"><b>Employers:</b> @aggregatedEmployerRequest.NumberOfEmployers</p>
                                         </div>
                                         <div class="govuk-grid-column-one-third govuk-body govuk-!-text-align-right">
-                                            <a class="govuk-link govuk-link--no-visited-state govuk-body" asp-route="@EmployerRequestController.SelectRequestsRouteGet" asp-all-route-data="requestRouteData">View requests<span class="govuk-visually-hidden">looking for requests for @aggregatedEmployerRequest.StandardTitle</span></a>
+                                            <a class="govuk-link govuk-link--no-visited-state govuk-body" asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet" asp-all-route-data="requestRouteData">View requests<span class="govuk-visually-hidden">looking for requests for @aggregatedEmployerRequest.StandardTitle</span></a>
                                         </div>
                                     </div>
                                 </li>

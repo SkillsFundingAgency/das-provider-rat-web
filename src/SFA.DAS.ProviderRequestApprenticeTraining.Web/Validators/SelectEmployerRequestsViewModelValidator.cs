@@ -1,20 +1,20 @@
 ﻿using FluentValidation;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators
 {
-    public class SelectEmployerRequestsViewModelValidator : AbstractValidator<SelectEmployerRequestsViewModel>
+    public class SelectedRequestsViewModelValidator : AbstractValidator<EmployerRequestsToContactViewModel>
     {
-        public SelectEmployerRequestsViewModelValidator()
+        public SelectedRequestsViewModelValidator()
         {
-            //RuleFor(x => x.SelectedRequests)
-            //    .ValidateSelectedRequests();
+            RuleFor(x => x.MySelectedRequests)
+                .ValidateSelectedRequests();
         }
     }
 
-    public static class SelectEmployerRequestsViewModelValidatorRules
+    public static class SelectedRequestsViewModelValidatorRules
     {
         public static IRuleBuilderOptions<T, List<Guid>> ValidateSelectedRequests<T>(this IRuleBuilder<T, List<Guid>> ruleBuilder)
         {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 using System.Text;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage
@@ -13,21 +14,21 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public SelectedRequestsSessionObject SelectedRequestsSessionObject
+        public MySessionObject MySessionObject
         {
             get
             {
-                return Get<SelectedRequestsSessionObject>(nameof(SelectedRequestsSessionObject));
+                return Get<MySessionObject>(nameof(MySessionObject));
             }
             set
             {
                 if (value == null)
                 {
-                    Remove(nameof(SelectedRequestsSessionObject));
+                    Remove(nameof(MySessionObject));
                 }
                 else
                 {
-                    Set(nameof(SelectedRequestsSessionObject), value);
+                    Set(nameof(MySessionObject), value);
                 }
             }
         }

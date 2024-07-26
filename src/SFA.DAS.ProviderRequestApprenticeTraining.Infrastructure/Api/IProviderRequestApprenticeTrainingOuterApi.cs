@@ -1,13 +1,18 @@
 ﻿using RestEase;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
+        [Post("/employerrequests/provider/responsestatus")]
+        Task<bool> UpdateProviderResponseStatus([Body]UpdateProviderResponseStatusRequest request);
+
         [Get("/employerrequests/provider/{ukprn}/aggregated")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);
+
         [Get("/employerrequests/provider/{ukprn}/selectrequests/{standardReference}")]
         Task<SelectEmployerRequestsResponse> GetSelectEmployerRequests([Path]long ukprn, [Path]string standardReference);
 

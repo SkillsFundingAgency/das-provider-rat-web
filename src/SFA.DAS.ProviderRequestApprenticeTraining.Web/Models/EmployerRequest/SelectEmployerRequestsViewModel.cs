@@ -4,14 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
 {
     public class SelectEmployerRequestsViewModel
     {
+        public long Ukprn { get; set; }
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
-        public List<SelectEmployerRequestViewModel> SelectEmployerRequests { get; set; }
+        public List<SelectEmployerRequestViewModel> AllEmployerRequests { get; set; }
+        public List<Guid> MySelectedRequests { get; set; }
+
         public string BackRoute
         {
             get { return EmployerRequestController.ActiveRouteGet; }
@@ -24,7 +27,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
                 StandardReference = source.SelectEmployerRequestsResponse.StandardReference,
                 StandardTitle = source.SelectEmployerRequestsResponse.StandardTitle,
                 StandardLevel = source.SelectEmployerRequestsResponse.StandardLevel,
-                SelectEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
+                AllEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
                     .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
             };
         }
