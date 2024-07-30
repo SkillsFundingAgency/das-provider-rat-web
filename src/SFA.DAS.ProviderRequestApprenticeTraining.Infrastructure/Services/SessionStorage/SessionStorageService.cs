@@ -14,21 +14,21 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public MySessionObject MySessionObject
+        public ProviderResponse ProviderResponse
         {
             get
             {
-                return Get<MySessionObject>(nameof(MySessionObject));
+                return Get<ProviderResponse>(nameof(ProviderResponse));
             }
             set
             {
                 if (value == null)
                 {
-                    Remove(nameof(MySessionObject));
+                    Remove(nameof(ProviderResponse));
                 }
                 else
                 {
-                    Set(nameof(MySessionObject), value);
+                    Set(nameof(ProviderResponse), value);
                 }
             }
         }

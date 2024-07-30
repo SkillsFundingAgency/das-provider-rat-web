@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators
     {
         public SelectedRequestsViewModelValidator()
         {
-            RuleFor(x => x.MySelectedRequests)
+            RuleFor(x => x.SelectedRequests)
                 .ValidateSelectedRequests();
         }
     }

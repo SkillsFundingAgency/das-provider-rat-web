@@ -4,6 +4,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
 {
     public interface ISessionStorageService
     {
-        MySessionObject MySessionObject { get; set; }
+        ProviderResponse ProviderResponse { get; set; }
     }
 }

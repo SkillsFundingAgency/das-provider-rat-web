@@ -1,7 +1,9 @@
 ﻿using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.UpdateProviderResponseStatus;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Provider.Shared.UI.Models;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
@@ -19,13 +21,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         private readonly IMediator _mediator;
         private readonly ISessionStorageService _sessionStorage;
         private readonly EmployerRequestOrchestratorValidators _employerRequestOrchestratorValidators;
+        private readonly ProviderSharedUIConfiguration _providerSharedUIConfiguration;
 
         public EmployerRequestOrchestrator(IMediator mediator, ISessionStorageService sessionStorage,
-            EmployerRequestOrchestratorValidators employerRequestOrchestratorValidators)
+            EmployerRequestOrchestratorValidators employerRequestOrchestratorValidators,
+            IOptions<ProviderSharedUIConfiguration> sharedUIConfiguration)
         {
             _mediator = mediator;
             _sessionStorage = sessionStorage;
             _employerRequestOrchestratorValidators = employerRequestOrchestratorValidators;
+            _providerSharedUIConfiguration = sharedUIConfiguration.Value;
         }
 
         public async Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn)
@@ -35,7 +40,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var model = new ActiveEmployerRequestsViewModel()
             {
                 Ukprn = ukprn,
-                AggregatedEmployerRequests = result.AggregatedEmployerRequests.Select(request => (ActiveEmployerRequestViewModel)request).ToList()
+                AggregatedEmployerRequests = result.AggregatedEmployerRequests.Select(request => (ActiveEmployerRequestViewModel)request).ToList(),
+                BackLink = _providerSharedUIConfiguration.DashboardUrl + "account"
             };
 
             return model;
@@ -46,7 +52,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var result = await _mediator.Send(new GetSelectEmployerRequestsQuery(parameters.Ukprn, parameters.StandardReference));
 
             var viewModel =  (SelectEmployerRequestsViewModel)result;
-            viewModel.MySelectedRequests = MySessionObject.SelectedEmployerRequests;
             return viewModel;
         }
 
@@ -59,32 +64,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         {
             UpdateSessionSelectedRequests((model) =>
             {
-                model.SelectedEmployerRequests = viewModel.MySelectedRequests;  
+                model.SelectedEmployerRequests = viewModel.SelectedRequests;  
             });
 
-            await _mediator.Send(new UpdateProviderResponseStatusCommand
+            await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
             { 
                 Ukprn = viewModel.Ukprn,
-                EmployerRequestIds = viewModel.MySelectedRequests,
-                ProviderResponseStatus = 1 
+                EmployerRequestIds = viewModel.SelectedRequests
             });
         }
 
-        private MySessionObject MySessionObject
+        private ProviderResponse ProviderResponseSession
         {
-            get => _sessionStorage.MySessionObject ?? new MySessionObject();
+            get => _sessionStorage.ProviderResponse ?? new ProviderResponse();
         }
 
-        private void UpdateSessionSelectedRequests(Action<MySessionObject> action)
+        private void UpdateSessionSelectedRequests(Action<ProviderResponse> action)
         {
-            var sessionObject = MySessionObject;
+            var sessionObject = ProviderResponseSession;
             action(sessionObject);
-            _sessionStorage.MySessionObject = MySessionObject;
+            _sessionStorage.ProviderResponse = ProviderResponseSession;
         }
 
         private void ClearSelectEmployerRequests()
         {
-            _sessionStorage.MySessionObject = null;
+            _sessionStorage.ProviderResponse = null;
         }
 
         private async Task<bool> ValidateViewModel<T>(IValidator<T> validator, T viewModel, ModelStateDictionary modelState)

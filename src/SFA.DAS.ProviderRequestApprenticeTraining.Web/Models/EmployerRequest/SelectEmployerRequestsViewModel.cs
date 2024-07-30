@@ -13,12 +13,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public List<SelectEmployerRequestViewModel> AllEmployerRequests { get; set; }
-        public List<Guid> MySelectedRequests { get; set; }
-
-        public string BackRoute
-        {
-            get { return EmployerRequestController.ActiveRouteGet; }
-        }
+        public List<Guid> SelectedRequests { get; set; }
 
         public static implicit operator SelectEmployerRequestsViewModel(GetSelectEmployerRequestsResult source)
         {

@@ -2,10 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using System.Threading.Tasks;
@@ -47,7 +44,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             if (!await _orchestrator.ValidateEmployerRequestsToContactViewModel(viewModel, ModelState))
             {
-                return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference, viewModel.MySelectedRequests });
+                return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
             }
 
             _orchestrator.UpdateSelectedRequests(viewModel);
@@ -57,9 +54,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         [HttpGet]
         [Route("cancel", Name = CancelSelectRequestsRouteGet)]
-        public IActionResult Cancel()
+        public IActionResult Cancel(long ukprn)
         {
-            return RedirectToRoute(nameof(ActiveRouteGet));
+            return RedirectToRoute(nameof(ActiveRouteGet), new { ukprn});
         }
 
     }

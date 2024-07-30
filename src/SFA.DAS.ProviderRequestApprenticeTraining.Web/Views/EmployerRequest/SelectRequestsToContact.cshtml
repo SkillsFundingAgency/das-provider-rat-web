@@ -7,7 +7,9 @@
     ViewData["Title"] = "Select requests to share your information";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/select";
 }
-<a asp-route="@Model.BackRoute" class="govuk-back-link">Back</a>
+<a asp-route="@EmployerRequestController.ActiveRouteGet"
+   asp-route-ukprn="@Model.Ukprn" 
+   class="govuk-back-link">Back</a>
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
@@ -31,7 +33,7 @@
                 @Model.AllEmployerRequests.Count()<text> results </text>
             </p>
             <!-- tabs -->
-            <div class="govuk-tabs" data-module="tabs">
+            <div class="govuk-tabs govuk-grid-column-two-thirds" data-module="tabs">
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#notcontacted">
@@ -51,62 +53,70 @@
                             @Html.HiddenFor(model => model.StandardReference)
                             @if(Model.AllEmployerRequests.Any())
                             {
-                                <h2 class="govuk-heading-m">Which requests for @Model.StandardTitle (level @Model.StandardLevel) do you want to respond to?</h2>
-                                <h2 class="govuk-heading-m">Select all that apply</h2>
-                                
-                                <div class="govuk-form-group" das-highlight-error-for="MySelectedRequests" error-class="govuk-form-group--error">
-                                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                                    <div class="govuk-form-group" esfa-validation-marker-for="MySelectedRequests">
-                                        <span class="govuk-error-message" asp-validation-for="MySelectedRequests"></span>
-                                    </div>
-                                    @foreach (var selectEmployerRequest in Model.AllEmployerRequests)
-                                {
-                                    <div class="govuk-checkboxes__item">
-                                            <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="MySelectedRequests" type="checkbox"
-                                                value="@selectEmployerRequest.EmployerRequestId" />
-                                        <label class="govuk-label govuk-checkboxes__label">
-                                            Request date @selectEmployerRequest.DateOfRequest
-                                            <div class="govuk-body">
-                                                <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
-                                                <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices </b> @selectEmployerRequest.NumberOfApprentices</p>
-                                                @if (selectEmployerRequest.Locations.Count == 1)
-                                                {
-                                                    <p><b>Location</b> @selectEmployerRequest.Locations.FirstOrDefault()</p>
-                                                }
-                                                else
-                                                {
-                                                    <div class="container">
-                                                        <b class="text">Location</b>
-                                                        <ul class="govuk-list govuk-list--bullet">
-                                                            @foreach (var location in selectEmployerRequest.Locations)
-                                                            {
-                                                                <li>@location</li>
-                                                            }
-                                                        </ul>
-                                                    </div>
-                                                }
+                                <div class="govuk-form-group" das-highlight-error-for="SelectedRequests"
+                                 error-class="govuk-form-group--error">
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                            Which requests for @Model.StandardTitle (level @Model.StandardLevel) do you want to respond to?
+                                        </legend>
+                                        <div id="SelectedRequests-hint" class="govuk-hint">
+                                            Select all that apply.
+                                        </div>
+                                        <div class="govuk-form-group" esfa-validation-marker-for="SelectedRequests">
+                                            <span class="govuk-error-message" asp-validation-for="SelectedRequests"></span>
+                                        </div>
+                                        @foreach (var selectEmployerRequest in Model.AllEmployerRequests)
+                                        {
+                                            <div class="govuk-checkboxes__item">
+                                                <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
+                                                       value="@selectEmployerRequest.EmployerRequestId" />
+                                                <label class="govuk-label govuk-checkboxes__label">
+                                                    Request date @selectEmployerRequest.DateOfRequest
+                                                    <div class="govuk-body">
+                                                        <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
+                                                        <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices </b> @selectEmployerRequest.NumberOfApprentices</p>
+                                                        @if (selectEmployerRequest.Locations.Count == 1)
+                                                        {
+                                                            <p><b>Location</b> @selectEmployerRequest.Locations.FirstOrDefault()</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="select-request-list-item">
+                                                                <b class="select-request-list-item-label">Location</b>
+                                                                <ul class="govuk-list govuk-list--bullet">
+                                                                    @foreach (var location in selectEmployerRequest.Locations)
+                                                                    {
+                                                                        <li>@location</li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        }
 
-                                                @if (selectEmployerRequest.DeliveryMethods.Count == 1)
-                                                {
-                                                    <p><b>Delivery method</b> @selectEmployerRequest.DeliveryMethods.FirstOrDefault()</p>
-                                                }
-                                                else
-                                                {
-                                                    <div class="container">
-                                                        <b class="text">Delivery methods</b>
-                                                        <ul class="govuk-list govuk-list--bullet">
-                                                            @foreach (var deliveryMethod in selectEmployerRequest.DeliveryMethods)
-                                                            {
-                                                                <li>@deliveryMethod</li>
-                                                            }
-                                                        </ul>
+                                                        @if (selectEmployerRequest.DeliveryMethods.Count == 1)
+                                                        {
+                                                            <p><b>Delivery method</b> @selectEmployerRequest.DeliveryMethods.FirstOrDefault()</p>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="select-request-list-item">
+                                                                <b class="select-request-list-item-label">Delivery methods</b>
+                                                                <ul class="govuk-list govuk-list--bullet">
+                                                                    @foreach (var deliveryMethod in selectEmployerRequest.DeliveryMethods)
+                                                                    {
+                                                                        <li>@deliveryMethod</li>
+                                                                    }
+                                                                </ul>
+                                                            </div>
+                                                        }
                                                     </div>
-                                                }
+                                                </label>
+                                                
                                             </div>
-                                        </label>
-                                    </div>
-                                }
+                                        }
+
+                                    </fieldset>
                                 </div>
+
                             }
                             else
                             {
@@ -119,7 +129,8 @@
                                 <button type="submit" class="govuk-button" data-module="govuk-button">
                                     Continue
                                 </button>
-                                <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet">
+                                <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
+                                   asp-route-ukprn="@Model.Ukprn">
                                     Cancel
                                 </a>
                             </div>
@@ -137,12 +148,34 @@
 </main>  
 
 <style >
-    .container {
+    .select-request-list-item {
         display: flex;
         align-items: flex-start; /* Align items vertically in the center */
     }
 
-    .text {
+    .select-request-list-item-label {
         margin-right: 5px; /* Space between text and list */
+    }
+
+    .govuk-checkboxes__item
+    {
+        border-bottom-width:thin;
+        border-bottom-style:solid;
+    }
+
+    .govuk-checkboxes__item {
+        border-bottom-width: thin;
+        border-bottom-style: solid;
+    }
+
+    .govuk-tabs__panel
+    {
+        border:none!important;
+    }
+
+    .govuk-tabs__list-item--selected
+    {
+        border:none!important;
+
     }
 </style>

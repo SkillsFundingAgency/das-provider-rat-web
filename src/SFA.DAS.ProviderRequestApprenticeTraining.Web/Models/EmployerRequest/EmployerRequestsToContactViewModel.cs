@@ -7,6 +7,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
     {
         public long Ukprn { get; set; }
         public string StandardReference { get; set; }
-        public List<Guid> MySelectedRequests { get; set; }
+        public List<Guid> SelectedRequests { get; set; } = new List<Guid>();
     }
 }

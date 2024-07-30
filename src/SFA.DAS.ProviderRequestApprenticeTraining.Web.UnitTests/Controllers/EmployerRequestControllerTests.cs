@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             {
                 Ukprn = 789456,
                 StandardReference = "ST0004",
-                MySelectedRequests = new List<Guid> { new(), new()}
+                SelectedRequests = new List<Guid> { new(), new()}
             };
 
             _orchestratorMock.Setup(o => o.ValidateEmployerRequestsToContactViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(false);
@@ -88,7 +88,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.RouteName.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
             result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
             result.RouteValues["standardReference"].Should().Be(viewModel.StandardReference);
-            result.RouteValues["mySelectedRequests"].Should().BeEquivalentTo(viewModel.MySelectedRequests);
         }
 
         [Test]
@@ -99,7 +98,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             {
                 Ukprn = 789456,
                 StandardReference = "ST0004",
-                MySelectedRequests = new List<Guid> { new(), new() }
+                SelectedRequests = new List<Guid> { new(), new() }
             };
 
             _orchestratorMock.Setup(o => o.ValidateEmployerRequestsToContactViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);

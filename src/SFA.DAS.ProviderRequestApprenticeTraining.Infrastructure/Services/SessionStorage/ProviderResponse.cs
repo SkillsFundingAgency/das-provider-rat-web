@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage
 {
-    public class MySessionObject
+    public class ProviderResponse
     {
         public List<Guid> SelectedEmployerRequests { get; set; } = new List<Guid>();
     }

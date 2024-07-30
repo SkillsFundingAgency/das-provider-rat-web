@@ -16,6 +16,7 @@ using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions;
+using SFA.DAS.Validation.Mvc.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
@@ -60,6 +61,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 })
                 .AddMvc(options =>
                 {
+                    options.AddValidation();
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new TypeFilterAttribute(typeof(GoogleAnalyticsFilterAttribute)));
 
@@ -71,7 +73,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .SetZenDeskConfiguration(_configuration.GetSection("ProviderZenDeskSettings").Get<ZenDeskConfiguration>());
 
             services
-                .AddFluentValidationAutoValidation()
                 .AddValidatorsFromAssemblyContaining<Startup>();
 
             services

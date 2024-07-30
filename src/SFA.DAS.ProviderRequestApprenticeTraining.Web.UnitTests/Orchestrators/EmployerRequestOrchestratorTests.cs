@@ -3,8 +3,10 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
@@ -22,6 +24,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private Mock<ISessionStorageService> _mockSessionService;
         private EmployerRequestOrchestrator _sut;
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
+        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
 
         [SetUp]
         public void SetUp()
@@ -35,8 +38,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             {
                 SelectedRequestsModelValidator = _requestsToContactViewModelValidatorMock.Object,
             };
+            _mockConfig = new Mock<IOptions<ProviderSharedUIConfiguration>>();
+            var _config = new ProviderSharedUIConfiguration
+            {
+                DashboardUrl = "http://example.com"
+            };
+            _mockConfig.Setup(o => o.Value).Returns(_config);
 
-            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockSessionService.Object, employerOrchestratorValidators);
+            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockSessionService.Object, employerOrchestratorValidators, _mockConfig.Object);
         }
 
         [Test, MoqAutoData]

@@ -7,13 +7,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
     {
         public long Ukprn { get; set; }
 
+        public string BackLink { get; set; }
+
         public List<ActiveEmployerRequestViewModel> AggregatedEmployerRequests { get; set; }
 
         public int RequestCount { get { return AggregatedEmployerRequests.Count; } }
 
-        public string BackRoute 
-        {
-            get { return EmployerRequestController.ActiveRouteGet; }
-        }
     }
 }
