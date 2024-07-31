@@ -52,6 +52,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var result = await _mediator.Send(new GetSelectEmployerRequestsQuery(parameters.Ukprn, parameters.StandardReference));
 
             var viewModel =  (SelectEmployerRequestsViewModel)result;
+            viewModel.Ukprn = parameters.Ukprn;
+            viewModel.StandardReference = parameters.StandardReference; 
             return viewModel;
         }
 

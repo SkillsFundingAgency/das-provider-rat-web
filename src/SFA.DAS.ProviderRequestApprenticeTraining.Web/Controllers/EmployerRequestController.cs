@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
-    [Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
+    //[Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
     [SetNavigationSection(NavigationSection.Home)]
     public class EmployerRequestController : Controller
     {

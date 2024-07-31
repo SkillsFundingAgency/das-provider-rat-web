@@ -74,7 +74,7 @@
                                                     Request date @selectEmployerRequest.DateOfRequest
                                                     <div class="govuk-body">
                                                         <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
-                                                        <p class="govuk-body govuk-!-margin-bottom-1"><b>Number of apprentices </b> @selectEmployerRequest.NumberOfApprentices</p>
+                                                        <p class="govuk-body govuk-!-margin-bottom-1 @(selectEmployerRequest.IsNew ? "" : "govuk-!-margin-top-5")"><b>Number of apprentices </b> @selectEmployerRequest.NumberOfApprentices</p>
                                                         @if (selectEmployerRequest.Locations.Count == 1)
                                                         {
                                                             <p><b>Location</b> @selectEmployerRequest.Locations.FirstOrDefault()</p>
@@ -146,36 +146,3 @@
         </div>
     </div>
 </main>  
-
-<style >
-    .select-request-list-item {
-        display: flex;
-        align-items: flex-start; /* Align items vertically in the center */
-    }
-
-    .select-request-list-item-label {
-        margin-right: 5px; /* Space between text and list */
-    }
-
-    .govuk-checkboxes__item
-    {
-        border-bottom-width:thin;
-        border-bottom-style:solid;
-    }
-
-    .govuk-checkboxes__item {
-        border-bottom-width: thin;
-        border-bottom-style: solid;
-    }
-
-    .govuk-tabs__panel
-    {
-        border:none!important;
-    }
-
-    .govuk-tabs__list-item--selected
-    {
-        border:none!important;
-
-    }
-</style>

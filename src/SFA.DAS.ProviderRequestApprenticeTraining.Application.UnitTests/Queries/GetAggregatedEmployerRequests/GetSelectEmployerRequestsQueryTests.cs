@@ -39,6 +39,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                             IsNew = true,
                             Locations = new List<string> { "North", "South", "East" },
                             NumberOfApprentices = 3
+                            
                         },
                         new SelectEmployerRequestResponse
                         {
@@ -53,9 +54,28 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                     },
                     StandardLevel = 2,
                     StandardReference = "Ref1",
-                    StandardTitle="Title1"
+                    StandardTitle="Title1",
                 },
-                
+            };
+
+            _mockOuterApi.Setup(x => x.GetSelectEmployerRequests(It.IsAny<long>(), It.IsAny<string>()))
+                .ReturnsAsync(expectedResult.SelectEmployerRequestsResponse);
+
+            // Act
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResult);
+            _mockOuterApi.Verify(x => x.GetSelectEmployerRequests(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Handle_ShouldReturnEmptySelectEmployerRequests_WhenNoRequestsExist()
+        {
+            // Arrange
+            var expectedResult = new GetSelectEmployerRequestsResult()
+            {
+                SelectEmployerRequestsResponse = new SelectEmployerRequestsResponse(),
             };
 
             _mockOuterApi.Setup(x => x.GetSelectEmployerRequests(It.IsAny<long>(), It.IsAny<string>()))

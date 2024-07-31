@@ -1,0 +1,13 @@
+.select-request-list-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+.select-request-list-item-label {
+    margin-right: 5px;
+}
+
+.govuk-checkboxes__item {
+    border-bottom-width: thin;
+    border-bottom-style: solid;
+}
