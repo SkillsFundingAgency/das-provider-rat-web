@@ -9,7 +9,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         [Get("/employerrequests/provider/{ukprn}/aggregated")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);
 
-        [Get("/employerrequest/{employerRequestId}")]
+        [Get("/employerrequests/{employerRequestId}")]
         Task<EmployerRequest> GetEmployerRequest([Path] Guid employerRequestId);
 
         [Get("/employerrequests/requesttype/{requestType}")]

@@ -1,18 +1,23 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
+using System.Security.Claims;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Controllers
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 {
     public class HomeControllerTests
     {
         private HomeController _sut;
         private Mock<IOptions<ProviderSharedUIConfiguration>> _mockOptions;
         private ProviderSharedUIConfiguration _config;
+        private Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly string _ukprn = "789456789";
 
         [SetUp]
         public void SetUp()
@@ -23,7 +28,17 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Controllers
             };
             _mockOptions = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             _mockOptions.Setup(x => x.Value).Returns(_config);
-            _sut = new HomeController(_mockOptions.Object);
+
+            _httpContextMock = new Mock<IHttpContextAccessor>();
+            var claims = new List<Claim>
+            {
+                new Claim(ProviderClaims.ProviderUkprn, _ukprn)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var user = new ClaimsPrincipal(identity);
+            _httpContextMock.Setup(h => h.HttpContext.User).Returns(user);
+
+            _sut = new HomeController(_mockOptions.Object, _httpContextMock.Object);
         }
 
         [TearDown]
@@ -52,6 +67,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Controllers
             // Assert
             result.Should().NotBeNull();
             result.RouteName.Should().Be(EmployerRequestController.ActiveRouteGet);
+            result.RouteValues.Should().ContainKey("ukprn");
         }
     }
 }
