@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -47,10 +46,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
 
             services.AddConfigurationOptions(_configuration);
 
+            var configurationWeb = _configuration.GetSection<ProviderRequestApprenticeTrainingWebConfiguration>();
             var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfiguration>();
-
-            services
-                .AddSingleton(configurationOuterApi);
 
             services.AddControllersWithViews();
 
@@ -66,6 +63,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                     options.Filters.Add(new TypeFilterAttribute(typeof(GoogleAnalyticsFilterAttribute)));
 
                 })
+                .EnableCookieBanner()
                 .AddControllersAsServices()
                 .SetDefaultNavigationSection(NavigationSection.Home)
                 .EnableGoogleAnalytics()
@@ -78,8 +76,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             services
                 .AddProviderAuthentication(_configuration)
                 .AddAuthorizationPolicies()
-                .AddSession()
-                .AddCookieTempDataProvider()
+                .AddSession(configurationWeb)
                 .AddDasHealthChecks()
                 .AddServiceRegistrations()
                 .AddOuterApi(configurationOuterApi)

@@ -69,7 +69,8 @@
                                         {
                                             <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
-                                                       value="@selectEmployerRequest.EmployerRequestId" />
+                                                       value="@selectEmployerRequest.EmployerRequestId"
+                                                @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
                                                 <label class="govuk-label govuk-checkboxes__label">
                                                     Request date @selectEmployerRequest.DateOfRequest
                                                     <div class="govuk-body">

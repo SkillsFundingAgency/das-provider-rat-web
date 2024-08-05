@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
-    //[Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
+    [Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
     [SetNavigationSection(NavigationSection.Home)]
     public class EmployerRequestController : Controller
     {
@@ -29,7 +29,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active(long ukprn)
-        {          
+        {
+            _orchestrator.StartProviderResponse(ukprn);
             return View(await _orchestrator.GetActiveEmployerRequestsViewModel(ukprn));
         }
 
@@ -47,9 +48,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
             }
 
-            _orchestrator.UpdateSelectedRequests(viewModel);
+            await _orchestrator.UpdateSelectedRequests(viewModel);
 
-            return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            return RedirectToRoute(nameof(SelectRequestsToContactRoutePost), new { viewModel.Ukprn, viewModel.StandardReference, viewModel.SelectedRequests });
         }
 
         [HttpGet]

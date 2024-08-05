@@ -33,6 +33,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             _providerSharedUIConfiguration = sharedUIConfiguration.Value;
         }
 
+        public void StartProviderResponse(long ukprn)
+        {
+            _sessionStorage.ProviderResponse = new ProviderResponse
+            {
+                Ukprn = ukprn,
+            };
+        }
+
         public async Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn)
         {
             var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery(ukprn));
@@ -53,7 +61,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 
             var viewModel =  (SelectEmployerRequestsViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
-            viewModel.StandardReference = parameters.StandardReference; 
+            viewModel.StandardReference = parameters.StandardReference;
+            viewModel.SelectedRequests = SessionProviderResponse.SelectedEmployerRequests;
             return viewModel;
         }
 
@@ -62,33 +71,33 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             return await ValidateViewModel(_employerRequestOrchestratorValidators.SelectedRequestsModelValidator, viewModel, modelState);
         }
 
-        public async void UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel)
+        public async Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel)
         {
-            UpdateSessionSelectedRequests((model) =>
-            {
-                model.SelectedEmployerRequests = viewModel.SelectedRequests;  
-            });
-
             await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
             { 
                 Ukprn = viewModel.Ukprn,
                 EmployerRequestIds = viewModel.SelectedRequests
             });
+
+            UpdateSessionProviderResponse((model) =>
+            {
+                model.SelectedEmployerRequests = viewModel.SelectedRequests;
+            });
         }
 
-        private ProviderResponse ProviderResponseSession
+        private ProviderResponse SessionProviderResponse
         {
             get => _sessionStorage.ProviderResponse ?? new ProviderResponse();
         }
 
-        private void UpdateSessionSelectedRequests(Action<ProviderResponse> action)
+        private void UpdateSessionProviderResponse(Action<ProviderResponse> action)
         {
-            var sessionObject = ProviderResponseSession;
-            action(sessionObject);
-            _sessionStorage.ProviderResponse = ProviderResponseSession;
+            var providerResponse = SessionProviderResponse;
+            action(providerResponse);
+            _sessionStorage.ProviderResponse = providerResponse;
         }
 
-        private void ClearSelectEmployerRequests()
+        public void EndSession()
         {
             _sessionStorage.ProviderResponse = null;
         }

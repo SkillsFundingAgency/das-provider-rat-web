@@ -7,11 +7,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 {
     public interface IEmployerRequestOrchestrator
     {
+        void StartProviderResponse(long ukprn);
         Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn);
 
         Task<SelectEmployerRequestsViewModel> GetEmployerRequestsByStandardViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
         Task<bool> ValidateEmployerRequestsToContactViewModel(EmployerRequestsToContactViewModel viewModel, ModelStateDictionary modelState);
+        Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
 
         void UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
+        void EndSession();
     }
 }

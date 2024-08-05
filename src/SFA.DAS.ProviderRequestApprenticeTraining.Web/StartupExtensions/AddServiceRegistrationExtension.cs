@@ -22,7 +22,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
         {
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAggregatedEmployerRequestsQuery).Assembly));
 
-            services.AddHttpContextAccessor();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnAllowedAccessAuthorizationHandler>();
@@ -32,6 +31,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             {
                 SelectedRequestsModelValidator = sp.GetRequiredService<IValidator<EmployerRequestsToContactViewModel>>(),
             });
+            services.AddTransient<IEmployerRequestOrchestrator, EmployerRequestOrchestrator>();
 
             return services;
         }
@@ -49,7 +49,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                 .AddHttpMessageHandler<Http.MessageHandlers.ApimHeadersHandler>()
                 .AddHttpMessageHandler<Http.MessageHandlers.LoggingMessageHandler>();
 
-            services.AddTransient<IEmployerRequestOrchestrator, EmployerRequestOrchestrator>();
             services.AddTransient<IApimClientConfiguration>((_) => configuration);
 
             return services;

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -109,7 +108,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             // Assert
             _orchestratorMock.Verify(o => o.UpdateSelectedRequests(viewModel), Times.Once);
         }
-
-
     }
 }

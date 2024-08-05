@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -9,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -21,7 +23,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
     public class EmployerRequestOrchestratorTests
     {
         private Mock<IMediator> _mockMediator;
-        private Mock<ISessionStorageService> _mockSessionService;
+        private Mock<ISessionStorageService> _sessionStorageMock;
         private EmployerRequestOrchestrator _sut;
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
         private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
@@ -30,7 +32,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>();
-            _mockSessionService = new Mock<ISessionStorageService>();
+            _sessionStorageMock = new Mock<ISessionStorageService>();
 
             _requestsToContactViewModelValidatorMock = new Mock<IValidator<EmployerRequestsToContactViewModel>>();
 
@@ -45,7 +47,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             };
             _mockConfig.Setup(o => o.Value).Returns(_config);
 
-            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockSessionService.Object, employerOrchestratorValidators, _mockConfig.Object);
+            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _sessionStorageMock.Object, employerOrchestratorValidators, _mockConfig.Object);
         }
 
         [Test, MoqAutoData]
@@ -127,6 +129,109 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().BeFalse();
             modelState.IsValid.Should().BeFalse();
             modelState["PropertyName"].Errors[0].ErrorMessage.Should().Be("Error message");
+        }
+
+        [Test,MoqAutoData]
+        public void StartProviderResponse_ShouldSetProviderResponseInSession(long ukprn)
+        {
+            // Act
+            _sut.StartProviderResponse(ukprn);
+
+            // Assert
+            _sessionStorageMock.VerifySet(x => x.ProviderResponse = It.IsAny<ProviderResponse>(), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetEmployerRequestsByStandardViewModel_ShouldReturnViewModel_WhenSessionHasProviderResponse(GetSelectEmployerRequestsResult queryResult)
+        {
+            // Arrange
+            var parameters = new EmployerRequestsParameters
+            {
+                Ukprn = 123456,
+                StandardReference = "ST00004",
+            };
+
+            var providerResponse = new ProviderResponse { Ukprn = parameters.Ukprn };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetSelectEmployerRequestsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetEmployerRequestsByStandardViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.SelectedRequests.Should().BeEquivalentTo(providerResponse.SelectedEmployerRequests);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetEmployerRequestsByStandardViewModel_ShouldReturnViewModel_WhenSessionIsEmpty(GetSelectEmployerRequestsResult queryResult)
+        {
+            // Arrange
+            var parameters = new EmployerRequestsParameters
+            {
+                Ukprn = 123456,
+                StandardReference = "ST00004",
+            };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetSelectEmployerRequestsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetEmployerRequestsByStandardViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.SelectedRequests.Should().BeEmpty();
+        }
+
+        [Test, MoqAutoData]
+        public async Task UpdateSelectedRequests_ShouldUpdateSelectedRequests_WhenSessionHasProviderResponse(long ukprn, List<Guid> selectedRequests)
+        {
+            // Arrange
+            var viewModel = new EmployerRequestsToContactViewModel
+            {
+                Ukprn = ukprn, 
+                SelectedRequests = selectedRequests
+
+            };
+            var providerResponse = new ProviderResponse { Ukprn = ukprn };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            // Act
+            _sut.UpdateSelectedRequests(viewModel);
+
+            // Assert
+            providerResponse.Ukprn.Should().Be(ukprn);
+            providerResponse.SelectedEmployerRequests.Should().BeEquivalentTo(selectedRequests);
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = providerResponse, Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task UpdateSelectedRequests_ShouldSetNewProviderResponse_WhenSessionIsEmpty(long ukprn, List<Guid> selectedRequests)
+        {
+            // Arrange
+            var viewModel = new EmployerRequestsToContactViewModel
+            {
+                Ukprn = ukprn,
+                SelectedRequests = selectedRequests
+            };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
+
+            // Act
+            _sut.UpdateSelectedRequests(viewModel);
+
+            // Assert
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = It.Is<ProviderResponse>(pr => pr.SelectedEmployerRequests == selectedRequests), Times.Once);
         }
     }
 }

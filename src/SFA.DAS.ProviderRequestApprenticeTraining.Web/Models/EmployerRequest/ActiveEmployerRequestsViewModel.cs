@@ -1,18 +1,17 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
 {
-    public class ActiveEmployerRequestsViewModel
+    public class ActiveEmployerRequestsViewModel: EmployerRequestsParameters
     {
-        public long Ukprn { get; set; }
-        public string StandardReference { get; set; }
-
         public string BackLink { get; set; }
 
         public List<ActiveEmployerRequestViewModel> AggregatedEmployerRequests { get; set; } = new List<ActiveEmployerRequestViewModel>();
 
-        public int RequestCount { get { return AggregatedEmployerRequests.Count; } }
+        public int RequestCount { get { return AggregatedEmployerRequests?.Count ?? 0; } }
+
 
     }
 }

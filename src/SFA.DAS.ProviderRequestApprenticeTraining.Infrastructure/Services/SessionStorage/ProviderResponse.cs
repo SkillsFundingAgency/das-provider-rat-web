@@ -6,6 +6,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
 {
     public class ProviderResponse
     {
+        public long Ukprn { get; set; }
         public List<Guid> SelectedEmployerRequests { get; set; } = new List<Guid>();
     }
 }
