@@ -9,8 +9,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -26,6 +26,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private Mock<ISessionStorageService> _sessionStorageMock;
         private EmployerRequestOrchestrator _sut;
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
+        private Mock<IValidator<SelectProviderEmailViewModel>> _providerEmailViewModelValidatorMock;
         private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
 
         [SetUp]
@@ -35,10 +36,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             _sessionStorageMock = new Mock<ISessionStorageService>();
 
             _requestsToContactViewModelValidatorMock = new Mock<IValidator<EmployerRequestsToContactViewModel>>();
+            _providerEmailViewModelValidatorMock = new Mock<IValidator<SelectProviderEmailViewModel>>();
 
             var employerOrchestratorValidators = new EmployerRequestOrchestratorValidators()
             {
                 SelectedRequestsModelValidator = _requestsToContactViewModelValidatorMock.Object,
+                SelectProviderEmailViewModelValidator = _providerEmailViewModelValidatorMock.Object,
             };
             _mockConfig = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             var _config = new ProviderSharedUIConfiguration
@@ -141,6 +144,50 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             _sessionStorageMock.VerifySet(x => x.ProviderResponse = It.IsAny<ProviderResponse>(), Times.Once);
         }
 
+        [Test]
+        public async Task ValidateProviderEmailViewModel_ShouldReturnTrue_WhenModelIsValid()
+        {
+            // Arrange
+            var viewModel = new SelectProviderEmailViewModel();
+            var modelState = new ModelStateDictionary();
+            var validationResult = new ValidationResult(); // No errors
+
+            _providerEmailViewModelValidatorMock
+                .Setup(v => v.ValidateAsync(viewModel, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _sut.ValidateProviderEmailsViewModel(viewModel, modelState);
+
+            // Assert
+            result.Should().BeTrue();
+            modelState.IsValid.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ValidateProviderEmailViewModel_ShouldReturnFalse_WhenModelIsInvalid()
+        {
+            // Arrange
+            var viewModel = new SelectProviderEmailViewModel();
+            var modelState = new ModelStateDictionary();
+            var validationResult = new ValidationResult(new List<ValidationFailure>
+            {
+                new ValidationFailure("PropertyName", "Error message")
+            });
+
+            _providerEmailViewModelValidatorMock
+                .Setup(v => v.ValidateAsync(viewModel, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _sut.ValidateProviderEmailsViewModel(viewModel, modelState);
+
+            // Assert
+            result.Should().BeFalse();
+            modelState.IsValid.Should().BeFalse();
+            modelState["PropertyName"].Errors[0].ErrorMessage.Should().Be("Error message");
+        }
+
         [Test, MoqAutoData]
         public async Task GetEmployerRequestsByStandardViewModel_ShouldReturnViewModel_WhenSessionHasProviderResponse(GetSelectEmployerRequestsResult queryResult)
         {
@@ -193,7 +240,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public async Task UpdateSelectedRequests_ShouldUpdateSelectedRequests_WhenSessionHasProviderResponse(long ukprn, List<Guid> selectedRequests)
+        public void UpdateSelectedRequests_ShouldUpdateSelectedRequests_WhenSessionHasProviderResponse(long ukprn, List<Guid> selectedRequests)
         {
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
@@ -216,7 +263,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public async Task UpdateSelectedRequests_ShouldSetNewProviderResponse_WhenSessionIsEmpty(long ukprn, List<Guid> selectedRequests)
+        public void UpdateSelectedRequests_ShouldSetNewProviderResponse_WhenSessionIsEmpty(long ukprn, List<Guid> selectedRequests)
         {
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
@@ -233,5 +280,89 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             // Assert
             _sessionStorageMock.VerifySet(s => s.ProviderResponse = It.Is<ProviderResponse>(pr => pr.SelectedEmployerRequests == selectedRequests), Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionHasProviderResponse(
+            EmployerRequestsParameters parameters,
+            GetProviderEmailsResult queryResult,
+            ProviderResponse providerResponse)
+        {
+            // Arrange
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderEmailsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderEmailsViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.EmailAddresses.Should().BeEquivalentTo(queryResult.EmailAddresses);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionIsEmpty(
+            EmployerRequestsParameters parameters,
+            GetProviderEmailsResult queryResult,
+            ProviderResponse providerResponse)
+        {
+            // Arrange
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderEmailsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderEmailsViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.EmailAddresses.Should().BeEquivalentTo(queryResult.EmailAddresses);
+        }
+
+        [Test, MoqAutoData]
+        public void UpdateProviderEmail_ShouldUpdateproviderEmails_WhenSessionHasProviderResponse(
+            SelectProviderEmailViewModel viewModel,
+            ProviderResponse providerResponse)
+        {
+            // Arrange
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            // Act
+            _sut.UpdateProviderEmail(viewModel);
+
+            // Assert
+            providerResponse.SelectedEmail.Should().Be(viewModel.SelectedEmail);
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = providerResponse, Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public void UpdateProviderEmail_ShouldSetNewProviderResponse_WhenSessionIsEmpty(SelectProviderEmailViewModel viewModel)
+        {
+            // Arrange
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
+
+            // Act
+            _sut.UpdateProviderEmail(viewModel);
+
+            // Assert
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = It.Is<ProviderResponse>(pr => pr.SelectedEmail == viewModel.SelectedEmail), Times.Once);
+        }
+
+        [Test]
+        public void EndSession_ShouldClearSession()
+        {
+            // Act
+            _sut.EndSession();
+
+            // Assert
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = null, Times.Once);
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
@@ -59,7 +60,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         {
             var result = await _mediator.Send(new GetSelectEmployerRequestsQuery(parameters.Ukprn, parameters.StandardReference));
 
-            var viewModel =  (SelectEmployerRequestsViewModel)result;
+            var viewModel = (SelectEmployerRequestsViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
             viewModel.SelectedRequests = SessionProviderResponse.SelectedEmployerRequests;
@@ -74,7 +75,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         public async Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel)
         {
             await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
-            { 
+            {
                 Ukprn = viewModel.Ukprn,
                 EmployerRequestIds = viewModel.SelectedRequests
             });
@@ -82,6 +83,29 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             UpdateSessionProviderResponse((model) =>
             {
                 model.SelectedEmployerRequests = viewModel.SelectedRequests;
+            });
+        }
+
+        public async Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
+        {
+            var result = await _mediator.Send(new GetProviderEmailsQuery(parameters.Ukprn));
+
+            var viewModel = (SelectProviderEmailViewModel)result;
+            viewModel.Ukprn = parameters.Ukprn;
+            viewModel.StandardReference = parameters.StandardReference;
+            viewModel.SelectedEmail = SessionProviderResponse.SelectedEmail;
+            return viewModel;
+        }
+
+        public async Task<bool> ValidateProviderEmailsViewModel(SelectProviderEmailViewModel viewModel, ModelStateDictionary modelState)
+        {
+            return await ValidateViewModel(_employerRequestOrchestratorValidators.SelectProviderEmailViewModelValidator, viewModel, modelState);
+        }
+        public void UpdateProviderEmail(SelectProviderEmailViewModel viewModel)
+        {
+            UpdateSessionProviderResponse((model) =>
+            {
+                model.SelectedEmail = viewModel.SelectedEmail;
             });
         }
 

@@ -1,0 +1,74 @@
+﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
+@model SelectProviderEmailViewModel
+
+@{
+    ViewData["Title"] = "Select the email address to share";
+    ViewBag.GaData.Vpv = "/aggregatedemployerrequests/email";
+}
+<a asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet"
+   asp-route-ukprn="@Model.Ukprn" 
+   asp-route-standardReference="@Model.StandardReference"
+   class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ValidationSummary" />
+            <form asp-route="@EmployerRequestController.SelectProviderEmailRoutePost" method="post">
+                @Html.HiddenFor(model => model.Ukprn)
+
+                <div class="govuk-form-group" das-highlight-error-for="SelectedEmail" error-class="govuk-form-group--error">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                @ViewData["Title"]
+                            </h1>
+                        </legend>
+                        <p class="govuk-text">
+                            Select the email address you want us to share with the employers.  The
+                            contact details have been taken from information we hold for your organisation.
+                        </p>
+                        <p class="govuk-text">
+                            You can update email addresses for the standards in 
+                            <a class="govuk-link" 
+                                asp-route="@EmployerRequestController.ManageStandardsRouteGet"
+                                asp-route-ukprn="@Model.Ukprn">
+                                    Manage the standards you deliver.
+                            </a>
+                        </p>
+                        <p das-validation-for="SelectedEmail" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error: </span>
+                        </p>
+                        <div id="SelectedRequests-hint" class="govuk-hint">
+                            Select one option.
+                        </div>
+
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            @foreach (var email in Model.EmailAddresses)
+                            {
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" asp-for="SelectedEmail" type="radio" value="@email" >
+                                    <label class="govuk-label govuk-radios__label" for="@email">
+                                        @email
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Confirm
+                    </button>
+                    <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
+                       asp-route-ukprn="@Model.Ukprn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>  

@@ -1,5 +1,4 @@
-﻿using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
+﻿using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models

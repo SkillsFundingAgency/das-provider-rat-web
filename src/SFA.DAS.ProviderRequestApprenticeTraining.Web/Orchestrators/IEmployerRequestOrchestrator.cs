@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
@@ -14,7 +15,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         Task<bool> ValidateEmployerRequestsToContactViewModel(EmployerRequestsToContactViewModel viewModel, ModelStateDictionary modelState);
         Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
 
-        void UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
+        Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
+        Task<bool> ValidateProviderEmailsViewModel(SelectProviderEmailViewModel viewModel, ModelStateDictionary modelState);
+        void UpdateProviderEmail(SelectProviderEmailViewModel viewModel);
+
         void EndSession();
     }
 }

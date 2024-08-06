@@ -1,4 +1,5 @@
-﻿using RestEase;
+﻿using Microsoft.AspNetCore.Mvc;
+using RestEase;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
@@ -7,6 +8,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
+        [Get("/employerrequests/provider/{ukprn}/emails")]
+        Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn);
+
         [Post("/employerrequests/provider/responses")]
         Task<bool> UpdateProviderResponseStatus([Body]CreateProviderResponseEmployerRequestRequest request);
 
