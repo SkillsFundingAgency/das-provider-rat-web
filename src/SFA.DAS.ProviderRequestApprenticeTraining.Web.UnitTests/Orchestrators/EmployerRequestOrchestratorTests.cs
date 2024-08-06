@@ -16,7 +16,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using SFA.DAS.Testing.AutoFixture;
-using ValidationResult = FluentValidation.Results.ValidationResult; 
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 {
@@ -32,7 +32,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>();
-          
+
             _sessionStorageMock = new Mock<ISessionStorageService>();
 
             _requestsToContactViewModelValidatorMock = new Mock<IValidator<EmployerRequestsToContactViewModel>>();
@@ -132,7 +132,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             modelState["PropertyName"].Errors[0].ErrorMessage.Should().Be("Error message");
         }
 
-        [Test,MoqAutoData]
+        [Test, MoqAutoData]
         public void StartProviderResponse_ShouldSetProviderResponseInSession(long ukprn)
         {
             // Act
@@ -184,14 +184,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 .Setup(m => m.Send(It.IsAny<GetSelectEmployerRequestsQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var _config = new ProviderSharedUIConfiguration
-            {
-                DashboardUrl = "http://example.com"
-            };
-            _mockConfig.Setup(o => o.Value).Returns(_config);
-
-            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockConfig.Object);
-
             // Act
             var result = await _sut.GetEmployerRequestsByStandardViewModel(parameters, new ModelStateDictionary());
 
@@ -208,7 +200,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
             {
-                Ukprn = ukprn, 
+                Ukprn = ukprn,
                 SelectedRequests = selectedRequests
 
             };

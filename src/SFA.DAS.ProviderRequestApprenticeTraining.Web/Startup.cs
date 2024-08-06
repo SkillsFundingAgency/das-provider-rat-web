@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions;
 using SFA.DAS.Validation.Mvc.Extensions;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
@@ -46,8 +48,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
 
             services.AddConfigurationOptions(_configuration);
 
-            var configurationWeb = _configuration.GetSection<ProviderRequestApprenticeTrainingWebConfiguration>();
             var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfiguration>();
+            var configurationWeb = _configuration.GetSection<ProviderRequestApprenticeTrainingWebConfiguration>();
+
+            services.AddDistributedMemoryCache(); 
+            services.AddSession(configurationWeb);
 
             services.AddControllersWithViews();
 
@@ -76,12 +81,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             services
                 .AddProviderAuthentication(_configuration)
                 .AddAuthorizationPolicies()
-                .AddSession(configurationWeb)
                 .AddDasHealthChecks()
                 .AddServiceRegistrations()
                 .AddOuterApi(configurationOuterApi)
                 .AddApplicationInsightsTelemetry()
                 .AddProviderUiServiceRegistration(_configuration);
+
+            services.AddCookieTempDataProvider();
+
 
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

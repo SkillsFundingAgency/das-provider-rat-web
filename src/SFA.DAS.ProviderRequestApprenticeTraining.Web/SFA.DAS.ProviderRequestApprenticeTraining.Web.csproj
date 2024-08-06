@@ -49,6 +49,5 @@
     </ItemGroup>
     <ItemGroup>
       <Folder Include="Models\SelectEmployerRequests\" />
-      <Folder Include="Views\AggregatedEmployerRequest\" />
     </ItemGroup>
 </Project>

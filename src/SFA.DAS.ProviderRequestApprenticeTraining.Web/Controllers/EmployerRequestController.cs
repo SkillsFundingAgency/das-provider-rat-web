@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
             await _orchestrator.UpdateSelectedRequests(viewModel);
 
-            return RedirectToRoute(nameof(SelectRequestsToContactRoutePost), new { viewModel.Ukprn, viewModel.StandardReference, viewModel.SelectedRequests });
+            return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { viewModel.Ukprn, viewModel.StandardReference, viewModel.SelectedRequests });
         }
 
         [HttpGet]

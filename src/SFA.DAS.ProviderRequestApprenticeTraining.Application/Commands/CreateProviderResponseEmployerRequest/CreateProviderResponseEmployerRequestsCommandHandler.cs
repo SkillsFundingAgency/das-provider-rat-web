@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
 
         public async Task<bool> Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
         {
-            var updateResult = await _outerApi.UpdateProviderResponseStatus(new CreateProviderResponseEmployerRequestRequest
+            var updateResult = await _outerApi.CreateProviderResponse(new CreateProviderResponseEmployerRequestRequest
             {
                 Ukprn = command.Ukprn,
                 EmployerRequestIds = command.EmployerRequestIds
