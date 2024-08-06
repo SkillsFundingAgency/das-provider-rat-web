@@ -24,14 +24,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
     {
         private Mock<IMediator> _mockMediator;
         private Mock<ISessionStorageService> _sessionStorageMock;
+        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
         private EmployerRequestOrchestrator _sut;
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
-        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>();
+          
             _sessionStorageMock = new Mock<ISessionStorageService>();
 
             _requestsToContactViewModelValidatorMock = new Mock<IValidator<EmployerRequestsToContactViewModel>>();
@@ -183,11 +184,20 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 .Setup(m => m.Send(It.IsAny<GetSelectEmployerRequestsQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
+            var _config = new ProviderSharedUIConfiguration
+            {
+                DashboardUrl = "http://example.com"
+            };
+            _mockConfig.Setup(o => o.Value).Returns(_config);
+
+            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _mockConfig.Object);
+
             // Act
             var result = await _sut.GetEmployerRequestsByStandardViewModel(parameters, new ModelStateDictionary());
 
             // Assert
             result.Should().NotBeNull();
+
             result.Ukprn.Should().Be(parameters.Ukprn);
             result.SelectedRequests.Should().BeEmpty();
         }

@@ -13,10 +13,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
-            <p class="govuk-text">
+            <p class="govuk-body">
                 Employers are looking for a training provider for these apprenticeship training courses.
             </p>
-            <p class="govuk-text">
+            <p class="govuk-body">
                 View requests to select the employers you want to share your contact details with.
             </p>
                 <div class="govuk-grid-column-full">
@@ -51,12 +51,17 @@
                                             <a class="govuk-link govuk-link--no-visited-state govuk-body" asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet" asp-all-route-data="requestRouteData">View requests<span class="govuk-visually-hidden">looking for requests for @aggregatedEmployerRequest.StandardTitle</span></a>
                                         </div>
                                     </div>
-                                </li>
-                            }
-                        </ol>
-                    </div>
-                }
-            </div>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            }
         </div>
     </div>
 </main>
+<style>
+    .request-item {
+        margin-bottom: 1px;
+    }
+</style>
