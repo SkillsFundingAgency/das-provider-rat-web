@@ -38,10 +38,10 @@
                                     Manage the standards you deliver.
                             </a>
                         </p>
-                        <p das-validation-for="SelectedEmail" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error: </span>
-                        </p>
-                        <div id="SelectedRequests-hint" class="govuk-hint">
+                        <div class="govuk-form-group" esfa-validation-marker-for="SelectedEmail">
+                            <span class="govuk-error-message" asp-validation-for="SelectedEmail"></span>
+                        </div>
+                        <div id="SelectedEmails-hint" class="govuk-hint">
                             Select one option.
                         </div>
 
@@ -49,7 +49,7 @@
                             @foreach (var email in Model.EmailAddresses)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" asp-for="SelectedEmail" type="radio" value="@email" >
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" value="@email" >
                                     <label class="govuk-label govuk-radios__label" for="@email">
                                         @email
                                     </label>
