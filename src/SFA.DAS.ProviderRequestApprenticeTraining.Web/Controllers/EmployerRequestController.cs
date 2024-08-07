@@ -26,6 +26,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public const string SelectProviderEmailRouteGet = nameof(SelectProviderEmailRouteGet);
         public const string SelectProviderEmailRoutePost = nameof(SelectProviderEmailRoutePost);
         public const string ManageStandardsRouteGet = nameof(ManageStandardsRouteGet);
+        public const string SelectProviderPhoneRouteGet = nameof(SelectProviderPhoneRouteGet);
+        public const string SelectProviderPhoneRoutePost = nameof(SelectProviderPhoneRoutePost);
         #endregion Routes
 
         public EmployerRequestController(IEmployerRequestOrchestrator orchestrator, IOptions<ProviderUrlConfiguration> options)
@@ -76,7 +78,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
             _orchestrator.UpdateProviderEmail(viewModel);
 
-            return RedirectToRoute(nameof(SelectProviderEmailRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
         [HttpGet("managestandards", Name = ManageStandardsRouteGet)]
@@ -84,6 +86,25 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             _orchestrator.EndSession();
             return RedirectPermanent($"{_providerUrlConfiguration.CourseManagementBaseUrl}/{ukprn}/review-your-details");
+        }
+
+        [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
+        public async Task<IActionResult> SelectProviderPhoneNumber(EmployerRequestsParameters parameters)
+        {
+            return View(await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState));
+        }
+
+        [HttpPost("phone", Name = SelectProviderPhoneRoutePost)]
+        public async Task<IActionResult> SelectProviderPhoneNumber(SelectProviderPhoneViewModel viewModel)
+        {
+            if (!await _orchestrator.ValidateProviderPhoneViewModel(viewModel, ModelState))
+            {
+                return RedirectToRoute(SelectProviderPhoneRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+
+            _orchestrator.UpdateProviderPhone(viewModel);
+
+            return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
 

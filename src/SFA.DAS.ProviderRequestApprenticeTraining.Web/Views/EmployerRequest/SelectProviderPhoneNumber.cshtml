@@ -1,13 +1,13 @@
 ﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
 @using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 @using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
-@model SelectProviderEmailViewModel
+@model SelectProviderPhoneViewModel
 
 @{
-    ViewData["Title"] = "Select the email address to share";
-    ViewBag.GaData.Vpv = "/aggregatedemployerrequests/email";
+    ViewData["Title"] = "Select the telephone number to share";
+    ViewBag.GaData.Vpv = "/aggregatedemployerrequests/phone";
 }
-<a asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet"
+<a asp-route="@EmployerRequestController.SelectProviderEmailRouteGet"
    asp-route-ukprn="@Model.Ukprn" 
    asp-route-standardReference="@Model.StandardReference"
    class="govuk-back-link">Back</a>
@@ -16,10 +16,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <partial name="_ValidationSummary" />
-            <form asp-route="@EmployerRequestController.SelectProviderEmailRoutePost" method="post">
+            <form asp-route="@EmployerRequestController.SelectProviderPhoneRoutePost" method="post">
                 @Html.HiddenFor(model => model.Ukprn)
                 @Html.HiddenFor(model => model.StandardReference)
-                <div class="govuk-form-group" das-highlight-error-for="SelectedEmail" error-class="govuk-form-group--error">
+                <div class="govuk-form-group" das-highlight-error-for="SelectedPhoneNumber" error-class="govuk-form-group--error">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                             <h1 class="govuk-fieldset__heading">
@@ -27,29 +27,30 @@
                             </h1>
                         </legend>
                         <p class="govuk-text">
-                            Select the email address you want us to share with the employers.  The
-                            contact details have been taken from information we hold for your organisation.
+                            Select the telephone number you want us to share with the employers. The
+                            contact details have been taken from the information we hold for your 
+                            organisation.
                         </p>
                         <p class="govuk-text">
-                            You can update email addresses for the standards in 
+                            You can update telephone numbers for the standards in 
                             <a class="govuk-link" 
                                 asp-route="@EmployerRequestController.ManageStandardsRouteGet"
                                 asp-route-ukprn="@Model.Ukprn">
                                     Manage the standards you deliver.
                             </a>
                         </p>
-                        <span class="govuk-error-message" das-validation-for="SelectedEmail"></span>
-                        <div id="SelectedEmails-hint" class="govuk-hint">
+                            <span class="govuk-error-message" das-validation-for="SelectedPhoneNumber"></span>
+                        <div id="SelectedPhone-hint" class="govuk-hint">
                             Select one option.
                         </div>
 
                         <div class="govuk-radios" data-module="govuk-radios">
-                            @foreach (var email in Model.EmailAddresses)
+                            @foreach (var phone in Model.PhoneNumbers)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" value="@email" >
-                                    <label class="govuk-label govuk-radios__label" for="@email">
-                                        @email
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedPhoneNumber" value="@phone" >
+                                    <label class="govuk-label govuk-radios__label" for="@phone">
+                                        @phone
                                     </label>
                                 </div>
                             }

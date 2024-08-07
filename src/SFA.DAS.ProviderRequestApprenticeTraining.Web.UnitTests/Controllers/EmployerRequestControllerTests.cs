@@ -190,5 +190,64 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             _orchestratorMock.Verify(o => o.EndSession(), Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task SelectProviderPhoneNumbersGet_ShouldReturnViewWithViewModel(
+                SelectProviderPhoneViewModel viewModel,
+                EmployerRequestsParameters parameters)
+        {
+            // Arrange
+            _orchestratorMock
+                .Setup(o => o.GetProviderPhoneNumbersViewModel(parameters, It.IsAny<ModelStateDictionary>()))
+                .ReturnsAsync(viewModel);
+
+            // Act
+            var result = await _controller.SelectProviderPhoneNumber(parameters) as ViewResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Model.Should().BeOfType<SelectProviderPhoneViewModel>();
+        }
+
+        [Test]
+        public async Task SelectProviderPhoneNumbersPost_ShouldRedirectTo_SelectProviderPhoneNumbersGet_WhenModelStateIsInvalid()
+        {
+            // Arrange
+            var viewModel = new SelectProviderPhoneViewModel
+            {
+                Ukprn = 789456,
+                PhoneNumbers = new List<string> { "123456", "654321" }
+            };
+
+            _orchestratorMock.Setup(o => o.ValidateProviderPhoneViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _controller.SelectProviderPhoneNumber(viewModel) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.SelectProviderPhoneRouteGet);
+            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
+        }
+
+        [Test]
+        public async Task SelectProviderPhoneNumbersPost_ShouldCallUpdateProviderPhone_WhenModelStateIsValid()
+        {
+            // Arrange
+            var viewModel = new SelectProviderPhoneViewModel
+            {
+                Ukprn = 789456,
+                PhoneNumbers = new List<string> { "07834660123", "t0784 789456" }
+            };
+
+            _orchestratorMock.Setup(o => o.ValidateProviderPhoneViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
+
+            // Act
+            await _controller.SelectProviderPhoneNumber(viewModel);
+
+            // Assert
+            _orchestratorMock.Verify(o => o.UpdateProviderPhone(viewModel), Times.Once);
+        }
+
     }
 }

@@ -6,6 +6,7 @@ using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
@@ -109,6 +110,30 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             });
         }
 
+        public async Task<SelectProviderPhoneViewModel> GetProviderPhoneNumbersViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
+        {
+            var result = await _mediator.Send(new GetProviderPhoneNumbersQuery(parameters.Ukprn));
+
+            var viewModel = (SelectProviderPhoneViewModel)result;
+            viewModel.Ukprn = parameters.Ukprn;
+            viewModel.StandardReference = parameters.StandardReference;
+            viewModel.SelectedPhoneNumber = SessionProviderResponse.SelectedPhoneNumber;
+            return viewModel;
+        }
+
+        public async Task<bool> ValidateProviderPhoneViewModel(SelectProviderPhoneViewModel viewModel, ModelStateDictionary modelState)
+        {
+            return await ValidateViewModel(_employerRequestOrchestratorValidators.SelectProviderPhoneViewModelValidator, viewModel, modelState);
+        }
+        
+        public void UpdateProviderPhone(SelectProviderPhoneViewModel viewModel)
+        {
+            UpdateSessionProviderResponse((model) =>
+            {
+                model.SelectedPhoneNumber = viewModel.SelectedPhoneNumber;
+            });
+        }
+        
         private ProviderResponse SessionProviderResponse
         {
             get => _sessionStorage.ProviderResponse ?? new ProviderResponse();
