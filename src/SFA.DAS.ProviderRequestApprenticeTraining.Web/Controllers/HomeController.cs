@@ -7,6 +7,7 @@ using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
@@ -36,6 +37,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         }
 
 #if DEBUG
+        [ExcludeFromCodeCoverage]
         [HttpGet("start", Name = StartRouteGet)]
         public IActionResult Start()
         {
