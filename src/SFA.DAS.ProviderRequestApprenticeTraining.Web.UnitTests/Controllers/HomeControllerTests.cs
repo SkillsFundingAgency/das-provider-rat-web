@@ -1,46 +1,61 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
-using SFA.DAS.Testing.AutoFixture;
+using System.Security.Claims;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 {
-    [TestFixture]
     public class HomeControllerTests
     {
-        [Test, MoqAutoData]
-        public void Given_IndexCalled_ThenRedirectToDashboardUrl(
-            [Frozen] IOptions<ProviderSharedUIConfiguration> providerSharedUIConfiguration)
+        private HomeController _sut;
+        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockOptions;
+        private ProviderSharedUIConfiguration _config;
+        private Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly string _ukprn = "789456789";
+
+        [SetUp]
+        public void SetUp()
         {
-            // Arrange
-            var sut = new HomeController(providerSharedUIConfiguration);
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
+            _config = new ProviderSharedUIConfiguration
+            {
+                DashboardUrl = "http://dashboard.url"
+            };
+            _mockOptions = new Mock<IOptions<ProviderSharedUIConfiguration>>();
+            _mockOptions.Setup(x => x.Value).Returns(_config);
 
-            // Act
-            var result = (RedirectResult)sut.Index();
+            _httpContextMock = new Mock<IHttpContextAccessor>();
+            var claims = new List<Claim>
+            {
+                new Claim(ProviderClaims.ProviderUkprn, _ukprn)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var user = new ClaimsPrincipal(identity);
+            _httpContextMock.Setup(h => h.HttpContext.User).Returns(user);
 
-            // Assert
-            result.Should().NotBeNull();
-            result.Url.Should().Be(providerSharedUIConfiguration.Value.DashboardUrl);
+            _sut = new HomeController(_mockOptions.Object, _httpContextMock.Object);
         }
 
-        [Test, MoqAutoData]
-        public void Given_StartCalled_ThenViewShouldBeReturned(
-            [Frozen] IOptions<ProviderSharedUIConfiguration> providerSharedUIConfiguration)
+        [TearDown]
+        public void TearDown()
         {
-            // Arrange
-            var sut = new HomeController(providerSharedUIConfiguration);
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
+            _sut?.Dispose();
+        }
 
+        [Test]
+        public void Index_ShouldRedirectToDashboardUrl()
+        {
             // Act
-            var result = (ViewResult)sut.Start();
+            var result = _sut.Index() as RedirectResult;
 
             // Assert
             result.Should().NotBeNull();
+            result.Url.Should().Be(_config.DashboardUrl);
         }
     }
 }

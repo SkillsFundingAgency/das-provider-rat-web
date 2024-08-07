@@ -1,27 +1,31 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Infrastructure;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 {
     [Authorize(Policy = nameof(PolicyNames.HasProviderAccount))]
-    [SetNavigationSection(NavigationSection.EmployerDemand)]
+    [SetNavigationSection(NavigationSection.Home)]
     public class HomeController : Controller
     {
         private readonly ProviderSharedUIConfiguration _configuration;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         #region Routes
         public const string StartRouteGet = nameof(StartRouteGet);
         #endregion Routes
 
-        public HomeController(IOptions<ProviderSharedUIConfiguration> configuration)
+        public HomeController(IOptions<ProviderSharedUIConfiguration> configuration, IHttpContextAccessor contextAccessor)
         {
             _configuration = configuration?.Value;
+            _contextAccessor = contextAccessor;
         }
 
         [AllowAnonymous]
@@ -32,10 +36,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return Redirect(_configuration.DashboardUrl);
         }
 
-        [HttpGet("{ukprn}/start", Name = StartRouteGet)]
+#if DEBUG
+        [ExcludeFromCodeCoverage]
+        [HttpGet("start", Name = StartRouteGet)]
         public IActionResult Start()
         {
-            return View();
+            var ukprn = _contextAccessor.HttpContext.User.GetUkprn();
+            return RedirectToRoute(EmployerRequestController.ActiveRouteGet, new { ukprn });
         }
+#endif
     }
 }
