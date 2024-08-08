@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions
 
         public static string GetEmailAddress(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(ProviderClaims.Email) ?? user.FindFirstValue("email");
+            return user.FindFirstValue(ProviderClaims.Email);
         }
     }
 }
