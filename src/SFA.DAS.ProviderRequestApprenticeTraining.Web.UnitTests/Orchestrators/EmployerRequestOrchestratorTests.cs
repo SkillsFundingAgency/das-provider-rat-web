@@ -30,7 +30,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
         private Mock<IValidator<SelectProviderEmailViewModel>> _providerEmailViewModelValidatorMock;
         private Mock<IValidator<SelectProviderPhoneViewModel>> _providerPhoneViewModelValidatorMock;
-        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
 
         [SetUp]
         public void SetUp()
@@ -99,7 +98,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         [Test, MoqAutoData]
         public async Task GetProviderEmailViewModel_ShouldReturnGetProviderEmailViewModel(
             GetProviderEmailsResult queryResult,
-            EmployerRequestsParameters param)
+            GetProviderEmailsParameters param)
         {
             // Arrange
 

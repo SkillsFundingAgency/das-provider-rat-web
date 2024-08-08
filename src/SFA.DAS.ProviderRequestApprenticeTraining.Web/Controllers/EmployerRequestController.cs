@@ -78,7 +78,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 new GetProviderEmailsParameters 
                 {
                     Ukprn = parameters.Ukprn,
-                    UserEmailAddress = currentUserEmail,
+                    StandardReference = parameters.StandardReference,
+                    UserEmailAddress = currentUserEmail
                 },
                 ModelState);
 
@@ -87,7 +88,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 viewModel.SelectedEmail = viewModel.EmailAddresses.FirstOrDefault();
                 viewModel.HasSingleEmail = true;
                 _orchestrator.UpdateProviderEmail(viewModel);
-                return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { parameters.Ukprn, parameters.StandardReference });
+                return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { parameters.Ukprn, parameters.StandardReference });
             }
 
             return View(viewModel);
@@ -116,7 +117,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
         public async Task<IActionResult> SelectProviderPhoneNumber(EmployerRequestsParameters parameters)
         {
-            return View(await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState));
+            var viewModel = await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState);
+            if (viewModel.PhoneNumbers.Count == 1)
+            { 
+                viewModel.SelectedPhoneNumber = viewModel.PhoneNumbers.FirstOrDefault();
+                viewModel.HasSinglePhoneNumber = true;
+                _orchestrator.UpdateProviderPhone(viewModel);
+
+                return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { parameters.Ukprn, parameters.StandardReference });
+            }
+            return View(viewModel);
         }
 
         [HttpPost("phone", Name = SelectProviderPhoneRoutePost)]
@@ -131,7 +141,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
             return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
-
 
         [HttpGet]
         [Route("cancel", Name = CancelSelectRequestsRouteGet)]

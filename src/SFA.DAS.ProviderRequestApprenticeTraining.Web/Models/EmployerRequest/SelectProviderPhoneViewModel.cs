@@ -7,6 +7,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
     {
         public List<string> PhoneNumbers { get; set; }
         public string SelectedPhoneNumber { get; set; }
+        public bool HasSinglePhoneNumber { get; set; }
 
         public static implicit operator SelectProviderPhoneViewModel(GetProviderPhoneNumbersResult source)
         {

@@ -171,9 +171,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             // Assert
             result.Should().NotBeNull();
-
-            //Temporarily directing to SelectRequest.  Will be Phone or Check Answers when full path is implemented
-            result.RouteName.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
+  
+            result.RouteName.Should().Be(EmployerRequestController.SelectProviderPhoneRouteGet);
         }
 
         [Test]
@@ -236,11 +235,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task SelectProviderPhoneNumbersGet_ShouldReturnViewWithViewModel(
+        public async Task SelectProviderPhoneNumbersGet_MoreThanOnePhoneNumber_ShouldReturnViewWithViewModel(
                 SelectProviderPhoneViewModel viewModel,
                 EmployerRequestsParameters parameters)
         {
             // Arrange
+            viewModel.PhoneNumbers = new List<string> { "one", "two", "three" };
             _orchestratorMock
                 .Setup(o => o.GetProviderPhoneNumbersViewModel(parameters, It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
@@ -251,6 +251,28 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             // Assert
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<SelectProviderPhoneViewModel>();
+        }
+
+        [Test, MoqAutoData]
+        public async Task SelectProviderPhoneGet_OnePhoneNumber_ShouldRedirectToCheckYourAnswers(
+            SelectProviderPhoneViewModel phoneViewModel,
+            EmployerRequestsParameters parameters)
+        {
+            // Arrange
+            phoneViewModel.PhoneNumbers = new List<string> { "123456789" };
+
+            _orchestratorMock
+                .Setup(o => o.GetProviderPhoneNumbersViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .ReturnsAsync(phoneViewModel);
+
+            // Act
+            var result = await _controller.SelectProviderPhoneNumber(parameters) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+
+            //Temporarily until Check Your Answers is avaialable
+            result.RouteName.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
         }
 
         [Test]
