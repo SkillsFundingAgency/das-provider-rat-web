@@ -83,11 +83,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 },
                 ModelState);
 
-            if (viewModel.EmailAddresses.Count == 1)
+            if (viewModel.HasSingleEmail)
             { 
-                viewModel.SelectedEmail = viewModel.EmailAddresses.FirstOrDefault();
-                viewModel.HasSingleEmail = true;
-                _orchestrator.UpdateProviderEmail(viewModel);
                 return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { parameters.Ukprn, parameters.StandardReference });
             }
 
@@ -118,12 +115,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public async Task<IActionResult> SelectProviderPhoneNumber(EmployerRequestsParameters parameters)
         {
             var viewModel = await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState);
-            if (viewModel.PhoneNumbers.Count == 1)
+            if (viewModel.HasSinglePhoneNumber)
             { 
-                viewModel.SelectedPhoneNumber = viewModel.PhoneNumbers.FirstOrDefault();
-                viewModel.HasSinglePhoneNumber = true;
-                _orchestrator.UpdateProviderPhone(viewModel);
-
                 return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { parameters.Ukprn, parameters.StandardReference });
             }
             return View(viewModel);

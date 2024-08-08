@@ -140,6 +140,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             GetProviderEmailsParameters parameters)
         {
             // Arrange
+            viewModel.HasSingleEmail = false;
             viewModel.EmailAddresses = new List<string> { "first@hotmail.com", "second@hotmail.com" };
             _orchestratorMock
                 .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
@@ -160,6 +161,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             GetProviderEmailsParameters parameters)
         {
             // Arrange
+            viewModel.HasSingleEmail = true;
             viewModel.EmailAddresses = new List<string> { "onlyone@hotmail.com" };
 
             _orchestratorMock
@@ -241,6 +243,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             // Arrange
             viewModel.PhoneNumbers = new List<string> { "one", "two", "three" };
+            viewModel.HasSinglePhoneNumber = false;
+
             _orchestratorMock
                 .Setup(o => o.GetProviderPhoneNumbersViewModel(parameters, It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
@@ -260,6 +264,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             // Arrange
             phoneViewModel.PhoneNumbers = new List<string> { "123456789" };
+            phoneViewModel.HasSinglePhoneNumber = true;
 
             _orchestratorMock
                 .Setup(o => o.GetProviderPhoneNumbersViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))

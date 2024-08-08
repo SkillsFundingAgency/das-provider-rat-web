@@ -13,6 +13,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderE
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
@@ -131,6 +132,60 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             // Assert
             result.Should().NotBeNull();
             result.PhoneNumbers.Should().BeEquivalentTo(queryResult.PhoneNumbers);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderPhoneNumbersViewModel_WithSingleEmail_BackLinkShouldBeSelectRequests(
+            GetProviderPhoneNumbersResult queryResult,
+            EmployerRequestsParameters parameters)
+        {
+            // Arrange
+            var providerResponse = new ProviderResponse 
+            { 
+                Ukprn = parameters.Ukprn ,
+                HasSingleEmail = true ,
+                SelectedEmail = "theSingleemail@hotmail.com",
+            };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.BackRoute.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderPhoneNumbersViewModel_WithMultipleEmails_BackLinkShouldBeSelectEmail(
+            GetProviderPhoneNumbersResult queryResult,
+            EmployerRequestsParameters parameters)
+        {
+            // Arrange
+            var providerResponse = new ProviderResponse
+            {
+                Ukprn = parameters.Ukprn,
+                HasSingleEmail = false,
+                SelectedEmail = "onel@hotmail.com",
+            };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.BackRoute.Should().Be(EmployerRequestController.SelectProviderEmailRouteGet);
         }
 
         [Test]

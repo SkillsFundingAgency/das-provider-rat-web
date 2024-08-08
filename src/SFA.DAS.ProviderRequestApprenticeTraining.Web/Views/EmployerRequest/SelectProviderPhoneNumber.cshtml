@@ -7,7 +7,7 @@
     ViewData["Title"] = "Select the telephone number to share";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/phone";
 }
-<a asp-route="@EmployerRequestController.SelectProviderEmailRouteGet"
+<a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
    asp-route-standardReference="@Model.StandardReference"
    class="govuk-back-link">Back</a>

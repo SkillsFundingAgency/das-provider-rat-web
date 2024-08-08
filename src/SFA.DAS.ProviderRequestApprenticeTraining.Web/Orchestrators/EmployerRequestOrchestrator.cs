@@ -9,6 +9,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderE
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -94,7 +95,18 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
-            viewModel.SelectedEmail = SessionProviderResponse.SelectedEmail;
+
+            if (viewModel.EmailAddresses.Count == 1)
+            {
+                viewModel.SelectedEmail = viewModel.EmailAddresses.FirstOrDefault();
+                viewModel.HasSingleEmail = true;
+                UpdateProviderEmail(viewModel);
+            }
+            else
+            {
+                viewModel.SelectedEmail = SessionProviderResponse.SelectedEmail;
+            }
+
             return viewModel;
         }
 
@@ -118,7 +130,18 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderPhoneViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
-            viewModel.SelectedPhoneNumber = SessionProviderResponse.SelectedPhoneNumber;
+            viewModel.BackRoute = SessionProviderResponse.HasSingleEmail ? EmployerRequestController.SelectRequestsToContactRouteGet : EmployerRequestController.SelectProviderEmailRouteGet;
+
+            if (viewModel.PhoneNumbers.Count == 1)
+            {
+                viewModel.SelectedPhoneNumber = viewModel.PhoneNumbers.FirstOrDefault();
+                viewModel.HasSinglePhoneNumber = true;
+                UpdateProviderPhone(viewModel);
+            }
+            else
+            {
+                viewModel.SelectedPhoneNumber = SessionProviderResponse.SelectedPhoneNumber;
+            }
             return viewModel;
         }
 
