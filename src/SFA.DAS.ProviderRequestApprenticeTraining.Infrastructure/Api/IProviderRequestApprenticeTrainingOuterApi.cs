@@ -8,8 +8,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
-        [Get("/employerrequests/provider/{ukprn}/email-addresses/{userEmailAddress}")]
-        Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn, [Path] string userEmailAddress);
+        [Get("/employerrequests/provider/{ukprn}/email-addresses")]
+        Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn, [Query] string userEmailAddress);
 
         [Post("/employerrequests/provider/responses")]
         Task CreateProviderResponse([Body]CreateProviderResponseEmployerRequestRequest request);
