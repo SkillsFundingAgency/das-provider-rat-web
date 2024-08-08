@@ -1,16 +1,19 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using SFA.DAS.Testing.AutoFixture;
+using System.Security.Claims;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 {
@@ -19,14 +22,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
     {
         private Mock<IEmployerRequestOrchestrator> _orchestratorMock;
         private Mock<IOptions<ProviderUrlConfiguration>> _providerUrlConfiguration;
+        private Mock<IHttpContextAccessor> _contextAccessorMock;
         private EmployerRequestController _controller;
+        private readonly string _ukprn = "789456789";
+        private readonly string _email = "hello@email.com";
 
         [SetUp]
         public void Setup()
         {
             _orchestratorMock = new Mock<IEmployerRequestOrchestrator>();
             _providerUrlConfiguration = new Mock<IOptions<ProviderUrlConfiguration>>();
-            _controller = new EmployerRequestController(_orchestratorMock.Object, _providerUrlConfiguration.Object);
+
+            _contextAccessorMock = new Mock<IHttpContextAccessor>();
+            var claims = new List<Claim>
+            {
+                new Claim(ProviderClaims.ProviderUkprn, _ukprn),
+                new Claim(ProviderClaims.Email, _email)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var user = new ClaimsPrincipal(identity);
+            _contextAccessorMock.Setup(h => h.HttpContext.User).Returns(user);
+
+            _controller = new EmployerRequestController(
+                _orchestratorMock.Object, 
+                _providerUrlConfiguration.Object, 
+                _contextAccessorMock.Object);
         }
 
         [TearDown]
@@ -117,11 +137,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task SelectProviderEmailGet_ShouldReturnViewWithViewModel(
             SelectProviderEmailViewModel viewModel,
-            EmployerRequestsParameters parameters)
+            GetProviderEmailsParameters parameters)
         {
             // Arrange
+            viewModel.EmailAddresses = new List<string> { "first@hotmail.com", "second@hotmail.com" };
             _orchestratorMock
-                .Setup(o => o.GetProviderEmailsViewModel(parameters, It.IsAny<ModelStateDictionary>()))
+                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
 
             // Act
@@ -130,6 +151,29 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             // Assert
             result.Should().NotBeNull();
             result.Model.Should().BeOfType<SelectProviderEmailViewModel>();
+            result.Model.Should().BeEquivalentTo(viewModel);
+        }
+
+        [Test, MoqAutoData]
+        public async Task SelectProviderEmailGet_ShouldRedirectToPhone_WhenSingleEmail(
+            SelectProviderEmailViewModel viewModel,
+            GetProviderEmailsParameters parameters)
+        {
+            // Arrange
+            viewModel.EmailAddresses = new List<string> { "onlyone@hotmail.com" };
+
+            _orchestratorMock
+                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .ReturnsAsync(viewModel);
+
+            // Act
+            var result = await _controller.SelectProviderEmail(parameters) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+
+            //Temporarily directing to SelectRequest.  Will be Phone or Check Answers when full path is implemented
+            result.RouteName.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
         }
 
         [Test]
@@ -178,7 +222,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             long ukprn)
         {
             //Arrange
-            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object);
+            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object, _contextAccessorMock.Object);
             var expectedUrl = $"{mockConfig.Object.Value.CourseManagementBaseUrl}/{ukprn}/review-your-details";
 
             // Act
@@ -188,7 +232,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.Should().NotBeNull();
             result.Url.Should().Be(expectedUrl);
 
-            _orchestratorMock.Verify(o => o.EndSession(), Times.Once);
+            _orchestratorMock.Verify(o => o.ClearProviderResponse(), Times.Once);
         }
     }
 }

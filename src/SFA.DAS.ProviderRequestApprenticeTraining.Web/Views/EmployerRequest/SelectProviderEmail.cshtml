@@ -18,7 +18,7 @@
             <partial name="_ValidationSummary" />
             <form asp-route="@EmployerRequestController.SelectProviderEmailRoutePost" method="post">
                 @Html.HiddenFor(model => model.Ukprn)
-
+                @Html.HiddenFor(model => model.StandardReference)
                 <div class="govuk-form-group" das-highlight-error-for="SelectedEmail" error-class="govuk-form-group--error">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

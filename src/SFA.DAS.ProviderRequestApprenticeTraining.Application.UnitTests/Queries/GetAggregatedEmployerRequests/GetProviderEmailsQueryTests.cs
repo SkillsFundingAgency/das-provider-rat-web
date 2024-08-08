@@ -24,6 +24,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         {
             // Arrange
             var ukprn = 123456;
+            var userEmail = "thisuser@gmail.com";
             var expectedResult = new GetProviderEmailResponse()
             {
                 EmailAddresses = new List<string> 
@@ -34,15 +35,15 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                 }
             };
 
-            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(ukprn))
+            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(ukprn, userEmail))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _handler.Handle(new GetProviderEmailsQuery(ukprn), CancellationToken.None);
+            var result = await _handler.Handle(new GetProviderEmailsQuery(ukprn, userEmail), CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
-            _mockOuterApi.Verify(x => x.GetProviderEmailAddresses(It.IsAny<long>()), Times.Once);
+            _mockOuterApi.Verify(x => x.GetProviderEmailAddresses(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
@@ -50,31 +51,32 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         {
             // Arrange
             var ukprn = 123456;
+            var userEmail = "thisuser@gmail.com";
             var expectedResult = new GetProviderEmailResponse()
             {
                 EmailAddresses = new List<string>()
             };
 
-            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(ukprn))
+            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(ukprn, userEmail))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _handler.Handle(new GetProviderEmailsQuery(ukprn), CancellationToken.None);
+            var result = await _handler.Handle(new GetProviderEmailsQuery(ukprn, userEmail), CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(expectedResult);
-            _mockOuterApi.Verify(x => x.GetProviderEmailAddresses(It.IsAny<long>()), Times.Once);
+            _mockOuterApi.Verify(x => x.GetProviderEmailAddresses(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
         }
 
         [Test]
         public void Handle_WhenApiThrowsException_ShouldRethrowIt()
         {
             // Arrange
-            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(It.IsAny<long>()))
+            _mockOuterApi.Setup(x => x.GetProviderEmailAddresses(It.IsAny<long>(), It.IsAny<string>()))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(new GetProviderEmailsQuery(123456), CancellationToken.None);
+            Func<Task> act = async () => await _handler.Handle(new GetProviderEmailsQuery(123456, "email@email.com"), CancellationToken.None);
 
             // Assert
             act.Should().ThrowAsync<Exception>().WithMessage("API failure");

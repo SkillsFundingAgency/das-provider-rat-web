@@ -28,7 +28,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private EmployerRequestOrchestrator _sut;
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
         private Mock<IValidator<SelectProviderEmailViewModel>> _providerEmailViewModelValidatorMock;
-        private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
 
         [SetUp]
         public void SetUp()
@@ -286,7 +285,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionHasProviderResponse(
-            EmployerRequestsParameters parameters,
+            GetProviderEmailsParameters parameters,
             GetProviderEmailsResult queryResult,
             ProviderResponse providerResponse)
         {
@@ -308,9 +307,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionIsEmpty(
-            EmployerRequestsParameters parameters,
-            GetProviderEmailsResult queryResult,
-            ProviderResponse providerResponse)
+            GetProviderEmailsParameters parameters,
+            GetProviderEmailsResult queryResult)
         {
             // Arrange
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
@@ -358,10 +356,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test]
-        public void EndSession_ShouldClearSession()
+        public void ClearProviderResponse_ShouldClearSession()
         {
             // Act
-            _sut.EndSession();
+            _sut.ClearProviderResponse();
 
             // Assert
             _sessionStorageMock.VerifySet(s => s.ProviderResponse = null, Times.Once);
