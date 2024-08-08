@@ -4,7 +4,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest
 {
-    public class CreateProviderResponseEmployerRequestsCommandHandler : IRequestHandler<CreateProviderResponseEmployerRequestCommand, bool>
+    public class CreateProviderResponseEmployerRequestsCommandHandler : IRequestHandler<CreateProviderResponseEmployerRequestCommand>
     {
         private readonly IProviderRequestApprenticeTrainingOuterApi _outerApi;
 
@@ -13,15 +13,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
             _outerApi = outerApi;
         }
 
-        public async Task<bool> Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
+        public async Task Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
         {
-            var updateResult = await _outerApi.UpdateProviderResponseStatus(new CreateProviderResponseEmployerRequestRequest
+            await _outerApi.CreateProviderResponse(new CreateProviderResponseEmployerRequestRequest
             {
                 Ukprn = command.Ukprn,
                 EmployerRequestIds = command.EmployerRequestIds
             });
 
-            return updateResult;
         }
     }
 }

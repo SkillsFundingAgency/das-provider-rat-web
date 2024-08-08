@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers
 {
     [ExcludeFromCodeCoverage]
     [HtmlTargetElement("p", Attributes = ValidationForAttributeName)]
+    [HtmlTargetElement("span", Attributes = ValidationForAttributeName)]
     public class DasValidationMessageTagHelper : TagHelper
     {
         private const string ValidationForAttributeName = "das-validation-for";

@@ -121,7 +121,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             _sessionStorage.ProviderResponse = providerResponse;
         }
 
-        public void EndSession()
+        public void ClearProviderResponse()
         {
             _sessionStorage.ProviderResponse = null;
         }

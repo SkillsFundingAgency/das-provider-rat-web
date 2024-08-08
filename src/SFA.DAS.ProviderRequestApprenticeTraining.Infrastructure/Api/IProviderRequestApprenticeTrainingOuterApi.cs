@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn);
 
         [Post("/employerrequests/provider/responses")]
-        Task<bool> UpdateProviderResponseStatus([Body]CreateProviderResponseEmployerRequestRequest request);
+        Task CreateProviderResponse([Body]CreateProviderResponseEmployerRequestRequest request);
 
         [Get("/employerrequests/provider/{ukprn}/aggregated")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);

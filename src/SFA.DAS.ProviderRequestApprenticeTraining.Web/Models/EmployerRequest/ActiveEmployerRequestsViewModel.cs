@@ -10,7 +10,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models
         public List<ActiveEmployerRequestViewModel> AggregatedEmployerRequests { get; set; } = new List<ActiveEmployerRequestViewModel>();
 
         public int RequestCount { get { return AggregatedEmployerRequests?.Count ?? 0; } }
-
-
     }
 }

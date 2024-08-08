@@ -10,7 +10,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
     {
         void StartProviderResponse(long ukprn);
         Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn);
-
         Task<SelectEmployerRequestsViewModel> GetEmployerRequestsByStandardViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
         Task<bool> ValidateEmployerRequestsToContactViewModel(EmployerRequestsToContactViewModel viewModel, ModelStateDictionary modelState);
         Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
@@ -19,6 +18,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         Task<bool> ValidateProviderEmailsViewModel(SelectProviderEmailViewModel viewModel, ModelStateDictionary modelState);
         void UpdateProviderEmail(SelectProviderEmailViewModel viewModel);
 
-        void EndSession();
+        void ClearProviderResponse();
     }
 }

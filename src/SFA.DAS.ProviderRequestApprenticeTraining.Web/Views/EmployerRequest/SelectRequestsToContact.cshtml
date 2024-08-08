@@ -62,9 +62,8 @@
                                         <div id="SelectedRequests-hint" class="govuk-hint">
                                             Select all that apply.
                                         </div>
-                                        <div class="govuk-form-group" esfa-validation-marker-for="SelectedRequests">
-                                            <span class="govuk-error-message" asp-validation-for="SelectedRequests"></span>
-                                        </div>
+                                        <span class="govuk-error-message" das-validation-for="SelectedRequests"></span>
+
                                         @foreach (var selectEmployerRequest in Model.AllEmployerRequests)
                                         {
                                             <div class="govuk-checkboxes__item">
