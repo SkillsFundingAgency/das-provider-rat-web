@@ -11,11 +11,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         [Get("/employerrequests/provider/{ukprn}/phonenumbers")]
         Task<GetProviderPhoneNumbersResponse> GetProviderPhoneNumbers([Path] long ukprn);
 
-        [Get("/employerrequests/provider/{ukprn}/emails")]
-        Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn);
+        [Get("/employerrequests/provider/{ukprn}/email-addresses/{userEmailAddress}")]
+        Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path]long ukprn, [Path] string userEmailAddress);
 
         [Post("/employerrequests/provider/responses")]
-        Task<bool> UpdateProviderResponseStatus([Body]CreateProviderResponseEmployerRequestRequest request);
+        Task CreateProviderResponse([Body]CreateProviderResponseEmployerRequestRequest request);
 
         [Get("/employerrequests/provider/{ukprn}/aggregated")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);

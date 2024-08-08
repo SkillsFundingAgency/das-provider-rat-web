@@ -87,9 +87,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             });
         }
 
-        public async Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
+        public async Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(GetProviderEmailsParameters parameters, ModelStateDictionary modelState)
         {
-            var result = await _mediator.Send(new GetProviderEmailsQuery(parameters.Ukprn));
+            var result = await _mediator.Send(new GetProviderEmailsQuery(parameters.Ukprn, parameters.UserEmailAddress));
 
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
@@ -107,6 +107,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             UpdateSessionProviderResponse((model) =>
             {
                 model.SelectedEmail = viewModel.SelectedEmail;
+                model.HasSingleEmail = viewModel.HasSingleEmail;
             });
         }
 
@@ -146,7 +147,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             _sessionStorage.ProviderResponse = providerResponse;
         }
 
-        public void EndSession()
+        public void ClearProviderResponse()
         {
             _sessionStorage.ProviderResponse = null;
         }

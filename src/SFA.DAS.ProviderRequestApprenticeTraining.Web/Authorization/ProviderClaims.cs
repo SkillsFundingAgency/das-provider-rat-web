@@ -8,5 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization
         public static string ProviderUkprn => "http://schemas.portal.com/ukprn";
         public static string DisplayName => "http://schemas.portal.com/displayname";
         public static string Service => "http://schemas.portal.com/service";
+
+        public static readonly string Email = "http://schemas.portal.com/mail";
     }
 }

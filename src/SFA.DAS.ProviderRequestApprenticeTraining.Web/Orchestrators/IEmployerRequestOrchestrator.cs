@@ -10,12 +10,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
     {
         void StartProviderResponse(long ukprn);
         Task<ActiveEmployerRequestsViewModel> GetActiveEmployerRequestsViewModel(long ukprn);
-
         Task<SelectEmployerRequestsViewModel> GetEmployerRequestsByStandardViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
         Task<bool> ValidateEmployerRequestsToContactViewModel(EmployerRequestsToContactViewModel viewModel, ModelStateDictionary modelState);
         Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel);
 
-        Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
+        Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(GetProviderEmailsParameters parameters, ModelStateDictionary modelState);
         Task<bool> ValidateProviderEmailsViewModel(SelectProviderEmailViewModel viewModel, ModelStateDictionary modelState);
         void UpdateProviderEmail(SelectProviderEmailViewModel viewModel);
 
@@ -23,6 +22,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         Task<bool> ValidateProviderPhoneViewModel(SelectProviderPhoneViewModel viewModel, ModelStateDictionary modelState);
         void UpdateProviderPhone(SelectProviderPhoneViewModel viewModel);
 
-        void EndSession();
+        void ClearProviderResponse();
     }
 }

@@ -8,6 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
     {
         public List<string> EmailAddresses { get; set; }
         public string SelectedEmail { get; set; }
+        public bool HasSingleEmail { get; set; }
 
         public static implicit operator SelectProviderEmailViewModel(GetProviderEmailsResult source)
         {

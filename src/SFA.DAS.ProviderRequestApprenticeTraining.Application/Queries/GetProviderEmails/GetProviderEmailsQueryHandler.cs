@@ -15,7 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
 
         public async Task<GetProviderEmailsResult> Handle(GetProviderEmailsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _outerApi.GetProviderEmailAddresses(request.Ukprn);
+            var result = await _outerApi.GetProviderEmailAddresses(request.Ukprn, request.UserEmailAddress);
 
             return new GetProviderEmailsResult
             {

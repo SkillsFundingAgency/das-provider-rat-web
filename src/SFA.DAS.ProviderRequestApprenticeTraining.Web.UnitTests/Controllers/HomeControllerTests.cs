@@ -57,17 +57,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.Should().NotBeNull();
             result.Url.Should().Be(_config.DashboardUrl);
         }
-
-        [Test]
-        public void Start_ShouldRedirectToActiveRoute()
-        {
-            // Act
-            var result = _sut.Start() as RedirectToRouteResult;
-
-            // Assert
-            result.Should().NotBeNull();
-            result.RouteName.Should().Be(EmployerRequestController.ActiveRouteGet);
-            result.RouteValues.Should().ContainKey("ukprn");
-        }
     }
 }

@@ -4,12 +4,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
 {
     public class GetProviderEmailsQuery : IRequest<GetProviderEmailsResult>
     {
-        public string StandardReference { get; set; }
         public long Ukprn { get; set; }
+        public string UserEmailAddress { get; set; }
 
-        public GetProviderEmailsQuery(long ukprn)
+        public GetProviderEmailsQuery(long ukprn, string userEmailAddress)
         {
             Ukprn = ukprn;
+            UserEmailAddress = userEmailAddress;
         }
     }
 }
