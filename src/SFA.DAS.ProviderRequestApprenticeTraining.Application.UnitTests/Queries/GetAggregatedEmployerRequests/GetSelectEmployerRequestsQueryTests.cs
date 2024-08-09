@@ -33,7 +33,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                         new SelectEmployerRequestResponse
                         {
                             DateOfRequest = "01/01/2024",
-                            DeliveryMethods = new List<string> { "One", "Two", "Three" },
+                            AtApprenticesWorkplace = true,
+                            BlockRelease = false,
+                            DayRelease = true,
                             EmployerRequestId = new Guid(),
                             IsContacted = true,
                             IsNew = true,
@@ -44,7 +46,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                         new SelectEmployerRequestResponse
                         {
                             DateOfRequest = "01/01/2024",
-                            DeliveryMethods = new List<string> { "One"},
+                            AtApprenticesWorkplace = true,
+                            BlockRelease = false,
+                            DayRelease = true,
                             EmployerRequestId = new Guid(),
                             IsContacted = true,
                             IsNew = false,
