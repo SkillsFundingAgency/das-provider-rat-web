@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+﻿﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 @using SFA.DAS.ProviderRequestApprenticeTraining.Web.TagHelpers
 @model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.ActiveEmployerRequestsViewModel
 
@@ -31,6 +32,12 @@
                     <ol class="das-search-results__list">
                         @foreach (var aggregatedEmployerRequest in Model.AggregatedEmployerRequests)
                         {
+                            var requestRouteData = new Dictionary<string, string>()
+                            {
+                                { "standardReference", aggregatedEmployerRequest.StandardReference },
+                                { "ukprn", Model.Ukprn.ToString()}
+                            };
+
                             <li class="das-search-results__list-item">
                                 <strong class="govuk-tag govuk-tag--blue govuk-!-margin-bottom-2 govuk-!-font-size-smaller" asp-show="@aggregatedEmployerRequest.IsNew">New</strong>
                                 <div class="govuk-grid-row">
@@ -43,7 +50,7 @@
                                         <p class="govuk-body request-item"><b>Employers:</b> @aggregatedEmployerRequest.NumberOfEmployers</p>
                                     </div>
                                     <div class="govuk-grid-column-one-third govuk-body govuk-!-text-align-right--from-tablet">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-body" href="">View requests<span class="govuk-visually-hidden"> for @aggregatedEmployerRequest.StandardTitle</span></a>
+                                        <a class="govuk-link govuk-link--no-visited-state govuk-body" asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet" asp-all-route-data="requestRouteData">View requests<span class="govuk-visually-hidden">looking for requests for @aggregatedEmployerRequest.StandardTitle</span></a>
                                     </div>
                                 </div>
                             </li>
