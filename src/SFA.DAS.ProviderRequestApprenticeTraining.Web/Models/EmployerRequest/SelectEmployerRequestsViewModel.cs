@@ -6,10 +6,8 @@ using System.Linq;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
 {
-    public class SelectEmployerRequestsViewModel
+    public class SelectEmployerRequestsViewModel : EmployerRequestsParameters
     {
-        public long Ukprn { get; set; }
-        public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public List<SelectEmployerRequestViewModel> AllEmployerRequests { get; set; }

@@ -9,5 +9,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
     {
         public IValidator<EmployerRequestsToContactViewModel> SelectedRequestsModelValidator { get; set; }
         public IValidator<SelectProviderEmailViewModel> SelectProviderEmailViewModelValidator { get; set; }
+        public IValidator<SelectProviderPhoneViewModel> SelectProviderPhoneViewModelValidator { get; set; }
     }
 }
