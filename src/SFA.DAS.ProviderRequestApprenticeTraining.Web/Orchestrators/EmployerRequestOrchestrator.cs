@@ -5,15 +5,17 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -130,7 +132,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderPhoneViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
-            viewModel.BackRoute = SessionProviderResponse.HasSingleEmail ? EmployerRequestController.SelectRequestsToContactRouteGet : EmployerRequestController.SelectProviderEmailRouteGet;
+            viewModel.HasSingleEmail = SessionProviderResponse.HasSingleEmail;
 
             if (viewModel.PhoneNumbers.Count == 1)
             {
@@ -155,6 +157,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             UpdateSessionProviderResponse((model) =>
             {
                 model.SelectedPhoneNumber = viewModel.SelectedPhoneNumber;
+                model.HasSinglePhoneNumber = viewModel.HasSinglePhoneNumber;
             });
         }
         
@@ -173,6 +176,34 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         public void ClearProviderResponse()
         {
             _sessionStorage.ProviderResponse = null;
+        }
+
+        public async Task<CheckYourAnswersRespondToRequestsViewModel> GetCheckYourAnswersRespondToRequestsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
+        {
+            var providerResponse = SessionProviderResponse;
+
+            var result = await _mediator.Send(new GetProviderWebsiteQuery(parameters.Ukprn));
+
+            var selectedRequests = (EmployerRequestsViewModel) await _mediator.Send(new GetEmployerRequestsByIdsQuery(providerResponse.SelectedEmployerRequests));
+
+            return new CheckYourAnswersRespondToRequestsViewModel
+            {
+                Ukprn = parameters.Ukprn,
+                StandardReference = parameters.StandardReference,
+                StandardTitle = selectedRequests.StandardTitle,
+                StandardLevel = selectedRequests.StandardLevel.ToString(),
+                Website = result.Website,
+                Email = providerResponse.SelectedEmail,
+                HasSingleEmail = providerResponse.HasSingleEmail,
+                Phone = providerResponse.SelectedPhoneNumber,
+                HasSinglePhone = providerResponse.HasSinglePhoneNumber,
+                SelectedRequests = selectedRequests.SelectedRequests
+            };
+        }
+
+        public async Task<bool> ValidateCheckYourAnswersViewModel(CheckYourAnswersRespondToRequestsViewModel viewModel, ModelStateDictionary modelState)
+        {
+            return await ValidateViewModel(_employerRequestOrchestratorValidators.CheckYourAnswersViewModelValidator, viewModel, modelState);
         }
 
         private async Task<bool> ValidateViewModel<T>(IValidator<T> validator, T viewModel, ModelStateDictionary modelState)

@@ -277,7 +277,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.Should().NotBeNull();
 
             //Temporarily until Check Your Answers is avaialable
-            result.RouteName.Should().Be(EmployerRequestController.SelectRequestsToContactRouteGet);
+            result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
         }
 
         [Test]

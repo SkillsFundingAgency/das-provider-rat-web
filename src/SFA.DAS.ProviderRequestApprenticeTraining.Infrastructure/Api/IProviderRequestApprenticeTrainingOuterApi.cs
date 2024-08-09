@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
@@ -8,6 +7,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
+        [Get("/employerrequests/provider/selectedrequests")]
+        Task<EmployerRequestsByIdsResponse> GetSelectedEmployerRequests([Query]List<Guid> employerRequestids);
+
+        [Get("/employerrequests/provider/{ukprn}/website")]
+        Task<GetProviderWebsiteResponse> GetProviderWebsite([Path] long ukprn);
+
         [Get("/employerrequests/provider/{ukprn}/phonenumbers")]
         Task<GetProviderPhoneNumbersResponse> GetProviderPhoneNumbers([Path] long ukprn);
 
