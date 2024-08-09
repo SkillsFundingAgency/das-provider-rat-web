@@ -11,5 +11,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
         public string SelectedEmail { get; set; }
         public bool HasSingleEmail { get; set; }
         public string SelectedPhoneNumber { get; set; }
+        public bool HasSinglePhoneNumber { get; set; }
     }
 }

@@ -6,6 +6,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
     {
         public long Ukprn { get; set; }
         public string StandardReference { get; set; }
-        public string BackRoute { get; set; }
+        public virtual string BackRoute { get; set; }
     }
 }

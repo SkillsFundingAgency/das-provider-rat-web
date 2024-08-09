@@ -1,0 +1,193 @@
+﻿@using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
+@using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
+@model CheckYourAnswersRespondToRequestsViewModel
+
+@{
+    ViewData["Title"] = "Check your answers";
+    ViewBag.GaData.Vpv = "/aggregatedemployerrequests/checkyouranswers";
+}
+<a asp-route="@EmployerRequestController.SelectProviderPhoneRouteGet"
+   asp-route-ukprn="@Model.Ukprn" 
+   asp-route-standardReference="@Model.StandardReference"
+   class="govuk-back-link">Back</a>
+
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_ValidationSummary" />
+            <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+            <h2 class="govuk-heading-m">
+                Request details
+            </h2>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-half">
+                    <h2 class="govuk-heading-s">
+                        Apprenticeship training course
+                    </h2>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <p>
+                        @Model.StandardTitle <text>(level </text>@Model.StandardLevel<text>)</text>
+                    </p> 
+                </div>
+            </div>
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible govuk-!-margin-top-0">
+            <h2 class="govuk-heading-m">
+                Selected requests
+            </h2>
+            @{
+                var requestNumber = 1;
+            }
+            @foreach (var request in Model.SelectedRequests)
+            {
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h2 class="govuk-summary-card__title">
+                            Request @requestNumber
+                        </h2>
+                        <ul class="govuk-summary-card__actions">
+                            <li class="govuk-summary-card__action">
+                                <a class="govuk-link" href="#">Change</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Request date
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @request.DateOfRequest
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Number of apprentices
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @request.NumberOfApprentices
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                @if (request.Locations.Count == 1)
+                                {
+                                    <dt class="govuk-summary-list__key">
+                                        Location
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @request.Locations.FirstOrDefault()
+                                    </dd>
+                                }
+                                else
+                                {
+                                    <dt class="govuk-summary-list__key">
+                                        Locations
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        <div class="select-request-list-item">
+                                            <ul class="govuk-list govuk-list--bullet">
+                                                @foreach (var location in request.Locations)
+                                                {
+                                                    <li>@location</li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </dd>
+                                }
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                @if (request.DeliveryMethods.Count == 1)
+                                {
+                                    <dt class="govuk-summary-list__key">
+                                        Delivery method
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        @request.DeliveryMethods.FirstOrDefault()
+                                    </dd>
+                                }
+                                else
+                                {
+                                    <dt class="govuk-summary-list__key">
+                                       Delivery methods
+                                    </dt>
+                                    <dd class="govuk-summary-list__value">
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            @foreach (var deliveryMethod in request.DeliveryMethods)
+                                            {
+                                                <li>@deliveryMethod</li>
+                                            }
+                                        </ul>
+                                    </dd>
+                                }
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                requestNumber++;
+            }
+            <h2 class="govuk-heading-m">
+                Contact details
+            </h2>
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h2 class="govuk-summary-card__title">
+                        Your contact details
+                    </h2>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Website
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.Website
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Email address
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.Email
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" asp-hide="@Model.HasSingleEmail" href="#">Change<span class="govuk-visually-hidden"> email</span></a>
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Telephone number
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @Model.Phone
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link" asp-hide="@Model.HasSinglePhone" href="#">Change<span class="govuk-visually-hidden"> telephone number</span></a>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+            <form asp-route="@EmployerRequestController.CheckYourAnswersRoutePost" method="post">
+                @Html.HiddenFor(model => model.Ukprn)
+                @Html.HiddenFor(model => model.SelectedRequests)
+                @Html.HiddenFor(model => model.Email)
+                @Html.HiddenFor(model => model.Phone)
+                @Html.HiddenFor(model => model.Website)
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                    <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
+                       asp-route-hashedAccountId="@Model.Ukprn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>  

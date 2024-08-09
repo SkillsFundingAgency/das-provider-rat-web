@@ -32,6 +32,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public const string ManageStandardsRouteGet = nameof(ManageStandardsRouteGet);
         public const string SelectProviderPhoneRouteGet = nameof(SelectProviderPhoneRouteGet);
         public const string SelectProviderPhoneRoutePost = nameof(SelectProviderPhoneRoutePost);
+        public const string CheckYourAnswersRouteGet = nameof(CheckYourAnswersRouteGet);
+        public const string CheckYourAnswersRoutePost = nameof(CheckYourAnswersRoutePost);
         #endregion Routes
 
         public EmployerRequestController(
@@ -84,7 +86,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 ModelState);
 
             if (viewModel.HasSingleEmail)
-            { 
+            {
                 return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { parameters.Ukprn, parameters.StandardReference });
             }
 
@@ -116,8 +118,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             var viewModel = await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState);
             if (viewModel.HasSinglePhoneNumber)
-            { 
-                return RedirectToRoute(nameof(SelectRequestsToContactRouteGet), new { parameters.Ukprn, parameters.StandardReference });
+            {
+                return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { parameters.Ukprn, parameters.StandardReference });
             }
             return View(viewModel);
         }
@@ -132,14 +134,41 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
             _orchestrator.UpdateProviderPhone(viewModel);
 
-            return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
         [HttpGet]
         [Route("cancel", Name = CancelSelectRequestsRouteGet)]
         public IActionResult Cancel(long ukprn)
         {
+            _orchestrator.ClearProviderResponse();
             return RedirectToRoute(nameof(ActiveRouteGet), new { ukprn });
+        }
+
+        [HttpGet]
+        [Route("check-your-answers", Name = CheckYourAnswersRouteGet)]
+        public async Task<IActionResult> CheckYourAnswers(EmployerRequestsParameters parameters)
+        {
+            var viewModel = await _orchestrator.GetCheckYourAnswersRespondToRequestsViewModel(parameters, ModelState);
+
+            if (!await _orchestrator.ValidateCheckYourAnswersViewModel(viewModel, ModelState))
+            {
+                _orchestrator.ClearProviderResponse();
+                return RedirectToRoute(CheckYourAnswersRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+
+            return View(await _orchestrator.GetCheckYourAnswersRespondToRequestsViewModel(parameters, ModelState));
+        }
+
+        [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
+        public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
+        {
+            if (!await _orchestrator.ValidateCheckYourAnswersViewModel(viewModel, ModelState))
+            {
+                return RedirectToRoute(CheckYourAnswersRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+
+            return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
     }
