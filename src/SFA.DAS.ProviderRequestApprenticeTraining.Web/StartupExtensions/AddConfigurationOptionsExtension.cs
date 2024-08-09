@@ -23,8 +23,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             services.Configure<ProviderSharedUIConfiguration>(configuration.GetSection(nameof(ProviderSharedUIConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderSharedUIConfiguration>>().Value);
 
-            services.Configure<ProviderUrlConfiguration>(configuration.GetSection(nameof(ProviderUrlConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderUrlConfiguration>>().Value);
 
             return services;
         }
