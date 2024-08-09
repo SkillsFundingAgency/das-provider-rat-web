@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators
         {
             return ruleBuilder
                 .NotEmpty()
-                    .WithMessage("Select an telephone number");
+                    .WithMessage("Select a telephone number");
         }
     }
 }
