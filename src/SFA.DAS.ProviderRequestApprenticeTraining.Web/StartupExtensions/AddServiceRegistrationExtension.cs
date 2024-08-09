@@ -30,6 +30,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             services.AddTransient(sp => new EmployerRequestOrchestratorValidators
             {
                 SelectedRequestsModelValidator = sp.GetRequiredService<IValidator<EmployerRequestsToContactViewModel>>(),
+                SelectProviderEmailViewModelValidator = sp.GetRequiredService<IValidator<SelectProviderEmailViewModel>>(),
             });
             services.AddTransient<IEmployerRequestOrchestrator, EmployerRequestOrchestrator>();
 
