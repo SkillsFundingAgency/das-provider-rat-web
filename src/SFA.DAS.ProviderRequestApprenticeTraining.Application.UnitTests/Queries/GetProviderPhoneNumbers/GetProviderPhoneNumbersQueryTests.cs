@@ -4,7 +4,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderP
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetProviderPhoneNumbers
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Queries.GetProviderPhoneNumbers
 {
     [TestFixture]
     public class GetProviderPhoneNumbersQueryTests
@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
             var ukprn = 123456;
             var expectedResult = new GetProviderPhoneNumbersResponse()
             {
-                PhoneNumbers = new List<string> 
+                PhoneNumbers = new List<string>
                 {
                     "0784 123456",
                     "1478521455445",

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +26,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
                 IsNew = source.IsNew,
                 NumberOfApprentices = source.NumberOfApprentices,
                 Locations = source.Locations,
-                DeliveryMethods = source.DeliveryMethods
+                DeliveryMethods = source.GetDeliveryMethods(),
             };
         }
     }

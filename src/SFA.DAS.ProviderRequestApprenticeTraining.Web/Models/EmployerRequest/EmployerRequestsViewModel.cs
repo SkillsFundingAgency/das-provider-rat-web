@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
                 DateOfRequest = source.DateOfRequest,
                 NumberOfApprentices = source.NumberOfApprentices,
                 Locations = source.Locations,
-                DeliveryMethods = source.DeliveryMethods
+                DeliveryMethods = source.GetDeliveryMethods(),
             };
         }
     }

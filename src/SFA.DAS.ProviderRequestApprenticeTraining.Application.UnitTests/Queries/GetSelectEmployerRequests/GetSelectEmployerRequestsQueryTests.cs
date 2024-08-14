@@ -4,7 +4,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmp
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetAggregatedEmployerRequests
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Queries.GetSelectEmployerRequests
 {
     [TestFixture]
     public class GetSelectEmployerRequestsQueryTests
@@ -33,18 +33,22 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                         new SelectEmployerRequestResponse
                         {
                             DateOfRequest = "01/01/2024",
-                            DeliveryMethods = new List<string> { "One", "Two", "Three" },
+                            AtApprenticesWorkplace = true,
+                            BlockRelease = false,
+                            DayRelease = true,
                             EmployerRequestId = new Guid(),
                             IsContacted = true,
                             IsNew = true,
                             Locations = new List<string> { "North", "South", "East" },
                             NumberOfApprentices = 3
-                            
+
                         },
                         new SelectEmployerRequestResponse
                         {
                             DateOfRequest = "01/01/2024",
-                            DeliveryMethods = new List<string> { "One"},
+                            AtApprenticesWorkplace = true,
+                            BlockRelease = false,
+                            DayRelease = true,
                             EmployerRequestId = new Guid(),
                             IsContacted = true,
                             IsNew = false,
@@ -54,7 +58,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                     },
                     StandardLevel = 2,
                     StandardReference = "Ref1",
-                    StandardTitle="Title1",
+                    StandardTitle = "Title1",
                 },
             };
 

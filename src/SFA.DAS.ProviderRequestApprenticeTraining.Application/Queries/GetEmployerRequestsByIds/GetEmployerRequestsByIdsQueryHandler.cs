@@ -16,14 +16,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmplo
 
         public async Task<GetEmployerRequestsByIdsResult> Handle(GetEmployerRequestsByIdsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _outerApi.GetSelectedEmployerRequests(request.EmployerRequestIds);
+            var result = await _outerApi.GetEmployerRequestsByIds(request.EmployerRequestIds);
 
             return new GetEmployerRequestsByIdsResult
             {
                 StandardLevel = result.StandardLevel,
                 StandardReference = result.StandardReference,
                 StandardTitle = result.StandardTitle,
-                EmployerRequests = result.EmployerRequests,
+                EmployerRequests = result.Requests
             };
         }
     }

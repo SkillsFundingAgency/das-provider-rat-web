@@ -4,7 +4,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderE
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetProviderEmails
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Queries.GetProviderEmails
 {
     [TestFixture]
     public class GetProviderEmailsQueryTests
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
             var userEmail = "thisuser@gmail.com";
             var expectedResult = new GetProviderEmailResponse()
             {
-                EmailAddresses = new List<string> 
+                EmailAddresses = new List<string>
                 {
                     "email3@provider.com",
                     "email2@provider.com",

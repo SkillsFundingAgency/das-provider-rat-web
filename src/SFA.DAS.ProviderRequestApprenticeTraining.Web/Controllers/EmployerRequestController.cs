@@ -154,20 +154,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             if (!await _orchestrator.ValidateCheckYourAnswersViewModel(viewModel, ModelState))
             {
                 _orchestrator.ClearProviderResponse();
-                return RedirectToRoute(CheckYourAnswersRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+                return RedirectToRoute(ActiveRouteGet, new { viewModel.Ukprn });
             }
 
-            return View(await _orchestrator.GetCheckYourAnswersRespondToRequestsViewModel(parameters, ModelState));
+            return View(viewModel);
         }
 
         [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
-        public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
+        public IActionResult CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
         {
-            if (!await _orchestrator.ValidateCheckYourAnswersViewModel(viewModel, ModelState))
-            {
-                return RedirectToRoute(CheckYourAnswersRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
-            }
-
             return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
 
