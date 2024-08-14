@@ -73,11 +73,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 
         public async Task UpdateSelectedRequests(EmployerRequestsToContactViewModel viewModel)
         {
-            await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
-            { 
-                Ukprn = viewModel.Ukprn,
-                EmployerRequestIds = viewModel.SelectedRequests
-            });
+            if (viewModel.ViewedEmployerRequests.Any(r => r.IsNew))
+            {
+                await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
+                {
+                    Ukprn = viewModel.Ukprn,
+                    EmployerRequestIds = viewModel.ViewedEmployerRequests.Where(r => r.IsNew).Select(r => r.EmployerRequestId).ToList(),
+                });
+            }
 
             UpdateSessionProviderResponse((model) =>
             {
