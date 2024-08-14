@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Http.Configuration;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
 {
@@ -15,6 +17,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
     {
         public static IServiceCollection AddServiceRegistrations(this IServiceCollection services)
         {
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAggregatedEmployerRequestsQuery).Assembly));
+
             services.AddHttpContextAccessor();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();
@@ -36,6 +40,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                 .AddHttpMessageHandler<Http.MessageHandlers.ApimHeadersHandler>()
                 .AddHttpMessageHandler<Http.MessageHandlers.LoggingMessageHandler>();
 
+            services.AddTransient<IEmployerRequestOrchestrator, EmployerRequestOrchestrator>();
             services.AddTransient<IApimClientConfiguration>((_) => configuration);
 
             return services;

@@ -7,11 +7,16 @@
 
   <ItemGroup>
     <Compile Remove="Commands\**" />
-    <Compile Remove="Queries\**" />
     <EmbeddedResource Remove="Commands\**" />
-    <EmbeddedResource Remove="Queries\**" />
     <None Remove="Commands\**" />
-    <None Remove="Queries\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
