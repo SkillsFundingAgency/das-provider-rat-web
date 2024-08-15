@@ -192,7 +192,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             return new CheckYourAnswersRespondToRequestsViewModel
             {
                 Ukprn = parameters.Ukprn,
-                StandardReference = parameters.StandardReference,
+                StandardReference = selectedRequests.StandardReference,
                 StandardTitle = selectedRequests.StandardTitle,
                 StandardLevel = selectedRequests.StandardLevel.ToString(),
                 Website = result.Website,

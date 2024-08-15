@@ -277,7 +277,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             // Assert
             result.Should().NotBeNull();
 
-            //Temporarily until Check Your Answers is avaialable
             result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
         }
 
@@ -342,6 +341,28 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.Model.Should().BeEquivalentTo(viewModel);
         }
 
+        [Test, MoqAutoData]
+        public async Task ChecKYourAnswersGet_ShouldRedirectToActiveRequests_WhenModelIsInvalid(
+            CheckYourAnswersRespondToRequestsViewModel viewModel,
+            GetProviderEmailsParameters parameters)
+        {
+            // Arrange
+            _orchestratorMock
+                .Setup(o => o.GetCheckYourAnswersRespondToRequestsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .ReturnsAsync(viewModel);
+
+            _orchestratorMock.Setup(o => o.ValidateCheckYourAnswersViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(false);
+
+            // Act
+            var result = await _controller.CheckYourAnswers(parameters) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.ActiveRouteGet);
+            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
+            _orchestratorMock.Verify(x => x.ClearProviderResponse(), Times.Once);
+        }
+
         [Test]
         public void CheckYourAnswersPost_ShouldReloadWhenModelIsValid()
         {
@@ -362,6 +383,19 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
             result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
             result.RouteValues["standardReference"].Should().Be(viewModel.StandardReference);
+        }
+
+        [Test, MoqAutoData]
+        public void CancelGet_ShouldRedirectToActiveRequests(long ukprn)
+        {
+            // Act
+            var result = _controller.Cancel(ukprn) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.ActiveRouteGet);
+            result.RouteValues["ukprn"].Should().Be(ukprn);
+            _orchestratorMock.Verify(x => x.ClearProviderResponse(), Times.Once);
         }
 
     }

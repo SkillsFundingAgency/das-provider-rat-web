@@ -10,9 +10,12 @@ using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
@@ -32,6 +35,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private Mock<IValidator<EmployerRequestsToContactViewModel>> _requestsToContactViewModelValidatorMock;
         private Mock<IValidator<SelectProviderEmailViewModel>> _providerEmailViewModelValidatorMock;
         private Mock<IValidator<SelectProviderPhoneViewModel>> _providerPhoneViewModelValidatorMock;
+        private Mock<IValidator<CheckYourAnswersRespondToRequestsViewModel>> _checkYourAnswersViewModelValidatorMock;
 
         [SetUp]
         public void SetUp()
@@ -43,12 +47,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             _requestsToContactViewModelValidatorMock = new Mock<IValidator<EmployerRequestsToContactViewModel>>();
             _providerEmailViewModelValidatorMock = new Mock<IValidator<SelectProviderEmailViewModel>>();
             _providerPhoneViewModelValidatorMock = new Mock<IValidator<SelectProviderPhoneViewModel>>();
+            _checkYourAnswersViewModelValidatorMock = new Mock<IValidator<CheckYourAnswersRespondToRequestsViewModel>>();
 
             var employerOrchestratorValidators = new EmployerRequestOrchestratorValidators()
             {
                 SelectedRequestsModelValidator = _requestsToContactViewModelValidatorMock.Object,
                 SelectProviderEmailViewModelValidator = _providerEmailViewModelValidatorMock.Object,
                 SelectProviderPhoneViewModelValidator = _providerPhoneViewModelValidatorMock.Object,
+                CheckYourAnswersViewModelValidator = _checkYourAnswersViewModelValidatorMock.Object,
             };
             _mockConfig = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             var _config = new ProviderSharedUIConfiguration
@@ -187,6 +193,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             // Assert
             result.Should().NotBeNull();
             result.BackRoute.Should().Be(EmployerRequestController.SelectProviderEmailRouteGet);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderPhoneNumberViewModel_ShouldSelectSingleValue_WhenSinglePhoneNumberExists(
+            EmployerRequestsParameters parameters,
+            GetProviderPhoneNumbersResult queryResult,
+            ProviderResponse providerResponse)
+        {
+            // Arrange
+            queryResult.PhoneNumbers = new List<string> { "999 666 333" };
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.SelectedPhoneNumber.Should().Be(queryResult.PhoneNumbers.First());
+            result.HasSinglePhoneNumber.Should().Be(true);
+            providerResponse.SelectedPhoneNumber.Should().Be(queryResult.PhoneNumbers.First());
         }
 
         [Test]
@@ -475,6 +506,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
+        public async Task GetSelectEmployerEmailViewModel_ShouldSelectSingleValue_WhenSingleEmailExists(
+            GetProviderEmailsParameters parameters,
+            GetProviderEmailsResult queryResult,
+            ProviderResponse providerResponse)
+        {
+            // Arrange
+            queryResult.EmailAddresses = new List<string> { "single@email.co.uk"};
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+            _mockMediator
+                .Setup(m => m.Send(It.IsAny<GetProviderEmailsQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            // Act
+            var result = await _sut.GetProviderEmailsViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.SelectedEmail.Should().Be(queryResult.EmailAddresses.First());
+            result.HasSingleEmail.Should().Be(true);
+            providerResponse.SelectedEmail.Should().Be(queryResult.EmailAddresses.First());
+        }
+
+        [Test, MoqAutoData]
         public void UpdateProviderEmail_ShouldUpdateproviderEmails_WhenSessionHasProviderResponse(
             SelectProviderEmailViewModel viewModel,
             ProviderResponse providerResponse)
@@ -631,6 +687,81 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             // Assert
             _sessionStorageMock.VerifySet(s => s.ProviderResponse = null, Times.Once);
         }
+
+        [Test, MoqAutoData]
+        public async Task GetCheckYourAnswersViewModel_ShouldReturnViewModel(
+            GetProviderWebsiteResult websiteResult,
+            GetEmployerRequestsByIdsResult requestsResult,
+            ProviderResponse providerResponse,
+            EmployerRequestsParameters parameters)
+        {
+            // Arrange
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetProviderWebsiteQuery>(), default)).ReturnsAsync(websiteResult);
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetEmployerRequestsByIdsQuery>(), default)).ReturnsAsync(requestsResult);
+            
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            // Act
+            var result = await _sut.GetCheckYourAnswersRespondToRequestsViewModel(parameters, new ModelStateDictionary());
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(parameters.Ukprn);
+            result.StandardLevel.Should().Be(requestsResult.StandardLevel.ToString());
+            result.StandardTitle.Should().Be(requestsResult.StandardTitle);
+            result.StandardReference.Should().Be(requestsResult.StandardReference);
+            result.Email.Should().Be(providerResponse.SelectedEmail);
+            result.HasSingleEmail.Should().Be(providerResponse.HasSingleEmail);
+            result.Phone.Should().Be(providerResponse.SelectedPhoneNumber);
+            result.HasSinglePhone.Should().Be(providerResponse.HasSinglePhoneNumber);
+            result.SelectedRequests.Count().Should().Be(requestsResult.EmployerRequests.Count);
+
+        }
+
+        [Test]
+        public async Task ValidateCheckYourAnswersViewModel_ShouldReturnTrue_WhenModelIsValid()
+        {
+            // Arrange
+            var viewModel = new CheckYourAnswersRespondToRequestsViewModel();
+            var modelState = new ModelStateDictionary();
+            var validationResult = new ValidationResult(); // No errors
+
+            _checkYourAnswersViewModelValidatorMock
+                .Setup(v => v.ValidateAsync(viewModel, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _sut.ValidateCheckYourAnswersViewModel(viewModel, modelState);
+
+            // Assert
+            result.Should().BeTrue();
+            modelState.IsValid.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task ValidateCheckYourAnswersViewModel_ShouldReturnFalse_WhenModelIsInvalid()
+        {
+            // Arrange
+            var viewModel = new CheckYourAnswersRespondToRequestsViewModel();
+            var modelState = new ModelStateDictionary();
+            var validationResult = new ValidationResult(new List<ValidationFailure>
+            {
+                new ValidationFailure("PropertyName", "Error message")
+            });
+
+            _checkYourAnswersViewModelValidatorMock
+                .Setup(v => v.ValidateAsync(viewModel, default))
+                .ReturnsAsync(validationResult);
+
+            // Act
+            var result = await _sut.ValidateCheckYourAnswersViewModel(viewModel, modelState);
+
+            // Assert
+            result.Should().BeFalse();
+            modelState.IsValid.Should().BeFalse();
+            modelState["PropertyName"].Errors[0].ErrorMessage.Should().Be("Error message");
+        }
+
 
     }
 }

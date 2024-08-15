@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Domain\SFA.DAS.ProviderRequestApprenticeTraining.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure\SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.csproj" />
   </ItemGroup>
 
