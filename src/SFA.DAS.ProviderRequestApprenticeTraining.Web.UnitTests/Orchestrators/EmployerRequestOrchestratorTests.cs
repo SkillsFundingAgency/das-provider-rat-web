@@ -317,7 +317,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public void UpdateSelectedRequests_ShouldSetNewProviderResponse_WhenSessionIsEmpty(long ukprn, List<Guid> selectedRequests)
+        public async Task UpdateSelectedRequests_ShouldSetNewProviderResponse_WhenSessionIsEmpty(long ukprn, List<Guid> selectedRequests)
         {
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
