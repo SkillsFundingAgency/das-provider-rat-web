@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
     public class EmployerRequestControllerTests
     {
         private Mock<IEmployerRequestOrchestrator> _orchestratorMock;
-        private Mock<IOptions<ProviderUrlConfiguration>> _providerUrlConfiguration;
+        private Mock<IOptions<ProviderRequestApprenticeTrainingWebConfiguration>> _webConfiguration;
         private Mock<IHttpContextAccessor> _contextAccessorMock;
         private EmployerRequestController _controller;
         private readonly string _ukprn = "789456789";
@@ -31,7 +31,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         public void Setup()
         {
             _orchestratorMock = new Mock<IEmployerRequestOrchestrator>();
-            _providerUrlConfiguration = new Mock<IOptions<ProviderUrlConfiguration>>();
+            _webConfiguration = new Mock<IOptions<ProviderRequestApprenticeTrainingWebConfiguration>>();
 
             _contextAccessorMock = new Mock<IHttpContextAccessor>();
             var claims = new List<Claim>
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             _controller = new EmployerRequestController(
                 _orchestratorMock.Object, 
-                _providerUrlConfiguration.Object, 
+                _webConfiguration.Object, 
                 _contextAccessorMock.Object);
         }
 
@@ -219,7 +219,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public void RedirectToManageStandardsGet_ShouldRedirectToManageStandards(
-            [Frozen] Mock<IOptions<ProviderUrlConfiguration>> mockConfig,
+            [Frozen] Mock<IOptions<ProviderRequestApprenticeTrainingWebConfiguration>> mockConfig,
             long ukprn)
         {
             //Arrange

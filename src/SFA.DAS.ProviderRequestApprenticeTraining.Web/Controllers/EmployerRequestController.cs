@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     public class EmployerRequestController : Controller
     {
         private readonly IEmployerRequestOrchestrator _orchestrator;
-        private readonly ProviderUrlConfiguration _providerUrlConfiguration;
+        private readonly ProviderRequestApprenticeTrainingWebConfiguration _webConfiguration;
         private readonly IHttpContextAccessor _contextAccessor;
 
         #region Routes
@@ -36,11 +36,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         public EmployerRequestController(
             IEmployerRequestOrchestrator orchestrator, 
-            IOptions<ProviderUrlConfiguration> options, 
+            IOptions<ProviderRequestApprenticeTrainingWebConfiguration> options, 
             IHttpContextAccessor contextAccessor)
         {
             _orchestrator = orchestrator;
-            _providerUrlConfiguration = options.Value; 
+            _webConfiguration = options.Value; 
             _contextAccessor = contextAccessor;
         }
 
@@ -108,7 +108,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public IActionResult RedirectToManageStandards(long ukprn)
         {
             _orchestrator.ClearProviderResponse();
-            return RedirectPermanent($"{_providerUrlConfiguration.CourseManagementBaseUrl}/{ukprn}/review-your-details");
+            return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}/{ukprn}/review-your-details");
         }
 
         [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]

@@ -66,6 +66,9 @@
 
                                         @foreach (var selectEmployerRequest in Model.AllEmployerRequests)
                                         {
+                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.AllEmployerRequests.IndexOf(selectEmployerRequest) + "].EmployerRequestId", selectEmployerRequest.EmployerRequestId)
+                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.AllEmployerRequests.IndexOf(selectEmployerRequest) + "].IsNew", selectEmployerRequest.IsNew)
+
                                             <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
                                                        value="@selectEmployerRequest.EmployerRequestId"
