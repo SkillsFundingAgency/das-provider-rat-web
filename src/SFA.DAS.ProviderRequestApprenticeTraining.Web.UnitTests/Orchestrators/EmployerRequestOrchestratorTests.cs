@@ -340,7 +340,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public async Task UpdateSelectedRequests_ShouldCallSomething_WhenNewRequestsAreViewed(long ukprn, List<Guid> selectedRequests)
+        public async Task UpdateSelectedRequests_ShouldSendCreateResponseCommand_WhenNewRequestsAreViewed(long ukprn, List<Guid> selectedRequests)
         {
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
@@ -366,14 +366,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public async Task UpdateSelectedRequests_ShouldNotCallSomething_WhenNoNewRequestsAreViewed(long ukprn, List<Guid> selectedRequests)
+        public async Task UpdateSelectedRequests_ShouldNotSendCreateResponseCommand_WhenNoNewRequestsAreViewed(long ukprn, List<Guid> selectedRequests)
         {
             // Arrange
             var viewModel = new EmployerRequestsToContactViewModel
             {
                 Ukprn = ukprn,
                 SelectedRequests = selectedRequests,
-                ViewedEmployerRequests = new List<ViewedEmployerRequestViewModel> 
+                ViewedEmployerRequests = new List<ViewedEmployerRequestViewModel>
                 {
                     new ViewedEmployerRequestViewModel{ EmployerRequestId = Guid.NewGuid(), IsNew = false}
                 }
