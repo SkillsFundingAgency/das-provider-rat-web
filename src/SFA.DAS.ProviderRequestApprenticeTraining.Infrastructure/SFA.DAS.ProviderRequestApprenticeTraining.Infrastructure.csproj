@@ -6,11 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Api\Requests\**" />
     <Compile Remove="Api\Types\**" />
-    <EmbeddedResource Remove="Api\Requests\**" />
     <EmbeddedResource Remove="Api\Types\**" />
-    <None Remove="Api\Requests\**" />
     <None Remove="Api\Types\**" />
   </ItemGroup>
 
@@ -23,6 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Domain\SFA.DAS.ProviderRequestApprenticeTraining.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

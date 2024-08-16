@@ -16,6 +16,8 @@ using SFA.DAS.Provider.Shared.UI.Startup;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions;
+using SFA.DAS.Validation.Mvc.Extensions;
+using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
@@ -47,9 +49,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             services.AddConfigurationOptions(_configuration);
 
             var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfiguration>();
+            var configurationWeb = _configuration.GetSection<ProviderRequestApprenticeTrainingWebConfiguration>();
 
-            services
-                .AddSingleton(configurationOuterApi);
+            services.AddDistributedMemoryCache(); 
+            services.AddSession(configurationWeb);
 
             services.AddControllersWithViews();
 
@@ -60,10 +63,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 })
                 .AddMvc(options =>
                 {
+                    options.AddValidation();
                     options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
                     options.Filters.Add(new TypeFilterAttribute(typeof(GoogleAnalyticsFilterAttribute)));
 
                 })
+                .EnableCookieBanner()
                 .AddControllersAsServices()
                 .SetDefaultNavigationSection(NavigationSection.Home)
                 .EnableGoogleAnalytics()
@@ -71,18 +76,19 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .SetZenDeskConfiguration(_configuration.GetSection("ProviderZenDeskSettings").Get<ZenDeskConfiguration>());
 
             services
-                .AddFluentValidationAutoValidation()
                 .AddValidatorsFromAssemblyContaining<Startup>();
 
             services
                 .AddProviderAuthentication(_configuration)
                 .AddAuthorizationPolicies()
-                .AddCookieTempDataProvider()
                 .AddDasHealthChecks()
                 .AddServiceRegistrations()
                 .AddOuterApi(configurationOuterApi)
                 .AddApplicationInsightsTelemetry()
                 .AddProviderUiServiceRegistration(_configuration);
+
+            services.AddCookieTempDataProvider();
+
 
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -110,6 +116,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<SecurityHeadersMiddleware>();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

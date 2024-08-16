@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequests
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests
 {
     public class GetAggregatedEmployerRequestsQuery : IRequest<GetAggregatedEmployerRequestsResult>
     {
