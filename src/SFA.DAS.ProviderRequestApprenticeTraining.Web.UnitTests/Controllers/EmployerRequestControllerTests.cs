@@ -364,7 +364,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         }
 
         [Test]
-        public void CheckYourAnswersPost_ShouldReloadWhenModelIsValid()
+        public async Task CheckYourAnswersPost_ShouldReloadWhenModelIsValid()
         {
             // Arrange
             var viewModel = new CheckYourAnswersRespondToRequestsViewModel
@@ -376,7 +376,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             _orchestratorMock.Setup(o => o.ValidateCheckYourAnswersViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
 
             // Act
-            var result = _controller.CheckYourAnswers(viewModel) as RedirectToRouteResult;
+            var result = await _controller.CheckYourAnswers(viewModel) as RedirectToRouteResult;
 
             // Assert
             result.Should().NotBeNull();

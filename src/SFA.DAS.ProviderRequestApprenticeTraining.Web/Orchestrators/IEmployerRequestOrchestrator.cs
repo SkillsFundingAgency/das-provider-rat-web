@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,6 +25,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
 
         Task<CheckYourAnswersRespondToRequestsViewModel> GetCheckYourAnswersRespondToRequestsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
         Task<bool> ValidateCheckYourAnswersViewModel(CheckYourAnswersRespondToRequestsViewModel viewModel, ModelStateDictionary modelState);
+        Task<Guid> SubmitProviderResponse(CheckYourAnswersRespondToRequestsViewModel viewModel);
+
+        Task<ConfirmProviderResponseViewModel> GetProviderResponseConfirmationViewModel(Guid providerResponseId);
+
 
         void ClearProviderResponse();
     }

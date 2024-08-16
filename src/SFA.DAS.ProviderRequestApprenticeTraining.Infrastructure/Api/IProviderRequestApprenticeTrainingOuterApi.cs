@@ -7,6 +7,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
+        [Get("/employerrequests/{providerResponseId}/confirmation")]
+        Task<GetProviderResponseConfirmationResponse> GetProviderResponseConfirmation([Path] Guid providerResponseId);
+
+        [Post("/employerrequests/provider/submit-response")]
+        Task<SubmitProviderResponseResponse> SubmitProviderResponse([Body] SubmitProviderResponseRequest request);
+
         [Get("/employerrequests")]
         Task<EmployerRequestsByIdsResponse> GetEmployerRequestsByIds([Query]List<Guid> employerRequestids);
 

@@ -9,6 +9,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public const string SelectProviderPhoneRoutePost = nameof(SelectProviderPhoneRoutePost);
         public const string CheckYourAnswersRouteGet = nameof(CheckYourAnswersRouteGet);
         public const string CheckYourAnswersRoutePost = nameof(CheckYourAnswersRoutePost);
+        public const string ConfirmationRouteGet = nameof(ConfirmationRouteGet);
         #endregion Routes
 
         public EmployerRequestController(
@@ -161,10 +163,17 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         }
 
         [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
-        public IActionResult CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
+        public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
         {
-            return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            var providerResponseId = await _orchestrator.SubmitProviderResponse(viewModel); 
+            return RedirectToRoute(nameof(ConfirmationRouteGet), new { providerResponseId });
         }
 
+        [HttpGet]
+        [Route("confirmation/{providerResponseId}", Name = ConfirmationRouteGet)]
+        public async Task<IActionResult> ConfirmProviderResponse(Guid providerResponseId)
+        {
+            return View(await _orchestrator.GetProviderResponseConfirmationViewModel(providerResponseId));
+        }
     }
 }

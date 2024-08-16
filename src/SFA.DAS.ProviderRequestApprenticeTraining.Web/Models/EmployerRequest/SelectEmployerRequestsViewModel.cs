@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
     {
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
-        public List<SelectEmployerRequestViewModel> AllEmployerRequests { get; set; }
+        public List<SelectEmployerRequestViewModel> ContactedEmployerRequests { get; set; }
+        public List<SelectEmployerRequestViewModel> NotContactedEmployerRequests { get; set; }
         public List<Guid> SelectedRequests { get; set; }
+        public int TotalRequests { get; set; }
 
         public static implicit operator SelectEmployerRequestsViewModel(GetSelectEmployerRequestsResult source)
         {
@@ -20,8 +23,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
                 StandardReference = source.SelectEmployerRequestsResponse.StandardReference,
                 StandardTitle = source.SelectEmployerRequestsResponse.StandardTitle,
                 StandardLevel = source.SelectEmployerRequestsResponse.StandardLevel,
-                AllEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
+                ContactedEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
+                    .Where(r => !r.IsContacted)
                     .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
+                NotContactedEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
+                    .Where(r => r.IsContacted)
+                    .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
+                TotalRequests = source.SelectEmployerRequestsResponse.EmployerRequests.Count
             };
         }
     }
