@@ -7,7 +7,7 @@
     ViewData["Title"] = "Check your answers";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/checkyouranswers";
 }
-<a asp-route="@EmployerRequestController.SelectProviderPhoneRouteGet"
+<a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
    asp-route-standardReference="@Model.StandardReference"
    class="govuk-back-link">Back</a>
