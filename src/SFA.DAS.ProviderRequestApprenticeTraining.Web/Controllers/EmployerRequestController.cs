@@ -58,12 +58,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpPost("select", Name = SelectRequestsToContactRoutePost)]
         public async Task<IActionResult> SelectRequestsToContact(EmployerRequestsToContactViewModel viewModel)
         {
-            await _orchestrator.UpdateSelectedRequests(viewModel);
-
             if (!await _orchestrator.ValidateEmployerRequestsToContactViewModel(viewModel, ModelState))
             {
                 return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
             }
+
+            await _orchestrator.UpdateSelectedRequests(viewModel);
 
             return RedirectToRoute(nameof(SelectProviderEmailRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
@@ -95,12 +95,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpPost("email-addresses", Name = SelectProviderEmailRoutePost)]
         public async Task<IActionResult> SelectProviderEmail(SelectProviderEmailViewModel viewModel)
         {
-            _orchestrator.UpdateProviderEmail(viewModel);
-
             if (!await _orchestrator.ValidateProviderEmailsViewModel(viewModel, ModelState))
             {
                 return RedirectToRoute(SelectProviderEmailRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
             }
+
+            _orchestrator.UpdateProviderEmail(viewModel);
 
             return RedirectToRoute(nameof(SelectProviderEmailRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
         }
