@@ -9,11 +9,13 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderE
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,7 +67,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectEmployerRequestsViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
-            viewModel.SelectedRequests = SessionProviderResponse.SelectedEmployerRequests;
+            viewModel.SelectedRequests = modelState.GetAttemptedValueWhenInvalid(
+                nameof(SelectEmployerRequestsViewModel.SelectedRequests), new List<Guid>(), SessionProviderResponse.SelectedEmployerRequests);
             return viewModel;
         }
 
