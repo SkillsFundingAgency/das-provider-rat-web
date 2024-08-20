@@ -24,10 +24,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
                 StandardTitle = source.SelectEmployerRequestsResponse.StandardTitle,
                 StandardLevel = source.SelectEmployerRequestsResponse.StandardLevel,
                 ContactedEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
-                    .Where(r => !r.IsContacted)
+                    .Where(r => r.IsContacted)
                     .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
                 NotContactedEmployerRequests = source.SelectEmployerRequestsResponse.EmployerRequests
-                    .Where(r => r.IsContacted)
+                    .Where(r => !r.IsContacted)
                     .Select(request => (SelectEmployerRequestViewModel)request).ToList(),
                 TotalRequests = source.SelectEmployerRequestsResponse.EmployerRequests.Count
             };

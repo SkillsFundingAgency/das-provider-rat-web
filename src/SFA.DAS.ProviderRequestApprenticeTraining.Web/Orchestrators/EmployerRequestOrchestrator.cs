@@ -14,7 +14,6 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderW
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -223,6 +222,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
                 Phone = viewModel.Phone,
                 Website = viewModel.Website,
                 EmployerRequestIds = viewModel.SelectedRequestIds,
+                CurrentUserEmail = viewModel.CurrentUserEmail,
             });
 
             ClearProviderResponse();
@@ -233,10 +233,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         public async Task<ConfirmProviderResponseViewModel> GetProviderResponseConfirmationViewModel(Guid providerResponseId)
         {
             var result = await _mediator.Send(new GetProviderResponseConfirmationQuery(providerResponseId));
+            if (result == null)
+            {
+                throw new ArgumentException($"The provider response {providerResponseId} was not found");
+            }
             return new ConfirmProviderResponseViewModel
             {
                 Email = result.Email,
                 Phone = result.Phone,
+                Website = result.Website,
                 StandardLevel = result.StandardLevel.ToString(),
                 StandardTitle = result.StandardTitle,
                 Ukprn = result.Ukprn,

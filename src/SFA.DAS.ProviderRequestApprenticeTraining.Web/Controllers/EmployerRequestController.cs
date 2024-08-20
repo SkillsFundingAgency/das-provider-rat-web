@@ -165,6 +165,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
         public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
         {
+            viewModel.CurrentUserEmail = _contextAccessor.HttpContext.User.GetEmailAddress();
+
             var providerResponseId = await _orchestrator.SubmitProviderResponse(viewModel); 
             return RedirectToRoute(nameof(ConfirmationRouteGet), new { providerResponseId });
         }

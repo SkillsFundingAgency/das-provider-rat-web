@@ -364,7 +364,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         }
 
         [Test]
-        public async Task CheckYourAnswersPost_ShouldReloadWhenModelIsValid()
+        public async Task CheckYourAnswersPost_ShouldRedirectToConfirmation_WhenIsValid()
         {
             // Arrange
             var viewModel = new CheckYourAnswersRespondToRequestsViewModel
@@ -380,9 +380,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             // Assert
             result.Should().NotBeNull();
-            result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
-            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
-            result.RouteValues["standardReference"].Should().Be(viewModel.StandardReference);
+            result.RouteName.Should().Be(EmployerRequestController.ConfirmationRouteGet);
+            result.RouteValues["providerResponseId"].Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
@@ -397,6 +396,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.RouteValues["ukprn"].Should().Be(ukprn);
             _orchestratorMock.Verify(x => x.ClearProviderResponse(), Times.Once);
         }
-
     }
 }
