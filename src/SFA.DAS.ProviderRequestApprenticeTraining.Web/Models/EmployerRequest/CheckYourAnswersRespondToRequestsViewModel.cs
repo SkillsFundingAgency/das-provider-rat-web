@@ -19,7 +19,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
             get
             {
                 if (!HasSinglePhone) return EmployerRequestController.SelectProviderPhoneRouteGet;
-                if (!HasSingleEmail) return EmployerRequestController.SelectProviderEmailRoutePost;
+                if (!HasSingleEmail) return EmployerRequestController.SelectProviderEmailRouteGet;
                 return EmployerRequestController.SelectRequestsToContactRouteGet; 
             } 
         }

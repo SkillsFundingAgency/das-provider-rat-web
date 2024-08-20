@@ -51,8 +51,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
             var configurationOuterApi = _configuration.GetSection<ProviderRequestApprenticeTrainingOuterApiConfiguration>();
             var configurationWeb = _configuration.GetSection<ProviderRequestApprenticeTrainingWebConfiguration>();
 
-            services.AddDistributedMemoryCache(); 
-            services.AddSession(configurationWeb);
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.IsEssential = true;
+            });
 
             services.AddControllersWithViews();
 
@@ -88,7 +94,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .AddProviderUiServiceRegistration(_configuration);
 
             services.AddCookieTempDataProvider();
-
 
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
