@@ -7,7 +7,7 @@
     ViewData["Title"] = "Select the email address to share";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/email";
 }
-<a asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet"
+<a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
    asp-route-standardReference="@Model.StandardReference"
    class="govuk-back-link">Back</a>
@@ -19,6 +19,7 @@
             <form asp-route="@EmployerRequestController.SelectProviderEmailRoutePost" method="post">
                 @Html.HiddenFor(model => model.Ukprn)
                 @Html.HiddenFor(model => model.StandardReference)
+                @Html.HiddenFor(model => model.BackToCheckAnswers)
                 <div class="govuk-form-group" das-highlight-error-for="SelectedEmail" error-class="govuk-form-group--error">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

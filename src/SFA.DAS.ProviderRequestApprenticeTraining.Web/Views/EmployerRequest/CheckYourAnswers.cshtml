@@ -56,7 +56,12 @@
                             </h2>
                             <ul class="govuk-summary-card__actions">
                                 <li class="govuk-summary-card__action">
-                                    <a class="govuk-link" href="#">Change</a>
+                                    <a class="govuk-link" asp-route="@EmployerRequestController.SelectRequestsToContactRouteGet"
+                                        asp-route-ukprn="@Model.Ukprn"
+                                        asp-route-standardReference="@Model.StandardReference"
+                                        asp-route-backToCheckAnswers="true">
+                                        Change
+                                    </a>
                                 </li>
                             </ul>
                         </div>
@@ -163,7 +168,12 @@
                                     @Model.Email
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" asp-hide="@Model.HasSingleEmail" href="#">Change<span class="govuk-visually-hidden"> email</span></a>
+                                    <a class="govuk-link" asp-hide="@Model.HasSingleEmail" asp-route="@EmployerRequestController.SelectProviderEmailRouteGet"
+                                       asp-route-ukprn="@Model.Ukprn"
+                                       asp-route-standardReference="@Model.StandardReference"
+                                       asp-route-backToCheckAnswers="true">
+                                       Change<span class="govuk-visually-hidden"> email</span>
+                                    </a>
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -174,7 +184,12 @@
                                     @Model.Phone
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link" asp-hide="@Model.HasSinglePhone" href="#">Change<span class="govuk-visually-hidden"> telephone number</span></a>
+                                    <a class="govuk-link" asp-hide="@Model.HasSinglePhone" asp-route="@EmployerRequestController.SelectProviderPhoneRouteGet"
+                                        asp-route-ukprn="@Model.Ukprn"
+                                        asp-route-standardReference="@Model.StandardReference"
+                                        asp-route-backToCheckAnswers="true">
+                                        Change<span class="govuk-visually-hidden"> telephone number</span>
+                                    </a>
                                 </dd>
                             </div>
                         </dl>

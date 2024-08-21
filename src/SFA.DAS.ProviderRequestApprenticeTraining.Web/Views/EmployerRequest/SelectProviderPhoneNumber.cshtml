@@ -19,6 +19,7 @@
             <form asp-route="@EmployerRequestController.SelectProviderPhoneRoutePost" method="post">
                 @Html.HiddenFor(model => model.Ukprn)
                 @Html.HiddenFor(model => model.StandardReference)
+                @Html.HiddenFor(model => model.BackToCheckAnswers)
                 <div class="govuk-form-group" das-highlight-error-for="SelectedPhoneNumber" error-class="govuk-form-group--error">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">

@@ -7,7 +7,7 @@
     ViewData["Title"] = "Select requests to share your information";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/select";
 }
-<a asp-route="@EmployerRequestController.ActiveRouteGet"
+<a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
    class="govuk-back-link">Back</a>
 
@@ -51,6 +51,7 @@
                         <form asp-route="@EmployerRequestController.SelectRequestsToContactRoutePost" method="post">
                             @Html.HiddenFor(model => model.Ukprn)
                             @Html.HiddenFor(model => model.StandardReference)
+                            @Html.HiddenFor(model => model.BackToCheckAnswers)
                             @if(Model.NotContactedEmployerRequests.Any())
                             {
                                 <div class="govuk-form-group" das-highlight-error-for="SelectedRequests"
