@@ -8,5 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.Sess
     {
         public long Ukprn { get; set; }
         public List<Guid> SelectedEmployerRequests { get; set; } = new List<Guid>();
+        public string SelectedEmail { get; set; }
+        public bool HasSingleEmail { get; set; }
     }
 }
