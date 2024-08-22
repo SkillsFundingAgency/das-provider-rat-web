@@ -21,7 +21,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     {
         private readonly IEmployerRequestOrchestrator _orchestrator;
         private readonly ProviderRequestApprenticeTrainingWebConfiguration _webConfiguration;
-        private readonly IHttpContextAccessor _contextAccessor;
 
         #region Routes
         public const string ActiveRouteGet = nameof(ActiveRouteGet);
@@ -40,13 +39,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         public EmployerRequestController(
             IEmployerRequestOrchestrator orchestrator, 
-            IOptions<ProviderRequestApprenticeTrainingWebConfiguration> options, 
-            IHttpContextAccessor contextAccessor)
+            IOptions<ProviderRequestApprenticeTrainingWebConfiguration> options)
         {
             _orchestrator = orchestrator;
             _webConfiguration = options.Value; 
-            _contextAccessor = contextAccessor;
-        }
+
+        }            
 
         [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active(long ukprn)
@@ -84,16 +82,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpGet("email-addresses", Name = SelectProviderEmailRouteGet)]
         public async Task<IActionResult> SelectProviderEmail(EmployerRequestsParameters parameters)
         {
-            var currentUserEmail = _contextAccessor.HttpContext.User.GetEmailAddress();
-            var viewModel = await _orchestrator.GetProviderEmailsViewModel(
-                new GetProviderEmailsParameters 
-                {
-                    Ukprn = parameters.Ukprn,
-                    StandardReference = parameters.StandardReference,
-                    UserEmailAddress = currentUserEmail,
-                    BackToCheckAnswers = parameters.BackToCheckAnswers,
-                },
-                ModelState);
+            var viewModel = await _orchestrator.GetProviderEmailsViewModel(parameters ,ModelState);
 
             if (viewModel.HasSingleEmail)
             {
@@ -182,8 +171,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
         public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
         {
-            viewModel.CurrentUserEmail = _contextAccessor.HttpContext.User.GetEmailAddress();
-
             var providerResponseId = await _orchestrator.SubmitProviderResponse(viewModel); 
             return RedirectToRoute(nameof(ConfirmationRouteGet), new { providerResponseId });
         }

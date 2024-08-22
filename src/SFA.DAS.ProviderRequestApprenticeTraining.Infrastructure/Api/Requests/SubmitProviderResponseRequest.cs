@@ -14,5 +14,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests
         public string Phone { get; set; }
         public string Website { get; set; }
         public string CurrentUserEmail { get; set; }
+        public string CurrentUserFirstName { get; set; }
+        public string RespondedBy { get; set; }
     }
 }
