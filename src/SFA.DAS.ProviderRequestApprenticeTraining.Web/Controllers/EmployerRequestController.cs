@@ -110,7 +110,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public IActionResult RedirectToManageStandards(long ukprn)
         {
             _orchestrator.ClearProviderResponse();
-            return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}/{ukprn}/review-your-details");
+            return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}{ukprn}/review-your-details");
         }
 
         [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
