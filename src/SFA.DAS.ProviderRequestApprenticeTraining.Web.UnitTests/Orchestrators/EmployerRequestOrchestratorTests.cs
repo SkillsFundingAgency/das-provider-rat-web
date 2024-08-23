@@ -45,6 +45,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private readonly string _email = "hello@email.com";
         private readonly string _firstName = "Firstname";
         private readonly string _displayName = "Firstname Surname";
+        private readonly string _sub = Guid.NewGuid().ToString();
 
         [SetUp]
         public void SetUp()
@@ -78,7 +79,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 new Claim(ProviderClaims.ProviderUkprn, _ukprn),
                 new Claim(ProviderClaims.Email, _email),
                 new Claim(ProviderClaims.DisplayName, _displayName),
-                new Claim(ProviderClaims.GivenName, _firstName)
+                new Claim(ProviderClaims.GivenName, _firstName),
+                new Claim(ProviderClaims.Sub, _sub)
             };
             var identity = new ClaimsIdentity(claims, "TestAuthType");
             var user = new ClaimsPrincipal(identity);

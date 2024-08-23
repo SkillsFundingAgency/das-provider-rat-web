@@ -15,7 +15,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public bool HasSinglePhone { get; set; }
         public List<EmployerRequestViewModel> SelectedRequests { get; set; }
         public List<Guid> SelectedRequestIds { get; set; }
-        public string RespondedBy { get; set; }
 
         public override string BackRoute {
             get

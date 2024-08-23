@@ -27,5 +27,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions
         {
             return user.FindFirstValue(ProviderClaims.DisplayName);
         }
+
+        public static string GetSub(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ProviderClaims.Sub);
+        }
     }
 }

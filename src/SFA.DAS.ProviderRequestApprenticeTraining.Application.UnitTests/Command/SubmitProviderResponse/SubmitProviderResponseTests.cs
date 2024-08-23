@@ -27,7 +27,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
                 Ukprn = 123456789,
                 Website = "www.thesite.com",
                 CurrentUserEmail = "user@thesite.com",
-                RespondedBy = "Bob Boothe",
+                RespondedBy = Guid.NewGuid(),
+                ContactName = "Firstname Lastname",
             };
         }
 

@@ -25,6 +25,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
                 CurrentUserEmail = command.CurrentUserEmail,
                 CurrentUserFirstName = command.CurrentUserFirstName,
                 RespondedBy = command.RespondedBy,
+                ContactName = command.ContactName,
             });
 
             return new SubmitProviderResponseResult { ProviderResponseId = response.ProviderResponseId };

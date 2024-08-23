@@ -10,5 +10,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization
         public static string Service => "http://schemas.portal.com/service";
         public static string Email => "email";
         public static string GivenName => "given_name";
+        public static string Sub => "sub";
     }
 }
