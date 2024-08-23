@@ -18,6 +18,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         Task<bool> ValidateProviderEmailsViewModel(SelectProviderEmailViewModel viewModel, ModelStateDictionary modelState);
         void UpdateProviderEmail(SelectProviderEmailViewModel viewModel);
 
+        Task<SelectProviderPhoneViewModel> GetProviderPhoneNumbersViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
+        Task<bool> ValidateProviderPhoneViewModel(SelectProviderPhoneViewModel viewModel, ModelStateDictionary modelState);
+        void UpdateProviderPhone(SelectProviderPhoneViewModel viewModel);
+
         void ClearProviderResponse();
     }
 }

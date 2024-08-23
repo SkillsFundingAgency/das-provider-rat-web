@@ -6,9 +6,11 @@ using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -99,7 +101,18 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
-            viewModel.SelectedEmail = SessionProviderResponse.SelectedEmail;
+
+            if (viewModel.EmailAddresses.Count == 1)
+            {
+                viewModel.SelectedEmail = viewModel.EmailAddresses.FirstOrDefault();
+                viewModel.HasSingleEmail = true;
+                UpdateProviderEmail(viewModel);
+            }
+            else
+            {
+                viewModel.SelectedEmail = SessionProviderResponse.SelectedEmail;
+            }
+
             return viewModel;
         }
 
@@ -116,6 +129,41 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             });
         }
 
+        public async Task<SelectProviderPhoneViewModel> GetProviderPhoneNumbersViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
+        {
+            var result = await _mediator.Send(new GetProviderPhoneNumbersQuery(parameters.Ukprn));
+
+            var viewModel = (SelectProviderPhoneViewModel)result;
+            viewModel.Ukprn = parameters.Ukprn;
+            viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackRoute = SessionProviderResponse.HasSingleEmail ? EmployerRequestController.SelectRequestsToContactRouteGet : EmployerRequestController.SelectProviderEmailRouteGet;
+
+            if (viewModel.PhoneNumbers.Count == 1)
+            {
+                viewModel.SelectedPhoneNumber = viewModel.PhoneNumbers.FirstOrDefault();
+                viewModel.HasSinglePhoneNumber = true;
+                UpdateProviderPhone(viewModel);
+            }
+            else
+            {
+                viewModel.SelectedPhoneNumber = SessionProviderResponse.SelectedPhoneNumber;
+            }
+            return viewModel;
+        }
+
+        public async Task<bool> ValidateProviderPhoneViewModel(SelectProviderPhoneViewModel viewModel, ModelStateDictionary modelState)
+        {
+            return await ValidateViewModel(_employerRequestOrchestratorValidators.SelectProviderPhoneViewModelValidator, viewModel, modelState);
+        }
+        
+        public void UpdateProviderPhone(SelectProviderPhoneViewModel viewModel)
+        {
+            UpdateSessionProviderResponse((model) =>
+            {
+                model.SelectedPhoneNumber = viewModel.SelectedPhoneNumber;
+            });
+        }
+        
         private ProviderResponse SessionProviderResponse
         {
             get => _sessionStorage.ProviderResponse ?? new ProviderResponse();
