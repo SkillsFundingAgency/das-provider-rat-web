@@ -7,16 +7,16 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Queries.GetEmployerRequestsByIds
 {
     [TestFixture]
-    public class GetEmployerRequestsByIdsQueryTests
+    public class GetCheckYourAnswersQueryTests
     {
         private Mock<IProviderRequestApprenticeTrainingOuterApi> _mockOuterApi;
-        private GetEmployerRequestsByIdsQueryHandler _handler;
+        private GetCheckYourAnswersQueryHandler _handler;
 
         [SetUp]
         public void Setup()
         {
             _mockOuterApi = new Mock<IProviderRequestApprenticeTrainingOuterApi>();
-            _handler = new GetEmployerRequestsByIdsQueryHandler(_mockOuterApi.Object);
+            _handler = new GetCheckYourAnswersQueryHandler(_mockOuterApi.Object);
         }
 
         [Test]
@@ -25,11 +25,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
             // Arrange
             var ukprn = 123456;
             var requestids = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
-            var expectedResult = new EmployerRequestsByIdsResponse()
+            var expectedResult = new GetCheckYourAnswersResponse()
             {
                 StandardTitle = "Title 1",
                 StandardLevel = 1,
                 StandardReference = "Ref1",
+                Website ="www.theweb.com",
                 Requests = new List<EmployerRequestResponse>
                 {
                     new EmployerRequestResponse
@@ -55,14 +56,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
                 }
             };
 
-            _mockOuterApi.Setup(x => x.GetEmployerRequestsByIds(requestids)).ReturnsAsync(expectedResult);
+            _mockOuterApi.Setup(x => x.GetCheckYourAnswers(ukprn, requestids)).ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _handler.Handle(new GetEmployerRequestsByIdsQuery(requestids), CancellationToken.None);
+            var result = await _handler.Handle(new GetCheckYourAnswersQuery(ukprn, requestids), CancellationToken.None);
 
             // Assert
             result.EmployerRequests.Should().BeEquivalentTo(expectedResult.Requests);
-            _mockOuterApi.Verify(x => x.GetEmployerRequestsByIds(requestids), Times.Once);
+            _mockOuterApi.Verify(x => x.GetCheckYourAnswers(ukprn, requestids), Times.Once);
         }
 
         [Test]
@@ -70,31 +71,32 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         {
             // Arrange
             var ukprn = 123456;
-            var expectedResult = new EmployerRequestsByIdsResponse()
+            var expectedResult = new GetCheckYourAnswersResponse()
             {
-                Requests = new List<EmployerRequestResponse>()
+                Requests = new List<EmployerRequestResponse>(),
+                Website = "",
             };
 
-            _mockOuterApi.Setup(x => x.GetEmployerRequestsByIds(It.IsAny<List<Guid>>()))
+            _mockOuterApi.Setup(x => x.GetCheckYourAnswers(It.IsAny<long>(), It.IsAny<List<Guid>>()))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _handler.Handle(new GetEmployerRequestsByIdsQuery(new List<Guid>()), CancellationToken.None);
+            var result = await _handler.Handle(new GetCheckYourAnswersQuery(123456, new List<Guid>()), CancellationToken.None);
 
             // Assert
             result.EmployerRequests.Should().BeEquivalentTo(expectedResult.Requests);
-            _mockOuterApi.Verify(x => x.GetEmployerRequestsByIds(It.IsAny<List<Guid>>()), Times.Once);
+            _mockOuterApi.Verify(x => x.GetCheckYourAnswers(It.IsAny<long>(), It.IsAny<List<Guid>>()), Times.Once);
         }
 
         [Test]
         public void Handle_WhenApiThrowsException_ShouldRethrowIt()
         {
             // Arrange
-            _mockOuterApi.Setup(x => x.GetEmployerRequestsByIds(It.IsAny<List<Guid>>()))
+            _mockOuterApi.Setup(x => x.GetCheckYourAnswers(It.IsAny<long>(), It.IsAny<List<Guid>>()))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act
-            Func<Task> act = async () => await _handler.Handle(new GetEmployerRequestsByIdsQuery(new List<Guid>()), CancellationToken.None);
+            Func<Task> act = async () => await _handler.Handle(new GetCheckYourAnswersQuery(123456, new List<Guid>()), CancellationToken.None);
 
             // Assert
             act.Should().ThrowAsync<Exception>().WithMessage("API failure");

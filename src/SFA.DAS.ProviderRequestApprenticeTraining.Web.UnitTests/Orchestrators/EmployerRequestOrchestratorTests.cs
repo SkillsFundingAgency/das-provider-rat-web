@@ -15,7 +15,6 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerR
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
@@ -699,14 +698,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetCheckYourAnswersViewModel_ShouldReturnViewModel(
-            GetProviderWebsiteResult websiteResult,
-            GetEmployerRequestsByIdsResult requestsResult,
+            GetCheckYourAnswersResult requestsResult,
             ProviderResponse providerResponse,
             EmployerRequestsParameters parameters)
         {
             // Arrange
-            _mockMediator.Setup(m => m.Send(It.IsAny<GetProviderWebsiteQuery>(), default)).ReturnsAsync(websiteResult);
-            _mockMediator.Setup(m => m.Send(It.IsAny<GetEmployerRequestsByIdsQuery>(), default)).ReturnsAsync(requestsResult);
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetCheckYourAnswersQuery>(), default)).ReturnsAsync(requestsResult);
             
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
 

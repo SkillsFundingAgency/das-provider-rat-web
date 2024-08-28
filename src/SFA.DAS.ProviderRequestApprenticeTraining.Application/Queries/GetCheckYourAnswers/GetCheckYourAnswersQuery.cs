@@ -2,13 +2,15 @@
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds
 {
-    public class GetEmployerRequestsByIdsQuery : IRequest<GetEmployerRequestsByIdsResult>
+    public class GetCheckYourAnswersQuery : IRequest<GetCheckYourAnswersResult>
     {
         public List<Guid> EmployerRequestIds { get; set; }
+        public long Ukprn { get; set; }
 
-        public GetEmployerRequestsByIdsQuery(List<Guid> employerRequestIds)
+        public GetCheckYourAnswersQuery(long ukprn, List<Guid> employerRequestIds)
         {
             EmployerRequestIds = employerRequestIds;
+            Ukprn = ukprn;
         }
     }
 }

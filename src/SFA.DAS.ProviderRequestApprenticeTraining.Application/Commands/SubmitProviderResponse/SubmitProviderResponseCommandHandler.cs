@@ -15,9 +15,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
 
         public async Task<SubmitProviderResponseResult> Handle(SubmitProviderResponseCommand command, CancellationToken cancellationToken)
         {
-            var response = await _outerApi.SubmitProviderResponse(new SubmitProviderResponseRequest
+            var response = await _outerApi.SubmitProviderResponse(command.Ukprn, new SubmitProviderResponseRequest
             {
-                Ukprn = command.Ukprn,
                 Email = command.Email,
                 Phone = command.Phone,
                 Website = command.Website,
