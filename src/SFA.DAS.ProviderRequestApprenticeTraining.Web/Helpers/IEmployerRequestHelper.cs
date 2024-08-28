@@ -10,7 +10,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers
 {
     public static class IEmployerRequestExtensions
     {
-        public static List<string> GetDeliveryMethods(this SelectEmployerRequestResponse model)
+        public static List<string> GetDeliveryMethods(this IEmployerRequestResponse model)
         {
             var methods = new List<string>();
 

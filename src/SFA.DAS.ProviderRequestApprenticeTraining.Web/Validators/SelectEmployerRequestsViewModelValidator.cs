@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators
 {
-    public class SelectedRequestsViewModelValidator : AbstractValidator<EmployerRequestsToContactViewModel>
+    public class SelectEmloyerRequestsViewModelValidator : AbstractValidator<EmployerRequestsToContactViewModel>
     {
-        public SelectedRequestsViewModelValidator()
+        public SelectEmloyerRequestsViewModelValidator()
         {
             RuleFor(x => x.SelectedRequests)
                 .ValidateSelectedRequests();

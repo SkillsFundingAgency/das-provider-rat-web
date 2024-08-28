@@ -22,6 +22,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         Task<bool> ValidateProviderPhoneViewModel(SelectProviderPhoneViewModel viewModel, ModelStateDictionary modelState);
         void UpdateProviderPhone(SelectProviderPhoneViewModel viewModel);
 
+        Task<CheckYourAnswersRespondToRequestsViewModel> GetCheckYourAnswersRespondToRequestsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState);
+        Task<bool> ValidateCheckYourAnswersViewModel(CheckYourAnswersRespondToRequestsViewModel viewModel, ModelStateDictionary modelState);
+
         void ClearProviderResponse();
     }
 }

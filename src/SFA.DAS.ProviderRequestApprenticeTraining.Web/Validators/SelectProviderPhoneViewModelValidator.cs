@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators
 {
-    public class SelectedPhoneViewModelValidator : AbstractValidator<SelectProviderPhoneViewModel>
+    public class SelectProviderPhoneViewModelValidator : AbstractValidator<SelectProviderPhoneViewModel>
     {
-        public SelectedPhoneViewModelValidator()
+        public SelectProviderPhoneViewModelValidator()
         {
             RuleFor(x => x.SelectedPhoneNumber)
                 .ValidateSelectedPhone();
         }
     }
 
-    public static class SelectedPhoneViewModelValidatorRules
+    public static class SelectedProviderPhoneViewModelValidatorRules
     {
         public static IRuleBuilderOptions<T, string> ValidateSelectedPhone<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
