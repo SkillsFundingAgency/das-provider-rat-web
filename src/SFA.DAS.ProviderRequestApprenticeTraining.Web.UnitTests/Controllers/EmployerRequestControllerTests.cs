@@ -257,8 +257,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             long ukprn)
         {
             //Arrange
-            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object);
-            var expectedUrl = $"{mockConfig.Object.Value.CourseManagementBaseUrl}/{ukprn}/review-your-details";
+            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object, _contextAccessorMock.Object);
+            var expectedUrl = $"{mockConfig.Object.Value.CourseManagementBaseUrl}{ukprn}/review-your-details";
 
             // Act
             var result = controller.RedirectToManageStandards(ukprn) as RedirectResult;
