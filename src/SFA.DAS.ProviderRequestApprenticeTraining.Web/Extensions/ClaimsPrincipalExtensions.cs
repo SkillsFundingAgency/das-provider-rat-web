@@ -17,5 +17,20 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions
         {
             return user.FindFirstValue(ProviderClaims.Email);
         }
+
+        public static string GetFirstName(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ProviderClaims.GivenName);
+        }
+
+        public static string GetDisplayName(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ProviderClaims.DisplayName);
+        }
+
+        public static string GetSub(this ClaimsPrincipal user)
+        {
+            return user.FindFirstValue(ProviderClaims.Sub);
+        }
     }
 }

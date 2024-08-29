@@ -3,6 +3,7 @@ using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -18,11 +19,13 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderR
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
+using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using SFA.DAS.Testing.AutoFixture;
+using System.Security.Claims;
 using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
@@ -30,6 +33,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
     public class EmployerRequestOrchestratorTests
     {
         private Mock<IMediator> _mockMediator;
+        private Mock<IHttpContextAccessor> _contextAccessorMock;
         private Mock<ISessionStorageService> _sessionStorageMock;
         private Mock<IOptions<ProviderSharedUIConfiguration>> _mockConfig;
         private EmployerRequestOrchestrator _sut;
@@ -37,6 +41,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         private Mock<IValidator<SelectProviderEmailViewModel>> _providerEmailViewModelValidatorMock;
         private Mock<IValidator<SelectProviderPhoneViewModel>> _providerPhoneViewModelValidatorMock;
         private Mock<IValidator<CheckYourAnswersRespondToRequestsViewModel>> _checkYourAnswersViewModelValidatorMock;
+        private readonly string _ukprn = "789456789";
+        private readonly string _email = "hello@email.com";
+        private readonly string _firstName = "Firstname";
+        private readonly string _displayName = "Firstname Surname";
+        private readonly string _sub = Guid.NewGuid().ToString();
 
         [SetUp]
         public void SetUp()
@@ -64,7 +73,21 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             };
             _mockConfig.Setup(o => o.Value).Returns(_config);
 
-            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, _sessionStorageMock.Object, employerOrchestratorValidators, _mockConfig.Object);
+            _contextAccessorMock = new Mock<IHttpContextAccessor>();
+            var claims = new List<Claim>
+            {
+                new Claim(ProviderClaims.ProviderUkprn, _ukprn),
+                new Claim(ProviderClaims.Email, _email),
+                new Claim(ProviderClaims.DisplayName, _displayName),
+                new Claim(ProviderClaims.GivenName, _firstName),
+                new Claim(ProviderClaims.Sub, _sub)
+            };
+            var identity = new ClaimsIdentity(claims, "TestAuthType");
+            var user = new ClaimsPrincipal(identity);
+            _contextAccessorMock.Setup(h => h.HttpContext.User).Returns(user);
+
+            _sut = new EmployerRequestOrchestrator(_mockMediator.Object, 
+                _sessionStorageMock.Object, employerOrchestratorValidators, _mockConfig.Object, _contextAccessorMock.Object);
         }
 
         [Test, MoqAutoData]
@@ -108,7 +131,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         [Test, MoqAutoData]
         public async Task GetProviderEmailViewModel_ShouldReturnGetProviderEmailViewModel(
             GetProviderEmailsResult queryResult,
-            GetProviderEmailsParameters param)
+            EmployerRequestsParameters param)
         {
             // Arrange
 
@@ -474,7 +497,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionHasProviderResponse(
-            GetProviderEmailsParameters parameters,
+            EmployerRequestsParameters parameters,
             GetProviderEmailsResult queryResult,
             ProviderResponse providerResponse)
         {
@@ -496,7 +519,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetSelectEmployerEmailViewModel_ShouldReturnViewModel_WhenSessionIsEmpty(
-            GetProviderEmailsParameters parameters,
+            EmployerRequestsParameters parameters,
             GetProviderEmailsResult queryResult)
         {
             // Arrange
@@ -516,7 +539,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
         [Test, MoqAutoData]
         public async Task GetSelectEmployerEmailViewModel_ShouldSelectSingleValue_WhenSingleEmailExists(
-            GetProviderEmailsParameters parameters,
+            EmployerRequestsParameters parameters,
             GetProviderEmailsResult queryResult,
             ProviderResponse providerResponse)
         {
