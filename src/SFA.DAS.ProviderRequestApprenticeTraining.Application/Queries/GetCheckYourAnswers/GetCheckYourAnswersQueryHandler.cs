@@ -5,24 +5,25 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds
 {
-    public class GetEmployerRequestsByIdsQueryHandler : IRequestHandler<GetEmployerRequestsByIdsQuery, GetEmployerRequestsByIdsResult>
+    public class GetCheckYourAnswersQueryHandler : IRequestHandler<GetCheckYourAnswersQuery, GetCheckYourAnswersResult>
     {
         private readonly IProviderRequestApprenticeTrainingOuterApi _outerApi;
 
-        public GetEmployerRequestsByIdsQueryHandler(IProviderRequestApprenticeTrainingOuterApi outerApi)
+        public GetCheckYourAnswersQueryHandler(IProviderRequestApprenticeTrainingOuterApi outerApi)
         {
             _outerApi = outerApi;
         }
 
-        public async Task<GetEmployerRequestsByIdsResult> Handle(GetEmployerRequestsByIdsQuery request, CancellationToken cancellationToken)
+        public async Task<GetCheckYourAnswersResult> Handle(GetCheckYourAnswersQuery request, CancellationToken cancellationToken)
         {
-            var result = await _outerApi.GetEmployerRequestsByIds(request.EmployerRequestIds);
+            var result = await _outerApi.GetCheckYourAnswers(request.Ukprn, request.EmployerRequestIds);
 
-            return new GetEmployerRequestsByIdsResult
+            return new GetCheckYourAnswersResult
             {
                 StandardLevel = result.StandardLevel,
                 StandardReference = result.StandardReference,
                 StandardTitle = result.StandardTitle,
+                Website = result.Website,
                 EmployerRequests = result.Requests
             };
         }

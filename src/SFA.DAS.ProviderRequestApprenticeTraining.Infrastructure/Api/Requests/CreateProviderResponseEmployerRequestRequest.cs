@@ -2,7 +2,6 @@
 {
     public class CreateProviderResponseEmployerRequestRequest
     {
-        public long Ukprn { get; set; }
         public List<Guid> EmployerRequestIds { get; set; }
     }
 }

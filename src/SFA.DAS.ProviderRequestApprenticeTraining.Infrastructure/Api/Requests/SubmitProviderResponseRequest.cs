@@ -8,7 +8,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Requests
 {
     public class SubmitProviderResponseRequest
     {
-        public long Ukprn { get; set; }
         public List<Guid> EmployerRequestIds { get; set; } = new List<Guid>();
         public string ContactName { get; set; }
         public string Email { get; set; }

@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Api.Responses
 {
-    public class EmployerRequestsByIdsResponse
+    public class GetCheckYourAnswersResponse
     {
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
+        public string Website { get; set; }
         public List<EmployerRequestResponse> Requests { get; set; }
     }
 

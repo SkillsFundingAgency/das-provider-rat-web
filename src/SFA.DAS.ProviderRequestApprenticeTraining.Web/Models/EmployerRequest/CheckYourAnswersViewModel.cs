@@ -7,20 +7,22 @@ using System.Linq;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
 {
-    public class EmployerRequestsViewModel
+    public class CheckYourAnswersViewModel
     {
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
+        public string Website { get; set; }
         public List<EmployerRequestViewModel> SelectedRequests { get; set; }
 
-        public static implicit operator EmployerRequestsViewModel(GetEmployerRequestsByIdsResult source)
+        public static implicit operator CheckYourAnswersViewModel(GetCheckYourAnswersResult source)
         {
-            return new EmployerRequestsViewModel
+            return new CheckYourAnswersViewModel
             {
                 StandardReference = source.StandardReference,
                 StandardTitle = source.StandardTitle,
                 StandardLevel = source.StandardLevel,
+                Website = source.Website,
                 SelectedRequests = source.EmployerRequests
                     .Select(request => (EmployerRequestViewModel)request).ToList(),
             };
