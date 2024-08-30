@@ -155,12 +155,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 HasSingleEmail = true ,
                 SelectedEmail = "theSingleemail@hotmail.com",
             };
-
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
 
             _mockMediator
                 .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
+
+            parameters.BackToCheckAnswers = false;
 
             // Act
             var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
@@ -188,6 +189,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             _mockMediator
                 .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
+
+            parameters.BackToCheckAnswers = false;
 
             // Act
             var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
@@ -328,6 +331,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             {
                 Ukprn = 123456,
                 StandardReference = "ST00004",
+                BackToCheckAnswers = true,
             };
 
             var providerResponse = new ProviderResponse { Ukprn = parameters.Ukprn };
@@ -345,6 +349,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().NotBeNull();
             result.Ukprn.Should().Be(parameters.Ukprn);
             result.SelectedRequests.Should().BeEquivalentTo(providerResponse.SelectedEmployerRequests);
+            result.BackToCheckAnswers.Should().BeTrue();
         }
 
         [Test, MoqAutoData]
@@ -355,6 +360,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             {
                 Ukprn = 123456,
                 StandardReference = "ST00004",
+                BackToCheckAnswers = false,
             };
 
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
@@ -370,6 +376,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
             result.Ukprn.Should().Be(parameters.Ukprn);
             result.SelectedRequests.Should().BeEmpty();
+            result.BackToCheckAnswers.Should().BeFalse();
         }
 
         [Test, MoqAutoData]

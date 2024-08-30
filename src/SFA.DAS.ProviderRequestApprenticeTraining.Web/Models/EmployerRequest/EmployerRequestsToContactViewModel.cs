@@ -1,12 +1,11 @@
-﻿using System;
+﻿using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
 {
-    public class EmployerRequestsToContactViewModel
+    public class EmployerRequestsToContactViewModel : EmployerRequestsParameters
     {
-        public long Ukprn { get; set; }
-        public string StandardReference { get; set; }
         public List<Guid> SelectedRequests { get; set; } = new List<Guid>();
         public List<ViewedEmployerRequestViewModel> ViewedEmployerRequests { get; set; } = new List<ViewedEmployerRequestViewModel>();
     }

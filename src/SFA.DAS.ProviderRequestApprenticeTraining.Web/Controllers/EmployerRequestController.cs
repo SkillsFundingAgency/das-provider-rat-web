@@ -66,12 +66,19 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             if (!await _orchestrator.ValidateEmployerRequestsToContactViewModel(viewModel, ModelState))
             {
-                return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+                return RedirectToRoute(SelectRequestsToContactRouteGet, new { viewModel.Ukprn, viewModel.StandardReference, viewModel.BackToCheckAnswers });
             }
 
             await _orchestrator.UpdateSelectedRequests(viewModel);
 
-            return RedirectToRoute(nameof(SelectProviderEmailRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            if (viewModel.BackToCheckAnswers)
+            {
+                return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+            else
+            {
+                return RedirectToRoute(nameof(SelectProviderEmailRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            }
         }
 
         [HttpGet("email-addresses", Name = SelectProviderEmailRouteGet)]
@@ -83,7 +90,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                 {
                     Ukprn = parameters.Ukprn,
                     StandardReference = parameters.StandardReference,
-                    UserEmailAddress = currentUserEmail
+                    UserEmailAddress = currentUserEmail,
+                    BackToCheckAnswers = parameters.BackToCheckAnswers,
                 },
                 ModelState);
 
@@ -100,19 +108,28 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             if (!await _orchestrator.ValidateProviderEmailsViewModel(viewModel, ModelState))
             {
-                return RedirectToRoute(SelectProviderEmailRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+                return RedirectToRoute(SelectProviderEmailRouteGet, new { viewModel.Ukprn, viewModel.StandardReference, viewModel.BackToCheckAnswers });
             }
 
             _orchestrator.UpdateProviderEmail(viewModel);
 
-            return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            if(viewModel.BackToCheckAnswers)
+            {
+                return RedirectToRoute(nameof(CheckYourAnswersRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+            else
+            {
+                return RedirectToRoute(nameof(SelectProviderPhoneRouteGet), new { viewModel.Ukprn, viewModel.StandardReference });
+            }
+
+            
         }
 
         [HttpGet("manage-standards", Name = ManageStandardsRouteGet)]
         public IActionResult RedirectToManageStandards(long ukprn)
         {
             _orchestrator.ClearProviderResponse();
-            return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}/{ukprn}/review-your-details");
+            return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}{ukprn}/review-your-details");
         }
 
         [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
@@ -131,7 +148,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             if (!await _orchestrator.ValidateProviderPhoneViewModel(viewModel, ModelState))
             {
-                return RedirectToRoute(SelectProviderPhoneRouteGet, new { viewModel.Ukprn, viewModel.StandardReference });
+                return RedirectToRoute(SelectProviderPhoneRouteGet, new { viewModel.Ukprn, viewModel.StandardReference, viewModel.BackToCheckAnswers });
             }
 
             _orchestrator.UpdateProviderPhone(viewModel);

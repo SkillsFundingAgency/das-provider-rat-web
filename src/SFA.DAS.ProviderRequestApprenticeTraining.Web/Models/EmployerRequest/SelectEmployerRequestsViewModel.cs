@@ -16,6 +16,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public List<Guid> SelectedRequests { get; set; }
         public int TotalRequests { get; set; }
 
+        public override string BackRoute
+        {
+            get
+            {
+                if (BackToCheckAnswers) return EmployerRequestController.CheckYourAnswersRouteGet;
+                return EmployerRequestController.ActiveRouteGet;
+            }
+        }
+
         public static implicit operator SelectEmployerRequestsViewModel(GetSelectEmployerRequestsResult source)
         {
             return new SelectEmployerRequestsViewModel

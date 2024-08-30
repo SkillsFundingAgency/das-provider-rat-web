@@ -15,6 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         {
             get
             {
+                if (BackToCheckAnswers) return EmployerRequestController.CheckYourAnswersRouteGet;
                 if (!HasSingleEmail) return EmployerRequestController.SelectProviderEmailRouteGet;
                 return EmployerRequestController.SelectRequestsToContactRouteGet;
             }

@@ -70,6 +70,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectEmployerRequestsViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
             viewModel.SelectedRequests = modelState.GetAttemptedValueWhenInvalid(
                 nameof(SelectEmployerRequestsViewModel.SelectedRequests), new List<Guid>(), SessionProviderResponse.SelectedEmployerRequests);
             return viewModel;
@@ -104,6 +105,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
 
             if (viewModel.EmailAddresses.Count == 1)
             {
@@ -139,6 +141,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderPhoneViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
             viewModel.HasSingleEmail = SessionProviderResponse.HasSingleEmail;
 
             if (viewModel.PhoneNumbers.Count == 1)
