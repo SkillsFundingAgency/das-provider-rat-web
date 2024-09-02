@@ -43,8 +43,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             _orchestrator = orchestrator;
             _webConfiguration = options.Value; 
-
-        }            
+        }
 
         [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active(long ukprn)
