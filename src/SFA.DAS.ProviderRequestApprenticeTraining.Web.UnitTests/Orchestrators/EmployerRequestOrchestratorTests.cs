@@ -9,13 +9,14 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Domain.Types;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
@@ -85,7 +86,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
         }
 
         [Test, MoqAutoData]
-        public async Task GetEmployerRequestsByStandardViewModel_ShouldReturnSelectEmployerRequestsViewModel(GetSelectEmployerRequestsResult queryResult,
+        public async Task GetEmployerRequestsByStandardViewModel_ShouldReturnSelectEmployerRequestsViewModel(
+            GetSelectEmployerRequestsResult queryResult,
             EmployerRequestsParameters param)
         {
             // Arrange
@@ -99,9 +101,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
             // Assert
             result.Should().NotBeNull();
-            result.AllEmployerRequests.Should().HaveCount(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Count);
-            result.AllEmployerRequests.Should().BeEquivalentTo(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Select(request => (SelectEmployerRequestViewModel)request));
-        }
+            result.NotContactedEmployerRequests.Should().HaveCount(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Where(r => !r.IsContacted).Count());
+            result.ContactedEmployerRequests.Should().HaveCount(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Where(r => r.IsContacted).Count());
+       }
 
         [Test, MoqAutoData]
         public async Task GetProviderEmailViewModel_ShouldReturnGetProviderEmailViewModel(
@@ -153,12 +155,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
                 HasSingleEmail = true ,
                 SelectedEmail = "theSingleemail@hotmail.com",
             };
-
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
 
             _mockMediator
                 .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
+
+            parameters.BackToCheckAnswers = false;
 
             // Act
             var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
@@ -186,6 +189,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             _mockMediator
                 .Setup(m => m.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
+
+            parameters.BackToCheckAnswers = false;
 
             // Act
             var result = await _sut.GetProviderPhoneNumbersViewModel(parameters, new ModelStateDictionary());
@@ -326,6 +331,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             {
                 Ukprn = 123456,
                 StandardReference = "ST00004",
+                BackToCheckAnswers = true,
             };
 
             var providerResponse = new ProviderResponse { Ukprn = parameters.Ukprn };
@@ -343,6 +349,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().NotBeNull();
             result.Ukprn.Should().Be(parameters.Ukprn);
             result.SelectedRequests.Should().BeEquivalentTo(providerResponse.SelectedEmployerRequests);
+            result.BackToCheckAnswers.Should().BeTrue();
         }
 
         [Test, MoqAutoData]
@@ -353,6 +360,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             {
                 Ukprn = 123456,
                 StandardReference = "ST00004",
+                BackToCheckAnswers = false,
             };
 
             _sessionStorageMock.Setup(s => s.ProviderResponse).Returns((ProviderResponse)null);
@@ -368,6 +376,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
 
             result.Ukprn.Should().Be(parameters.Ukprn);
             result.SelectedRequests.Should().BeEmpty();
+            result.BackToCheckAnswers.Should().BeFalse();
         }
 
         [Test, MoqAutoData]
@@ -760,6 +769,62 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().BeFalse();
             modelState.IsValid.Should().BeFalse();
             modelState["PropertyName"].Errors[0].ErrorMessage.Should().Be("Error message");
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderResponseConfirmationViewModel_ShouldReturnViewModel(
+            GetProviderResponseConfirmationResult confirmationResult,
+            ProviderResponse providerResponse,
+            Guid providerResponseId)
+        {
+            // Arrange
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetProviderResponseConfirmationQuery>(), default)).ReturnsAsync(confirmationResult);
+
+            _sessionStorageMock.Setup(s => s.ProviderResponse).Returns(providerResponse);
+
+            // Act
+            var result = await _sut.GetProviderResponseConfirmationViewModel(providerResponseId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Ukprn.Should().Be(confirmationResult.Ukprn);
+            result.StandardLevel.Should().Be(confirmationResult.StandardLevel.ToString());
+            result.StandardTitle.Should().Be(confirmationResult.StandardTitle);
+            result.Email.Should().Be(confirmationResult.Email);
+            result.Phone.Should().Be(confirmationResult.Phone);
+            result.SelectedRequests.Count().Should().Be(confirmationResult.EmployerRequests.Count);
+        }
+
+        [Test]
+        public void GetProviderResponseConfirmationViewModel_ShouldThrowArgumentException_WhenResponseDoesNotExist()
+        {
+            // Arrange
+            var providerResponseId = Guid.NewGuid();
+
+            _mockMediator.Setup(m => m.Send(It.IsAny<GetProviderResponseConfirmationQuery>(), default)).ReturnsAsync((GetProviderResponseConfirmationResult)null);
+
+            // Act
+            var ex = Assert.ThrowsAsync<ArgumentException>(() => _sut.GetProviderResponseConfirmationViewModel(providerResponseId));
+
+            // Assert
+            ex.Message.Should().Be($"The provider response {providerResponseId} was not found");
+        }
+
+        [Test, MoqAutoData]
+        public async Task SubmitProviderResponse_ShouldReturnProviderResponseId_And_ClearSession_WhenResponseisCreated(
+            CheckYourAnswersRespondToRequestsViewModel checkAnswersViewModel,
+            SubmitProviderResponseResult providerResponseResult)
+        {
+            // Arrange
+            _mockMediator.Setup(m => m.Send(It.IsAny<SubmitProviderResponseCommand>(), default)).ReturnsAsync(providerResponseResult);
+
+            // Act
+            var result = await _sut.SubmitProviderResponse(checkAnswersViewModel);
+
+            // Assert
+            result.Should().Be(providerResponseResult.ProviderResponseId);
+            _sessionStorageMock.VerifySet(s => s.ProviderResponse = null, Times.Once);
+
         }
 
 

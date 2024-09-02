@@ -206,7 +206,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             var viewModel = new SelectProviderEmailViewModel
             {
                 Ukprn = 789456,
-                EmailAddresses = new List<string> { "one@hotmail.com", "two@hotmail.com" }
+                EmailAddresses = new List<string> { "one@hotmail.com", "two@hotmail.com" },
+                BackToCheckAnswers = false
             };
 
             _orchestratorMock.Setup(o => o.ValidateProviderEmailsViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
@@ -217,6 +218,51 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             // Assert
             _orchestratorMock.Verify(o => o.UpdateProviderEmail(viewModel), Times.Once);
         }
+
+        [Test]
+        public async Task SelectProviderEmailPost_ShouldRedirectToCheckYourAnswersGetWhenModelStateIsValidAndBackToCheckAnswersIsTrue()
+        {
+            // Arrange
+            var viewModel = new SelectProviderEmailViewModel
+            {
+                Ukprn = 789456,
+                EmailAddresses = new List<string> { "one@hotmail.com", "two@hotmail.com" },
+                BackToCheckAnswers = true,
+            };
+
+            _orchestratorMock.Setup(o => o.ValidateProviderEmailsViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
+
+            // Act
+            var result = await _controller.SelectProviderEmail(viewModel) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
+            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
+        }
+
+        [Test]
+        public async Task SelectProviderEmailPost_ShouldRedirectToSelectPhoneGetWhenModelStateIsValidAndBackToCheckAnswersIsFalse()
+        {
+            // Arrange
+            var viewModel = new SelectProviderEmailViewModel
+            {
+                Ukprn = 789456,
+                EmailAddresses = new List<string> { "one@hotmail.com", "two@hotmail.com" },
+                BackToCheckAnswers = false,
+            };
+
+            _orchestratorMock.Setup(o => o.ValidateProviderEmailsViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
+
+            // Act
+            var result = await _controller.SelectProviderEmail(viewModel) as RedirectToRouteResult;
+
+            // Assert
+            result.Should().NotBeNull();
+            result.RouteName.Should().Be(EmployerRequestController.SelectProviderPhoneRouteGet);
+            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
+        }
+
 
         [Test, MoqAutoData]
         public void RedirectToManageStandardsGet_ShouldRedirectToManageStandards(
@@ -278,27 +324,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.Should().NotBeNull();
 
             result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
-        }
-
-        [Test]
-        public async Task SelectProviderPhoneNumbersPost_ShouldRedirectTo_SelectProviderPhoneNumbersGet_WhenModelStateIsInvalid()
-        {
-            // Arrange
-            var viewModel = new SelectProviderPhoneViewModel
-            {
-                Ukprn = 789456,
-                PhoneNumbers = new List<string> { "123456", "654321" }
-            };
-
-            _orchestratorMock.Setup(o => o.ValidateProviderPhoneViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(false);
-
-            // Act
-            var result = await _controller.SelectProviderPhoneNumber(viewModel) as RedirectToRouteResult;
-
-            // Assert
-            result.Should().NotBeNull();
-            result.RouteName.Should().Be(EmployerRequestController.SelectProviderPhoneRouteGet);
-            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
         }
 
         [Test]
@@ -364,7 +389,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         }
 
         [Test]
-        public void CheckYourAnswersPost_ShouldReloadWhenModelIsValid()
+        public async Task CheckYourAnswersPost_ShouldRedirectToConfirmation_WhenIsValid()
         {
             // Arrange
             var viewModel = new CheckYourAnswersRespondToRequestsViewModel
@@ -376,13 +401,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             _orchestratorMock.Setup(o => o.ValidateCheckYourAnswersViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
 
             // Act
-            var result = _controller.CheckYourAnswers(viewModel) as RedirectToRouteResult;
+            var result = await _controller.CheckYourAnswers(viewModel) as RedirectToRouteResult;
 
             // Assert
             result.Should().NotBeNull();
-            result.RouteName.Should().Be(EmployerRequestController.CheckYourAnswersRouteGet);
-            result.RouteValues["ukprn"].Should().Be(viewModel.Ukprn);
-            result.RouteValues["standardReference"].Should().Be(viewModel.StandardReference);
+            result.RouteName.Should().Be(EmployerRequestController.ConfirmationRouteGet);
+            result.RouteValues["providerResponseId"].Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
@@ -397,6 +421,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             result.RouteValues["ukprn"].Should().Be(ukprn);
             _orchestratorMock.Verify(x => x.ClearProviderResponse(), Times.Once);
         }
-
     }
 }

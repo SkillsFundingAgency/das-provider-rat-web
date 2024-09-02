@@ -7,7 +7,7 @@
     ViewData["Title"] = "Select requests to share your information";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/select";
 }
-<a asp-route="@EmployerRequestController.ActiveRouteGet"
+<a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
    class="govuk-back-link">Back</a>
 
@@ -30,19 +30,19 @@
         </div>
         <div class="govuk-grid-column-full">
             <p class="govuk-body">
-                @Model.AllEmployerRequests.Count()<text> results </text>
+                @Model.TotalRequests<text> results </text>
             </p>
             <!-- tabs -->
             <div class="govuk-tabs govuk-grid-column-two-thirds" data-module="tabs">
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#notcontacted">
-                            Not Contacted (@Model.AllEmployerRequests.Count() results)
+                            Not Contacted (@Model.NotContactedEmployerRequests.Count() results)
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
                         <a class="govuk-tabs__tab" href="#contacted">
-                            Contacted (0 results)
+                            Contacted (@Model.ContactedEmployerRequests.Count() results)
                         </a>
                     </li>
                 </ul>
@@ -51,7 +51,8 @@
                         <form asp-route="@EmployerRequestController.SelectRequestsToContactRoutePost" method="post">
                             @Html.HiddenFor(model => model.Ukprn)
                             @Html.HiddenFor(model => model.StandardReference)
-                            @if(Model.AllEmployerRequests.Any())
+                            @Html.HiddenFor(model => model.BackToCheckAnswers)
+                            @if(Model.NotContactedEmployerRequests.Any())
                             {
                                 <div class="govuk-form-group" das-highlight-error-for="SelectedRequests"
                                  error-class="govuk-form-group--error">
@@ -64,10 +65,10 @@
                                         </div>
                                         <span class="govuk-error-message" das-validation-for="SelectedRequests"></span>
 
-                                        @foreach (var selectEmployerRequest in Model.AllEmployerRequests)
+                                        @foreach (var selectEmployerRequest in Model.NotContactedEmployerRequests)
                                         {
-                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.AllEmployerRequests.IndexOf(selectEmployerRequest) + "].EmployerRequestId", selectEmployerRequest.EmployerRequestId)
-                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.AllEmployerRequests.IndexOf(selectEmployerRequest) + "].IsNew", selectEmployerRequest.IsNew)
+                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.NotContactedEmployerRequests.IndexOf(selectEmployerRequest) + "].EmployerRequestId", selectEmployerRequest.EmployerRequestId)
+                                            @Html.Hidden("ViewedEmployerRequests[" + @Model.NotContactedEmployerRequests.IndexOf(selectEmployerRequest) + "].IsNew", selectEmployerRequest.IsNew)
 
                                             <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
@@ -119,7 +120,15 @@
 
                                     </fieldset>
                                 </div>
-
+                                <div class="govuk-button-group">
+                                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                                        Continue
+                                    </button>
+                                    <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
+                                       asp-route-ukprn="@Model.Ukprn">
+                                        Cancel
+                                    </a>
+                                </div>
                             }
                             else
                             {
@@ -127,16 +136,6 @@
                                     There are no active requests
                                 </div>
                             }
-
-                            <div class="govuk-button-group">
-                                <button type="submit" class="govuk-button" data-module="govuk-button">
-                                    Continue
-                                </button>
-                                <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
-                                   asp-route-ukprn="@Model.Ukprn">
-                                    Cancel
-                                </a>
-                            </div>
                        </form>
                     </div>
                 </section>

@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
@@ -69,6 +70,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectEmployerRequestsViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
             viewModel.SelectedRequests = modelState.GetAttemptedValueWhenInvalid(
                 nameof(SelectEmployerRequestsViewModel.SelectedRequests), new List<Guid>(), SessionProviderResponse.SelectedEmployerRequests);
             return viewModel;
@@ -103,6 +105,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
 
             if (viewModel.EmailAddresses.Count == 1)
             {
@@ -138,6 +141,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             var viewModel = (SelectProviderPhoneViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
             viewModel.StandardReference = parameters.StandardReference;
+            viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
             viewModel.HasSingleEmail = SessionProviderResponse.HasSingleEmail;
 
             if (viewModel.PhoneNumbers.Count == 1)
@@ -211,6 +215,43 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         {
             return await ValidateViewModel(_employerRequestOrchestratorValidators.CheckYourAnswersViewModelValidator, viewModel, modelState);
         }
+
+        public async Task<Guid> SubmitProviderResponse(CheckYourAnswersRespondToRequestsViewModel viewModel)
+        {
+            var result = await _mediator.Send(new SubmitProviderResponseCommand
+            {
+                Ukprn = viewModel.Ukprn,
+                Email = viewModel.Email,
+                Phone = viewModel.Phone,
+                Website = viewModel.Website,
+                EmployerRequestIds = viewModel.SelectedRequestIds,
+                CurrentUserEmail = viewModel.CurrentUserEmail,
+            });
+
+            ClearProviderResponse();
+
+            return result.ProviderResponseId;
+        }
+
+        public async Task<ConfirmProviderResponseViewModel> GetProviderResponseConfirmationViewModel(Guid providerResponseId)
+        {
+            var result = await _mediator.Send(new GetProviderResponseConfirmationQuery(providerResponseId));
+            if (result == null)
+            {
+                throw new ArgumentException($"The provider response {providerResponseId} was not found");
+            }
+            return new ConfirmProviderResponseViewModel
+            {
+                Email = result.Email,
+                Phone = result.Phone,
+                Website = result.Website,
+                StandardLevel = result.StandardLevel.ToString(),
+                StandardTitle = result.StandardTitle,
+                Ukprn = result.Ukprn,
+                SelectedRequests = result.EmployerRequests.Select(x => (EmployerRequestViewModel)x).ToList(),
+            };
+        }
+
 
         private async Task<bool> ValidateViewModel<T>(IValidator<T> validator, T viewModel, ModelStateDictionary modelState)
         {

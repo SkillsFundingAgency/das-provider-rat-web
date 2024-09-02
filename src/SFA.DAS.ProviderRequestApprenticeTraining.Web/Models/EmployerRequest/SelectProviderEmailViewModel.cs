@@ -10,6 +10,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public List<string> EmailAddresses { get; set; }
         public string SelectedEmail { get; set; }
         public bool HasSingleEmail { get; set; }
+        public override string BackRoute
+        {
+            get
+            {
+                if (BackToCheckAnswers) return EmployerRequestController.CheckYourAnswersRouteGet;
+                return EmployerRequestController.SelectRequestsToContactRouteGet;
+            }
+        }
 
         public static implicit operator SelectProviderEmailViewModel(GetProviderEmailsResult source)
         {
