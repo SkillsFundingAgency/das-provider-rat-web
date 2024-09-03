@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     [SetNavigationSection(NavigationSection.Home)]
     public class EmployerRequestController : Controller
     {
+        
         private readonly IEmployerRequestOrchestrator _orchestrator;
         private readonly ProviderRequestApprenticeTrainingWebConfiguration _webConfiguration;
 
