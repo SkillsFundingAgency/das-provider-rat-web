@@ -114,7 +114,6 @@
                                                         }
                                                     </div>
                                                 </label>
-                                                
                                             </div>
                                         }
 
@@ -141,7 +140,63 @@
                 </section>
                 <section class="govuk-tabs__panel govuk-tabs__panel--hidden" id="contacted">
                     <div id="contacted-requests">
-                        Contacted tab
+
+                        @if (Model.ContactedEmployerRequests.Any())
+                        {
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    Employers looking for @Model.StandardTitle (level @Model.StandardLevel) 
+                                </legend>
+                                @foreach (var employerRequest in Model.ContactedEmployerRequests)
+                                {
+                                    <div class="govuk-body">
+                                        <p class="govuk-body request-item">Request date @employerRequest.DateOfRequest</p>
+                                        <p class="govuk-body request-item"><b>Number of apprentices:</b> @employerRequest.NumberOfApprentices</p>
+                                        @if (employerRequest.Locations.Count == 1)
+                                        {
+                                            <p><b>Location</b> @employerRequest.Locations.FirstOrDefault()</p>
+                                        }
+                                        else
+                                        {
+                                            <div class="select-request-list-item">
+                                                <b class="select-request-list-item-label">Location</b>
+                                                <ul class="govuk-list govuk-list--bullet">
+                                                    @foreach (var location in employerRequest.Locations)
+                                                    {
+                                                        <li>@location</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        @if (employerRequest.DeliveryMethods.Count == 1)
+                                        {
+                                            <p><b>Delivery method</b> @employerRequest.DeliveryMethods.FirstOrDefault()</p>
+                                        }
+                                        else
+                                        {
+                                            <div class="select-request-list-item">
+                                                <b class="select-request-list-item-label">Delivery methods</b>
+                                                <ul class="govuk-list govuk-list--bullet">
+                                                    @foreach (var deliveryMethod in employerRequest.DeliveryMethods)
+                                                    {
+                                                        <li>@deliveryMethod</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        }
+                                        <p class="govuk-body request-item"><b>Date contacted:</b> @employerRequest.DateContacted</p>
+                                        <hr class="govuk-section-break govuk-section-break--visible">
+                                    </div>   
+                                }
+
+                            </fieldset>  
+                        }
+                        else
+                        {
+                            <div class="govuk-body">
+                                There are no recent requests
+                            </div>
+                        }
                     </div>
                 </section>
             </div>

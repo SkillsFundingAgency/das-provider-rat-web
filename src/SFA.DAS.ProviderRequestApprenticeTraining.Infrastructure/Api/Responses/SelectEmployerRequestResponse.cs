@@ -11,5 +11,6 @@
         public int NumberOfApprentices { get; set; }
         public bool IsNew { get; set; }
         public bool IsContacted { get; set; }
+        public string DateContacted { get; set; }
     }
 }

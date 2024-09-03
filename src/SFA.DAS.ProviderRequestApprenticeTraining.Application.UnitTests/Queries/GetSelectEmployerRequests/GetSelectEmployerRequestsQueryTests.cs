@@ -38,6 +38,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Querie
                             DayRelease = true,
                             EmployerRequestId = new Guid(),
                             IsContacted = true,
+                            DateContacted = "01/03/2024",
                             IsNew = true,
                             Locations = new List<string> { "North", "South", "East" },
                             NumberOfApprentices = 3
@@ -50,7 +51,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Querie
                             BlockRelease = false,
                             DayRelease = true,
                             EmployerRequestId = new Guid(),
-                            IsContacted = true,
+                            IsContacted = false,
+                            DateContacted = string.Empty,
                             IsNew = false,
                             Locations = new List<string> { "East" },
                             NumberOfApprentices = 3

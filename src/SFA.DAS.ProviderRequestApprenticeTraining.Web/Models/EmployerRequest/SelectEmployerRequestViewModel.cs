@@ -14,6 +14,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public List<string> DeliveryMethods { get; set; }
         public bool IsNew { get; set; }
         public bool IsContacted { get; set; }
+        public string DateContacted { get; set; }
         public bool IsSelected { get; set; }
 
         public static implicit operator SelectEmployerRequestViewModel(SelectEmployerRequestResponse source)
@@ -23,6 +24,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
                 EmployerRequestId = source.EmployerRequestId,
                 DateOfRequest = source.DateOfRequest,
                 IsContacted = source.IsContacted,
+                DateContacted = source.DateContacted,
                 IsNew = source.IsNew,
                 NumberOfApprentices = source.NumberOfApprentices,
                 Locations = source.Locations,

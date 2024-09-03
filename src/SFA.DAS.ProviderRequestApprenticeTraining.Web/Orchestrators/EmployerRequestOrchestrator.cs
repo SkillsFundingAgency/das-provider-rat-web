@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI.Models;
@@ -10,7 +11,6 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerR
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmails;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Services.SessionStorage;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
@@ -30,15 +30,18 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         private readonly ISessionStorageService _sessionStorage;
         private readonly EmployerRequestOrchestratorValidators _employerRequestOrchestratorValidators;
         private readonly ProviderSharedUIConfiguration _providerSharedUIConfiguration;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         public EmployerRequestOrchestrator(IMediator mediator, ISessionStorageService sessionStorage,
             EmployerRequestOrchestratorValidators employerRequestOrchestratorValidators,
-            IOptions<ProviderSharedUIConfiguration> sharedUIConfiguration)
+            IOptions<ProviderSharedUIConfiguration> sharedUIConfiguration,
+            IHttpContextAccessor contextAccessor)
         {
             _mediator = mediator;
             _sessionStorage = sessionStorage;
             _employerRequestOrchestratorValidators = employerRequestOrchestratorValidators;
             _providerSharedUIConfiguration = sharedUIConfiguration.Value;
+            _contextAccessor = contextAccessor;
         }
 
         public void StartProviderResponse(long ukprn)
@@ -98,9 +101,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             });
         }
 
-        public async Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(GetProviderEmailsParameters parameters, ModelStateDictionary modelState)
+        public async Task<SelectProviderEmailViewModel> GetProviderEmailsViewModel(EmployerRequestsParameters parameters, ModelStateDictionary modelState)
         {
-            var result = await _mediator.Send(new GetProviderEmailsQuery(parameters.Ukprn, parameters.UserEmailAddress));
+            var result = await _mediator.Send(new GetProviderEmailsQuery(parameters.Ukprn, _contextAccessor.HttpContext.User.GetEmailAddress()));
 
             var viewModel = (SelectProviderEmailViewModel)result;
             viewModel.Ukprn = parameters.Ukprn;
@@ -192,22 +195,20 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
         {
             var providerResponse = SessionProviderResponse;
 
-            var result = await _mediator.Send(new GetProviderWebsiteQuery(parameters.Ukprn));
-
-            var selectedRequests = (EmployerRequestsViewModel) await _mediator.Send(new GetEmployerRequestsByIdsQuery(providerResponse.SelectedEmployerRequests));
+            var checkAnswersModel = (CheckYourAnswersViewModel) await _mediator.Send(new GetCheckYourAnswersQuery(parameters.Ukprn, providerResponse.SelectedEmployerRequests));
 
             return new CheckYourAnswersRespondToRequestsViewModel
             {
                 Ukprn = parameters.Ukprn,
-                StandardReference = selectedRequests.StandardReference,
-                StandardTitle = selectedRequests.StandardTitle,
-                StandardLevel = selectedRequests.StandardLevel.ToString(),
-                Website = result.Website,
+                StandardReference = checkAnswersModel.StandardReference,
+                StandardTitle = checkAnswersModel.StandardTitle,
+                StandardLevel = checkAnswersModel.StandardLevel.ToString(),
+                Website = checkAnswersModel.Website,
                 Email = providerResponse.SelectedEmail,
                 HasSingleEmail = providerResponse.HasSingleEmail,
                 Phone = providerResponse.SelectedPhoneNumber,
                 HasSinglePhone = providerResponse.HasSinglePhoneNumber,
-                SelectedRequests = selectedRequests.SelectedRequests
+                SelectedRequests = checkAnswersModel.SelectedRequests
             };
         }
 
@@ -225,7 +226,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
                 Phone = viewModel.Phone,
                 Website = viewModel.Website,
                 EmployerRequestIds = viewModel.SelectedRequestIds,
-                CurrentUserEmail = viewModel.CurrentUserEmail,
+                CurrentUserEmail = _contextAccessor.HttpContext.User.GetEmailAddress(),
+                ContactName = _contextAccessor.HttpContext.User.GetDisplayName(),
+                CurrentUserFirstName = _contextAccessor.HttpContext.User.GetFirstName(),
+                RespondedBy = Guid.TryParse(_contextAccessor.HttpContext.User.GetSub(), out var guid) ? guid : Guid.Empty,
             });
 
             ClearProviderResponse();

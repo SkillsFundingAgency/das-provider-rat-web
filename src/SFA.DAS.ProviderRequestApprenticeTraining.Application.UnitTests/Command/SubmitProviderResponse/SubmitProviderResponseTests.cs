@@ -26,6 +26,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
                 Phone = "99944415263",
                 Ukprn = 123456789,
                 Website = "www.thesite.com",
+                CurrentUserEmail = "user@thesite.com",
+                RespondedBy = Guid.NewGuid(),
+                ContactName = "Firstname Lastname",
             };
         }
 
@@ -34,7 +37,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
         {
             // Arrange
             var expectedResponse = new SubmitProviderResponseResponse { ProviderResponseId = Guid.NewGuid() };
-            _mockOuterApi.Setup(x => x.SubmitProviderResponse(It.IsAny<SubmitProviderResponseRequest>()))
+            _mockOuterApi.Setup(x => x.SubmitProviderResponse(It.IsAny<long>(), It.IsAny<SubmitProviderResponseRequest>()))
                 .ReturnsAsync(expectedResponse);
 
             // Act
@@ -42,14 +45,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
 
             // Assert
             result.Should().BeEquivalentTo(expectedResponse);
-            _mockOuterApi.Verify(x => x.SubmitProviderResponse(It.IsAny<SubmitProviderResponseRequest>()), Times.Once);
+            _mockOuterApi.Verify(x => x.SubmitProviderResponse(It.IsAny<long>(), It.IsAny<SubmitProviderResponseRequest>()), Times.Once);
         }
 
         [Test]
         public void Handle_WhenApiThrowsException_ShouldRethrowIt()
         {
             // Arrange
-            _mockOuterApi.Setup(x => x.SubmitProviderResponse(It.IsAny<SubmitProviderResponseRequest>()))
+            _mockOuterApi.Setup(x => x.SubmitProviderResponse(It.IsAny<long>(), It.IsAny<SubmitProviderResponseRequest>()))
                 .ThrowsAsync(new Exception("API error"));
 
             // Act

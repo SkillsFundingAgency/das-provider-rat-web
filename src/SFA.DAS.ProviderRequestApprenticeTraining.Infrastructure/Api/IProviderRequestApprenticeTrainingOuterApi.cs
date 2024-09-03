@@ -7,17 +7,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
-        [Get("/employerrequests/{providerResponseId}/confirmation")]
+        [Get("/employerrequests/providerresponse/{providerResponseId}/confirmation")]
         Task<GetProviderResponseConfirmationResponse> GetProviderResponseConfirmation([Path] Guid providerResponseId);
 
-        [Post("/employerrequests/provider/submit-response")]
-        Task<SubmitProviderResponseResponse> SubmitProviderResponse([Body] SubmitProviderResponseRequest request);
+        [Post("/employerrequests/provider/{ukprn}/submit-response")]
+        Task<SubmitProviderResponseResponse> SubmitProviderResponse([Path]long ukprn, [Body] SubmitProviderResponseRequest request);
 
-        [Get("/employerrequests")]
-        Task<EmployerRequestsByIdsResponse> GetEmployerRequestsByIds([Query]List<Guid> employerRequestids);
-
-        [Get("/employerrequests/provider/{ukprn}/website")]
-        Task<GetProviderWebsiteResponse> GetProviderWebsite([Path] long ukprn);
+        [Get("/employerrequests/provider/{ukprn}/check-answers")]
+        Task<GetCheckYourAnswersResponse> GetCheckYourAnswers([Path]long ukprn, [Query]List<Guid> employerRequestids);
 
         [Get("/employerrequests/provider/{ukprn}/phonenumbers")]
         Task<GetProviderPhoneNumbersResponse> GetProviderPhoneNumbers([Path] long ukprn);
@@ -25,10 +22,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         [Get("/employerrequests/provider/{ukprn}/email-addresses")]
         Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path] long ukprn, [Query] string userEmailAddress);
 
-        [Post("/employerrequests/provider/responses")]
-        Task CreateProviderResponse([Body]CreateProviderResponseEmployerRequestRequest request);
+        [Post("/employerrequests/provider/{ukprn}/acknowledge-requests")]
+        Task CreateProviderResponse([Path]long ukprn, [Body]CreateProviderResponseEmployerRequestRequest request);
 
-        [Get("/employerrequests/provider/{ukprn}/aggregated")]
+        [Get("/employerrequests/provider/{ukprn}/active")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);
 
         [Get("/employerrequests/provider/{ukprn}/selectrequests/{standardReference}")]

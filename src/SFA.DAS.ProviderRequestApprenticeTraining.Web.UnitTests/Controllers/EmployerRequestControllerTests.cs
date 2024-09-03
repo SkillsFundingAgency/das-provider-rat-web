@@ -23,10 +23,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
     {
         private Mock<IEmployerRequestOrchestrator> _orchestratorMock;
         private Mock<IOptions<ProviderRequestApprenticeTrainingWebConfiguration>> _webConfiguration;
-        private Mock<IHttpContextAccessor> _contextAccessorMock;
         private EmployerRequestController _controller;
-        private readonly string _ukprn = "789456789";
-        private readonly string _email = "hello@email.com";
+
 
         [SetUp]
         public void Setup()
@@ -34,20 +32,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             _orchestratorMock = new Mock<IEmployerRequestOrchestrator>();
             _webConfiguration = new Mock<IOptions<ProviderRequestApprenticeTrainingWebConfiguration>>();
 
-            _contextAccessorMock = new Mock<IHttpContextAccessor>();
-            var claims = new List<Claim>
-            {
-                new Claim(ProviderClaims.ProviderUkprn, _ukprn),
-                new Claim(ProviderClaims.Email, _email)
-            };
-            var identity = new ClaimsIdentity(claims, "TestAuthType");
-            var user = new ClaimsPrincipal(identity);
-            _contextAccessorMock.Setup(h => h.HttpContext.User).Returns(user);
-
             _controller = new EmployerRequestController(
                 _orchestratorMock.Object, 
-                _webConfiguration.Object, 
-                _contextAccessorMock.Object);
+                _webConfiguration.Object);
         }
 
         [TearDown]
@@ -138,13 +125,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task SelectProviderEmailGet_ShouldReturnViewWithViewModel(
             SelectProviderEmailViewModel viewModel,
-            GetProviderEmailsParameters parameters)
+            EmployerRequestsParameters parameters)
         {
             // Arrange
             viewModel.HasSingleEmail = false;
             viewModel.EmailAddresses = new List<string> { "first@hotmail.com", "second@hotmail.com" };
             _orchestratorMock
-                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
 
             // Act
@@ -159,14 +146,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task SelectProviderEmailGet_ShouldRedirectToPhone_WhenSingleEmail(
             SelectProviderEmailViewModel viewModel,
-            GetProviderEmailsParameters parameters)
+            EmployerRequestsParameters parameters)
         {
             // Arrange
             viewModel.HasSingleEmail = true;
             viewModel.EmailAddresses = new List<string> { "onlyone@hotmail.com" };
 
             _orchestratorMock
-                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .Setup(o => o.GetProviderEmailsViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
 
             // Act
@@ -270,7 +257,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             long ukprn)
         {
             //Arrange
-            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object, _contextAccessorMock.Object);
+            var controller = new EmployerRequestController(_orchestratorMock.Object, mockConfig.Object);
             var expectedUrl = $"{mockConfig.Object.Value.CourseManagementBaseUrl}{ukprn}/review-your-details";
 
             // Act
@@ -348,11 +335,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task ChecKYourAnswersGet_ShouldReturnViewWithViewModel(
             CheckYourAnswersRespondToRequestsViewModel viewModel,
-            GetProviderEmailsParameters parameters)
+            EmployerRequestsParameters parameters)
         {
             // Arrange
             _orchestratorMock
-                .Setup(o => o.GetCheckYourAnswersRespondToRequestsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .Setup(o => o.GetCheckYourAnswersRespondToRequestsViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
 
             _orchestratorMock.Setup(o => o.ValidateCheckYourAnswersViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(true);
@@ -369,11 +356,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task ChecKYourAnswersGet_ShouldRedirectToActiveRequests_WhenModelIsInvalid(
             CheckYourAnswersRespondToRequestsViewModel viewModel,
-            GetProviderEmailsParameters parameters)
+            EmployerRequestsParameters parameters)
         {
             // Arrange
             _orchestratorMock
-                .Setup(o => o.GetCheckYourAnswersRespondToRequestsViewModel(It.IsAny<GetProviderEmailsParameters>(), It.IsAny<ModelStateDictionary>()))
+                .Setup(o => o.GetCheckYourAnswersRespondToRequestsViewModel(It.IsAny<EmployerRequestsParameters>(), It.IsAny<ModelStateDictionary>()))
                 .ReturnsAsync(viewModel);
 
             _orchestratorMock.Setup(o => o.ValidateCheckYourAnswersViewModel(viewModel, It.IsAny<ModelStateDictionary>())).ReturnsAsync(false);
