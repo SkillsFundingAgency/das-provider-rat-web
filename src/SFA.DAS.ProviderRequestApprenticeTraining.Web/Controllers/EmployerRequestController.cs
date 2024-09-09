@@ -19,6 +19,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
     [SetNavigationSection(NavigationSection.Home)]
     public class EmployerRequestController : Controller
     {
+        
         private readonly IEmployerRequestOrchestrator _orchestrator;
         private readonly ProviderRequestApprenticeTrainingWebConfiguration _webConfiguration;
 
@@ -43,8 +44,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         {
             _orchestrator = orchestrator;
             _webConfiguration = options.Value; 
-
-        }            
+        }
 
         [HttpGet("{ukprn}/active", Name = ActiveRouteGet)]
         public async Task<IActionResult> Active(long ukprn)

@@ -70,7 +70,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.UnitTests.Querie
         public async Task Handle_ShouldReturnEmptyEmployerRequests_WhenNoRequestsExist()
         {
             // Arrange
-            var ukprn = 123456;
             var expectedResult = new GetCheckYourAnswersResponse()
             {
                 Requests = new List<EmployerRequestResponse>(),
