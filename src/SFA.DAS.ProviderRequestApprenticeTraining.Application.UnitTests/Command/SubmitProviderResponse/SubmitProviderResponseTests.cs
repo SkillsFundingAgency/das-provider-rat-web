@@ -29,6 +29,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
                 CurrentUserEmail = "user@thesite.com",
                 RespondedBy = Guid.NewGuid(),
                 ContactName = "Firstname Lastname",
+                CurrentUserFirstName = "Firstname",
+                StandardTitle = "Test Standard",
+                StandardLevel = "4"
             };
         }
 
@@ -45,7 +48,19 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.UnitTests.Comman
 
             // Assert
             result.Should().BeEquivalentTo(expectedResponse);
-            _mockOuterApi.Verify(x => x.SubmitProviderResponse(It.IsAny<long>(), It.IsAny<SubmitProviderResponseRequest>()), Times.Once);
+            _mockOuterApi.Verify(x => x.SubmitProviderResponse(It.IsAny<long>(), It.Is<SubmitProviderResponseRequest>( r => 
+                r.ContactName == _command.ContactName &&
+                r.CurrentUserEmail == _command.CurrentUserEmail &&
+                r.CurrentUserFirstName == _command.CurrentUserFirstName &&
+                r.Email == _command.Email &&
+                r.EmployerRequestIds == _command.EmployerRequestIds &&
+                r.Phone == _command.Phone &&
+                r.RespondedBy == _command.RespondedBy &&
+                r.StandardLevel == _command.StandardLevel &&
+                r.StandardTitle == _command.StandardTitle &&
+                r.Website == _command.Website &&
+                r.EmployerRequestIds == _command.EmployerRequestIds
+                )), Times.Once);
         }
 
         [Test]
