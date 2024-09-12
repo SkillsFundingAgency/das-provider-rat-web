@@ -31,12 +31,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
         [Get("/employerrequests/provider/{ukprn}/selectrequests/{standardReference}")]
         Task<SelectEmployerRequestsResponse> GetSelectEmployerRequests([Path]long ukprn, [Path]string standardReference);
 
-        [Get("/employerrequests/{employerRequestId}")]
-        Task<EmployerRequest> GetEmployerRequest([Path] Guid employerRequestId);
-
-        [Get("/employerrequests/requesttype/{requestType}")]
-        Task<List<EmployerRequest>> GetEmployerRequests([Path] string requestType);
-
         [Get("/provideraccounts/{ukprn}")]
         Task<ProviderAccountResponse> GetProviderDetails([Path] int ukprn);
 
