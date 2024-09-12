@@ -230,6 +230,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
                 ContactName = _contextAccessor.HttpContext.User.GetDisplayName(),
                 CurrentUserFirstName = _contextAccessor.HttpContext.User.GetFirstName(),
                 RespondedBy = Guid.TryParse(_contextAccessor.HttpContext.User.GetSub(), out var guid) ? guid : Guid.Empty,
+                StandardLevel = viewModel.StandardLevel,
+                StandardTitle = viewModel.StandardTitle,
             });
 
             ClearProviderResponse();
