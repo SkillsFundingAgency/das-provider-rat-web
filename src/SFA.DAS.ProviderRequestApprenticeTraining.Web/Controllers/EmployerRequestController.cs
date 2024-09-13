@@ -79,6 +79,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             }
         }
 
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [HttpGet("email-addresses", Name = SelectProviderEmailRouteGet)]
         public async Task<IActionResult> SelectProviderEmail(EmployerRequestsParameters parameters)
         {
@@ -121,6 +122,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return RedirectPermanent($"{_webConfiguration.CourseManagementBaseUrl}{ukprn}/review-your-details");
         }
 
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
         public async Task<IActionResult> SelectProviderPhoneNumber(EmployerRequestsParameters parameters)
         {
@@ -153,6 +155,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return RedirectToRoute(nameof(ActiveRouteGet), new { ukprn });
         }
 
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [HttpGet]
         [Route("check-your-answers", Name = CheckYourAnswersRouteGet)]
         public async Task<IActionResult> CheckYourAnswers(EmployerRequestsParameters parameters)

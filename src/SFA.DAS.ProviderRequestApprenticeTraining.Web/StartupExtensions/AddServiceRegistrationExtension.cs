@@ -25,6 +25,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnMatchesRouteUkprnAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, ClaimUkprnAllowedAccessAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, MinimumServiceClaimAuthorizationHandler>();
             services.AddTransient<ISessionStorageService, SessionStorageService>();
 
             services.AddTransient(sp => new EmployerRequestOrchestratorValidators

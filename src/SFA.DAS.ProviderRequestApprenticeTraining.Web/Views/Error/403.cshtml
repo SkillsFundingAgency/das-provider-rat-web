@@ -1,6 +1,6 @@
 ﻿@model SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.Error.Error403ViewModel
 @{
-    ViewData["Title"] = "Different service role needed - Apprenticeships";
+    ViewData["Title"] = "You need a different service role to view this page";
     ViewBag.GaData.Vpv = "/error/403";
 }
 
@@ -8,12 +8,12 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="hgroup">
             <h1 class="govuk-heading-xl">
-                To continue, you'll need to get your role for this service changed.
+                @ViewData["Title"]
             </h1>
         </div>
         <div class="inner">
             <p>
-                To continue, you’ll need to get the permission level of your DfE Sign-in account changed.
+                To continue, you’ll need to get your role for this service changed.
             </p>
             <p>
                 You can ask for a higher role by <a href="@Model.RoleRequestHelpLink" target="_blank" rel="noopener noreferrer">requesting access to a service in your DfE Sign-in account</a>. Select Apprenticeship service for training providers, and then request a higher role at the next step.

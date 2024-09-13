@@ -19,6 +19,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                     policy.Requirements.Add(new ClaimUkprnMatchesRouteUkprnRequirement());
                     policy.Requirements.Add(new ClaimUkprnAllowedAccessRequirement());
                 });
+
+                options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderClaims.ProviderUkprn);
+                    policy.RequireClaim(ProviderClaims.Service);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                });
             });
 
             return services;

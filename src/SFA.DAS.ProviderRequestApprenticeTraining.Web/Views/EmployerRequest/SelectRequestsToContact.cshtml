@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Select requests to share your information";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/select";
+    bool isFirstRequest = true;
 }
 <a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
@@ -71,10 +72,10 @@
                                             @Html.Hidden("ViewedEmployerRequests[" + @Model.NotContactedEmployerRequests.IndexOf(selectEmployerRequest) + "].IsNew", selectEmployerRequest.IsNew)
 
                                             <div class="govuk-checkboxes__item">
-                                                <input class="govuk-checkboxes__input" id="@selectEmployerRequest.EmployerRequestId" name="SelectedRequests" type="checkbox"
+                                                <input class="govuk-checkboxes__input" id="@(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)" name="SelectedRequests" type="checkbox"
                                                        value="@selectEmployerRequest.EmployerRequestId"
                                                 @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
-                                                <label class="govuk-label govuk-checkboxes__label">
+                                                <label class="govuk-label govuk-checkboxes__label" for=" @(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)">
                                                     Request date @selectEmployerRequest.DateOfRequest
                                                     <div class="govuk-body">
                                                         <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
@@ -114,6 +115,10 @@
                                                         }
                                                     </div>
                                                 </label>
+                                                @if (isFirstRequest)
+                                                {
+                                                    isFirstRequest = false;
+                                                }
                                             </div>
                                         }
 
@@ -151,7 +156,7 @@
                                 {
                                     <div class="govuk-body">
                                         <p class="govuk-body request-item">Request date @employerRequest.DateOfRequest</p>
-                                        <p class="govuk-body request-item"><b>Number of apprentices:</b> @employerRequest.NumberOfApprentices</p>
+                                        <p class="govuk-body request-item"><b>Number of apprentices</b> @employerRequest.NumberOfApprentices</p>
                                         @if (employerRequest.Locations.Count == 1)
                                         {
                                             <p><b>Location</b> @employerRequest.Locations.FirstOrDefault()</p>
@@ -184,7 +189,7 @@
                                                 </ul>
                                             </div>
                                         }
-                                        <p class="govuk-body request-item"><b>Date contacted:</b> @employerRequest.DateContacted</p>
+                                        <p class="govuk-body request-item"><b>Date contacted</b> @employerRequest.DateContacted</p>
                                         <hr class="govuk-section-break govuk-section-break--visible">
                                     </div>   
                                 }
