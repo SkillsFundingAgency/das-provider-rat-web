@@ -7,28 +7,28 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Domain.Interfaces
 {
     public interface IProviderRequestApprenticeTrainingOuterApi
     {
-        [Get("/employerrequests/providerresponse/{providerResponseId}/confirmation")]
+        [Get("/provider-responses/{providerResponseId}/confirmation")]
         Task<GetProviderResponseConfirmationResponse> GetProviderResponseConfirmation([Path] Guid providerResponseId);
 
-        [Post("/employerrequests/provider/{ukprn}/submit-response")]
+        [Post("/providers/{ukprn}/responses")]
         Task<SubmitProviderResponseResponse> SubmitProviderResponse([Path]long ukprn, [Body] SubmitProviderResponseRequest request);
 
-        [Get("/employerrequests/provider/{ukprn}/check-answers")]
+        [Get("/providers/{ukprn}/check-answers")]
         Task<GetCheckYourAnswersResponse> GetCheckYourAnswers([Path]long ukprn, [Query]List<Guid> employerRequestids);
 
-        [Get("/employerrequests/provider/{ukprn}/phonenumbers")]
+        [Get("/providers/{ukprn}/phone-numbers")]
         Task<GetProviderPhoneNumbersResponse> GetProviderPhoneNumbers([Path] long ukprn);
 
-        [Get("/employerrequests/provider/{ukprn}/email-addresses")]
+        [Get("/providers/{ukprn}/email-addresses")]
         Task<GetProviderEmailResponse> GetProviderEmailAddresses([Path] long ukprn, [Query] string userEmailAddress);
 
-        [Post("/employerrequests/provider/{ukprn}/acknowledge-requests")]
+        [Post("/providers/{ukprn}/employer-requests/acknowledge")]
         Task CreateProviderResponse([Path]long ukprn, [Body]CreateProviderResponseEmployerRequestRequest request);
 
-        [Get("/employerrequests/provider/{ukprn}/active")]
+        [Get("/providers/{ukprn}/active")]
         Task<List<AggregatedEmployerRequestResponse>> GetAggregatedEmployerRequests([Path]long ukprn);
 
-        [Get("/employerrequests/provider/{ukprn}/selectrequests/{standardReference}")]
+        [Get("/providers/{ukprn}/employer-requests/{standardReference}/select")]
         Task<SelectEmployerRequestsResponse> GetSelectEmployerRequests([Path]long ukprn, [Path]string standardReference);
 
         [Get("/provideraccounts/{ukprn}")]
