@@ -76,6 +76,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators
             viewModel.BackToCheckAnswers = parameters.BackToCheckAnswers;
             viewModel.SelectedRequests = modelState.GetAttemptedValueWhenInvalid(
                 nameof(SelectEmployerRequestsViewModel.SelectedRequests), new List<Guid>(), SessionProviderResponse.SelectedEmployerRequests);
+            viewModel.ExpiryAfterMonths = result.SelectEmployerRequestsResponse.ExpiryAfterMonths;
+            viewModel.RemovedAfterRequestedMonths = result.SelectEmployerRequestsResponse.RemovedAfterRequestedMonths;
+
             return viewModel;
         }
 
