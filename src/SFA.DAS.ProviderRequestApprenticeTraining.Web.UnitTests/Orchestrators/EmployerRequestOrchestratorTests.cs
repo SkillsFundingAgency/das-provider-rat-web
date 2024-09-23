@@ -125,7 +125,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Tests.Orchestrators
             result.Should().NotBeNull();
             result.NotContactedEmployerRequests.Should().HaveCount(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Where(r => !r.IsContacted).Count());
             result.ContactedEmployerRequests.Should().HaveCount(queryResult.SelectEmployerRequestsResponse.EmployerRequests.Where(r => r.IsContacted).Count());
-       }
+            result.ExpiryAfterMonths.Should().Be(queryResult.SelectEmployerRequestsResponse.ExpiryAfterMonths);
+            result.RemovedAfterRequestedMonths.Should().Be(queryResult.SelectEmployerRequestsResponse.RemovedAfterRequestedMonths);
+        }
 
         [Test, MoqAutoData]
         public async Task GetProviderEmailViewModel_ShouldReturnGetProviderEmailViewModel(
