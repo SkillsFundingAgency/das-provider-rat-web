@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         public IActionResult Index()
         {
             // the default action is to return to the provider portal, used for provider sign-out
-            return Redirect(_configuration.DashboardUrl);
+            return Redirect(_configuration.DashboardUrl + "account");
         }
 
 #if DEBUG
