@@ -31,8 +31,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
                     return View(statusCode.ToString(), new Error403ViewModel()
                     {
                         RoleRequestHelpLink = _configuration.RoleRequestHelpLink,
-                        DashboardLink = _providerSharedUIConfiguration.DashboardUrl
-                    }); ;
+                        DashboardLink = _providerSharedUIConfiguration.DashboardUrl + "account"
+                    });
                 case 404:
                     return View(statusCode.ToString());
                 default:

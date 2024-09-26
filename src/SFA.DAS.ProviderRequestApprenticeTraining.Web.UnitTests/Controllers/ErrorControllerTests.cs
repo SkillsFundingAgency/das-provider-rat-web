@@ -21,8 +21,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             // Arrange
             var sut = new ErrorController(configuration, providerSharedUIConfiguration);
-            configuration.Value.RoleRequestHelpLink = "http://rolerequesthelplink.gov.uk";
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
+            configuration.Value.RoleRequestHelpLink = "http://rolerequesthelplink.gov.uk/";
+            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk/";
 
             // Act
             var result = (ViewResult)sut.Error(403);
@@ -33,7 +33,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             
             var model = result.Model as Error403ViewModel;
             model.RoleRequestHelpLink.Should().BeSameAs(configuration.Value.RoleRequestHelpLink);
-            model.DashboardLink.Should().BeSameAs(providerSharedUIConfiguration.Value.DashboardUrl);
+            model.DashboardLink.Should().Be(providerSharedUIConfiguration.Value.DashboardUrl + "account");
         }
 
         [Test, MoqAutoData]
@@ -43,8 +43,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             // Arrange
             var sut = new ErrorController(configuration, providerSharedUIConfiguration);
-            configuration.Value.RoleRequestHelpLink = "http://rolerequesthelplink.gov.uk";
-            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk";
+            configuration.Value.RoleRequestHelpLink = "http://rolerequesthelplink.gov.uk/";
+            providerSharedUIConfiguration.Value.DashboardUrl = "https://dashboard.gov.uk/";
 
             // Act
             var result = (ViewResult)sut.Error(403);
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             var model = result.Model as Error403ViewModel;
             model.RoleRequestHelpLink.Should().BeSameAs(configuration.Value.RoleRequestHelpLink);
-            model.DashboardLink.Should().BeSameAs(providerSharedUIConfiguration.Value.DashboardUrl);
+            model.DashboardLink.Should().Be(providerSharedUIConfiguration.Value.DashboardUrl + "account");
         }
 
         [Test, MoqAutoData]
