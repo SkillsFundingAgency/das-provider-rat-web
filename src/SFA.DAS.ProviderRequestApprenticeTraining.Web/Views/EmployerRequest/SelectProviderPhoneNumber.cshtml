@@ -6,6 +6,8 @@
 @{
     ViewData["Title"] = "Select the telephone number to share";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/phone";
+
+    bool isFirstPhoneNumber = true;
 }
 <a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
@@ -49,11 +51,15 @@
                             @foreach (var phone in Model.PhoneNumbers)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedPhoneNumber" value="@phone" id="@phone" >
-                                    <label class="govuk-label govuk-radios__label" for="@phone">
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedPhoneNumber" value="@phone" id="@(isFirstPhoneNumber ? "SelectedPhoneNumber" : phone)">
+                                    <label class="govuk-label govuk-radios__label" for="@(isFirstPhoneNumber ? "SelectedPhoneNumber" : phone)">
                                         @phone
                                     </label>
                                 </div>
+                                @if (isFirstPhoneNumber)
+                                {
+                                    isFirstPhoneNumber = false;
+                                }
                             }
                         </div>
                     </fieldset>

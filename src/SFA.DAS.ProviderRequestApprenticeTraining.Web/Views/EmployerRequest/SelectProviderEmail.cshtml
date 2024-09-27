@@ -6,6 +6,8 @@
 @{
     ViewData["Title"] = "Select the email address to share";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/email";
+
+    bool isFirstEmailAddress = true;
 }
 <a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
@@ -48,11 +50,15 @@
                             @foreach (var email in Model.EmailAddresses)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" id="@email" value="@email" >
-                                    <label class="govuk-label govuk-radios__label" for="@email">
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" id="@(isFirstEmailAddress ? "SelectedEmail" : @email)" value="@email">
+                                    <label class="govuk-label govuk-radios__label" for="@(isFirstEmailAddress ? "SelectedEmail" : @email)">
                                         @email
                                     </label>
                                 </div>
+                                @if (isFirstEmailAddress)
+                                {
+                                    isFirstEmailAddress = false;
+                                }
                             }
                         </div>
                     </fieldset>
