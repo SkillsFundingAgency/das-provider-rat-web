@@ -49,7 +49,7 @@
                             @foreach (var phone in Model.PhoneNumbers)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedPhoneNumber" value="@phone" >
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedPhoneNumber" value="@phone" id="@phone" >
                                     <label class="govuk-label govuk-radios__label" for="@phone">
                                         @phone
                                     </label>

@@ -48,7 +48,7 @@
                             @foreach (var email in Model.EmailAddresses)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" value="@email" >
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" id="@email" value="@email" >
                                     <label class="govuk-label govuk-radios__label" for="@email">
                                         @email
                                     </label>
