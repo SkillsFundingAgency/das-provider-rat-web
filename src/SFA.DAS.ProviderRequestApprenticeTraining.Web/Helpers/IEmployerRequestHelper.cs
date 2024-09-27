@@ -16,15 +16,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Helpers
 
             if (model.AtApprenticesWorkplace)
             {
-                methods.Add("At Apprentices Workplace");
+                methods.Add("At apprentice's workplace");
             }
             if (model.BlockRelease)
             {
-                methods.Add("Block Release");
+                methods.Add("Block release");
             }
             if (model.DayRelease)
             {
-                methods.Add("Day Release");
+                methods.Add("Day release");
             }
             return methods;
         }
