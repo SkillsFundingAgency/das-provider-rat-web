@@ -73,8 +73,8 @@
                                             <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input" id="@(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)" name="SelectedRequests" type="checkbox"
                                                        value="@selectEmployerRequest.EmployerRequestId"
-                                                @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
-                                                <label class="govuk-label govuk-checkboxes__label" for=" @(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)">
+                                                        @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
+                                                <label class="govuk-label govuk-checkboxes__label" for="@(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)">
                                                     Request date @selectEmployerRequest.DateOfRequest
                                                     <div class="govuk-body">
                                                         <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
