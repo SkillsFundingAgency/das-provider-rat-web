@@ -6,6 +6,8 @@
 @{
     ViewData["Title"] = "Select the email address to share";
     ViewBag.GaData.Vpv = "/aggregatedemployerrequests/email";
+
+    bool isFirstEmailAddress = true;
 }
 <a asp-route="@Model.BackRoute"
    asp-route-ukprn="@Model.Ukprn" 
@@ -35,9 +37,7 @@
                             You can update email addresses for the standards in 
                             <a class="govuk-link" 
                                 asp-route="@EmployerRequestController.ManageStandardsRouteGet"
-                                asp-route-ukprn="@Model.Ukprn">
-                                    Manage the standards you deliver.
-                            </a>
+                                asp-route-ukprn="@Model.Ukprn">Manage the standards you deliver</a>.
                         </p>
                         <span class="govuk-error-message" das-validation-for="SelectedEmail"></span>
                         <div id="SelectedEmails-hint" class="govuk-hint">
@@ -48,11 +48,15 @@
                             @foreach (var email in Model.EmailAddresses)
                             {
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" value="@email" >
-                                    <label class="govuk-label govuk-radios__label" for="@email">
+                                    <input class="govuk-radios__input" type="radio" asp-for="SelectedEmail" id="@(isFirstEmailAddress ? "SelectedEmail" : @email)" value="@email">
+                                    <label class="govuk-label govuk-radios__label" for="@(isFirstEmailAddress ? "SelectedEmail" : @email)">
                                         @email
                                     </label>
                                 </div>
+                                @if (isFirstEmailAddress)
+                                {
+                                    isFirstEmailAddress = false;
+                                }
                             }
                         </div>
                     </fieldset>
@@ -60,7 +64,7 @@
 
                 <div class="govuk-button-group">
                     <button type="submit" class="govuk-button" data-module="govuk-button">
-                        Confirm
+                        Continue
                     </button>
                     <a class="govuk-link" id="cancel" asp-route="@EmployerRequestController.CancelSelectRequestsRouteGet"
                        asp-route-ukprn="@Model.Ukprn">

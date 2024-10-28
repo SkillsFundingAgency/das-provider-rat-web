@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Attributes;
 using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Authorization;
-using SFA.DAS.ProviderRequestApprenticeTraining.Web.Extensions;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Orchestrators;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
@@ -53,13 +50,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return View(await _orchestrator.GetActiveEmployerRequestsViewModel(ukprn));
         }
 
-        [HttpGet("select", Name = SelectRequestsToContactRouteGet)]
+        [HttpGet("{ukprn}/select", Name = SelectRequestsToContactRouteGet)]
         public async Task<IActionResult> SelectRequestsToContact(EmployerRequestsParameters parameters)
         {
             return View(await _orchestrator.GetEmployerRequestsByStandardViewModel(parameters, ModelState));
         }
 
-        [HttpPost("select", Name = SelectRequestsToContactRoutePost)]
+        [HttpPost("{ukprn}/select", Name = SelectRequestsToContactRoutePost)]
         public async Task<IActionResult> SelectRequestsToContact(EmployerRequestsToContactViewModel viewModel)
         {
             if (!await _orchestrator.ValidateEmployerRequestsToContactViewModel(viewModel, ModelState))
@@ -80,7 +77,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         }
 
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [HttpGet("email-addresses", Name = SelectProviderEmailRouteGet)]
+        [HttpGet("{ukprn}/email-addresses", Name = SelectProviderEmailRouteGet)]
         public async Task<IActionResult> SelectProviderEmail(EmployerRequestsParameters parameters)
         {
             var viewModel = await _orchestrator.GetProviderEmailsViewModel(parameters ,ModelState);
@@ -93,7 +90,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpPost("email-addresses", Name = SelectProviderEmailRoutePost)]
+        [HttpPost("{ukprn}/email-addresses", Name = SelectProviderEmailRoutePost)]
         public async Task<IActionResult> SelectProviderEmail(SelectProviderEmailViewModel viewModel)
         {
             if (!await _orchestrator.ValidateProviderEmailsViewModel(viewModel, ModelState))
@@ -115,7 +112,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             
         }
 
-        [HttpGet("manage-standards", Name = ManageStandardsRouteGet)]
+        [HttpGet("{ukprn}/manage-standards", Name = ManageStandardsRouteGet)]
         public IActionResult RedirectToManageStandards(long ukprn)
         {
             _orchestrator.ClearProviderResponse();
@@ -123,7 +120,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         }
 
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [HttpGet("phone", Name = SelectProviderPhoneRouteGet)]
+        [HttpGet("{ukprn}/phone", Name = SelectProviderPhoneRouteGet)]
         public async Task<IActionResult> SelectProviderPhoneNumber(EmployerRequestsParameters parameters)
         {
             var viewModel = await _orchestrator.GetProviderPhoneNumbersViewModel(parameters, ModelState);
@@ -134,7 +131,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpPost("phone", Name = SelectProviderPhoneRoutePost)]
+        [HttpPost("{ukprn}/phone", Name = SelectProviderPhoneRoutePost)]
         public async Task<IActionResult> SelectProviderPhoneNumber(SelectProviderPhoneViewModel viewModel)
         {
             if (!await _orchestrator.ValidateProviderPhoneViewModel(viewModel, ModelState))
@@ -148,7 +145,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
         }
 
         [HttpGet]
-        [Route("cancel", Name = CancelSelectRequestsRouteGet)]
+        [Route("{ukprn}/cancel", Name = CancelSelectRequestsRouteGet)]
         public IActionResult Cancel(long ukprn)
         {
             _orchestrator.ClearProviderResponse();
@@ -157,7 +154,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
 
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [HttpGet]
-        [Route("check-your-answers", Name = CheckYourAnswersRouteGet)]
+        [Route("{ukprn}/check-your-answers", Name = CheckYourAnswersRouteGet)]
         public async Task<IActionResult> CheckYourAnswers(EmployerRequestsParameters parameters)
         {
             var viewModel = await _orchestrator.GetCheckYourAnswersRespondToRequestsViewModel(parameters, ModelState);
@@ -171,16 +168,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpPost("check-your-answers", Name = CheckYourAnswersRoutePost)]
+        [HttpPost("{ukprn}/check-your-answers", Name = CheckYourAnswersRoutePost)]
         public async Task<IActionResult> CheckYourAnswers(CheckYourAnswersRespondToRequestsViewModel viewModel)
         {
             var providerResponseId = await _orchestrator.SubmitProviderResponse(viewModel); 
-            return RedirectToRoute(nameof(ConfirmationRouteGet), new { providerResponseId });
+            return RedirectToRoute(nameof(ConfirmationRouteGet), new { viewModel.Ukprn, providerResponseId });
         }
 
         [HttpGet]
-        [Route("confirmation/{providerResponseId}", Name = ConfirmationRouteGet)]
-        public async Task<IActionResult> ConfirmProviderResponse(Guid providerResponseId)
+        [Route("{ukprn}/confirmation/{providerResponseId}", Name = ConfirmationRouteGet)]
+        public async Task<IActionResult> ConfirmProviderResponse(long ukprn, Guid providerResponseId)
         {
             return View(await _orchestrator.GetProviderResponseConfirmationViewModel(providerResponseId));
         }

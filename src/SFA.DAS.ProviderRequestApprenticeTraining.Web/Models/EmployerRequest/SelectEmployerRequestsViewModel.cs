@@ -16,6 +16,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest
         public List<Guid> SelectedRequests { get; set; }
         public int TotalRequests { get; set; }
 
+        public int ExpiryAfterMonths { get; set; }
+        public int RemovedAfterRequestedMonths { get; set; }
+
         public override string BackRoute
         {
             get

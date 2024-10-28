@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         {
             _config = new ProviderSharedUIConfiguration
             {
-                DashboardUrl = "http://dashboard.url"
+                DashboardUrl = "http://dashboard.url/"
             };
             _mockOptions = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             _mockOptions.Setup(x => x.Value).Returns(_config);
@@ -55,7 +55,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
 
             // Assert
             result.Should().NotBeNull();
-            result.Url.Should().Be(_config.DashboardUrl);
+            result.Url.Should().Be(_config.DashboardUrl + "account");
         }
     }
 }

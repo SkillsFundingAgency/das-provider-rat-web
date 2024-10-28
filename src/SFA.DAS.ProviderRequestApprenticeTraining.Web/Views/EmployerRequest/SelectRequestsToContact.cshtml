@@ -21,11 +21,10 @@
             </h2>
             <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
             <p class="govuk-text">
-                If you're able to offer the course, we'll share your contact details with the selected employers. The employers 
-                name and contact details are not shown in the requests.
+                If you’re able to offer the course, we'll share your contact details with the employers you select. The employers name and contact details are not shown in the requests.
             </p>
             <p class="govuk-text">
-                You can also view the requests from employers you've already contacted.
+                Requests will expire after @Model.ExpiryAfterMonths months. You can also view the requests from employers you've already contacted, that were made in the last @Model.RemovedAfterRequestedMonths months.
             </p>
 
         </div>
@@ -38,7 +37,7 @@
                 <ul class="govuk-tabs__list">
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a class="govuk-tabs__tab" href="#notcontacted">
-                            Not Contacted (@Model.NotContactedEmployerRequests.Count() results)
+                            Not contacted (@Model.NotContactedEmployerRequests.Count() results)
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item">
@@ -74,8 +73,8 @@
                                             <div class="govuk-checkboxes__item">
                                                 <input class="govuk-checkboxes__input" id="@(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)" name="SelectedRequests" type="checkbox"
                                                        value="@selectEmployerRequest.EmployerRequestId"
-                                                @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
-                                                <label class="govuk-label govuk-checkboxes__label" for=" @(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)">
+                                                        @(Model.SelectedRequests.Contains(@selectEmployerRequest.EmployerRequestId) ? "checked='checked" : "") />
+                                                <label class="govuk-label govuk-checkboxes__label" for="@(isFirstRequest ? "SelectedRequests" : selectEmployerRequest.EmployerRequestId)">
                                                     Request date @selectEmployerRequest.DateOfRequest
                                                     <div class="govuk-body">
                                                         <strong class="govuk-tag govuk-tag--blue govuk-!-margin-left-0 govuk-!-margin-top-1 govuk-!-margin-bottom-1 govuk-!-font-size-smaller" asp-show="@selectEmployerRequest.IsNew">New</strong>
