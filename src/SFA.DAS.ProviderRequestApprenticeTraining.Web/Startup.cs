@@ -90,6 +90,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .AddDasHealthChecks()
                 .AddServiceRegistrations()
                 .AddOuterApi(configurationOuterApi)
+                .AddDataProtection(_configuration)
                 .AddApplicationInsightsTelemetry()
                 .AddProviderUiServiceRegistration(_configuration);
 
