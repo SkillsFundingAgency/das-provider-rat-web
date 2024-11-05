@@ -22,6 +22,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions
                 };
             });
 
+            services.AddAntiforgery(opt =>
+            {
+                opt.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
             return services;
         }
     }
