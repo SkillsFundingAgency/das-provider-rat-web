@@ -18,8 +18,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
             var response = await _outerApi.SubmitProviderResponse(command.Ukprn, new SubmitProviderResponseRequest
             {
                 Email = command.Email,
-                Phone = command.Phone,
-                Website = command.Website,
+                Phone = command.Phone ?? string.Empty,
+                Website = command.Website ?? string.Empty,
                 EmployerRequestIds = command.EmployerRequestIds,
                 CurrentUserEmail = command.CurrentUserEmail,
                 CurrentUserFirstName = command.CurrentUserFirstName,
