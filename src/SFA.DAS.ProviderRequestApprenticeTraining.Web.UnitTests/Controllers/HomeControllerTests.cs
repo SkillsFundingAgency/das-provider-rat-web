@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -17,6 +18,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
         private Mock<IOptions<ProviderSharedUIConfiguration>> _mockOptions;
         private ProviderSharedUIConfiguration _config;
         private Mock<IHttpContextAccessor> _httpContextMock;
+        private Mock<ILogger<HomeController>> _loggerMock;
         private readonly string _ukprn = "789456789";
 
         [SetUp]
@@ -26,6 +28,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             {
                 DashboardUrl = "http://dashboard.url/"
             };
+            _loggerMock = new Mock<ILogger<HomeController>>();
             _mockOptions = new Mock<IOptions<ProviderSharedUIConfiguration>>();
             _mockOptions.Setup(x => x.Value).Returns(_config);
 
@@ -38,7 +41,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Controllers
             var user = new ClaimsPrincipal(identity);
             _httpContextMock.Setup(h => h.HttpContext.User).Returns(user);
 
-            _sut = new HomeController(_mockOptions.Object, _httpContextMock.Object);
+            _sut = new HomeController(_mockOptions.Object, _httpContextMock.Object, _loggerMock.Object);
         }
 
         [TearDown]
