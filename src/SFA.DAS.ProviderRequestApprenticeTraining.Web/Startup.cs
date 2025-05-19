@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,8 +16,6 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Infrastructure.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Filters;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.StartupExtensions;
 using SFA.DAS.Validation.Mvc.Extensions;
-using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
 {
@@ -72,7 +72,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Web
                 .AddControllersAsServices()
                 .SetDefaultNavigationSection(NavigationSection.Home)
                 .EnableGoogleAnalytics()
-                .SetDfESignInConfiguration(true)
                 .SetZenDeskConfiguration(_configuration.GetSection("ProviderZenDeskSettings").Get<ZenDeskConfiguration>());
 
             services
