@@ -72,6 +72,10 @@
         },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
+        },
+        "vnetRouteAllEnabled": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -189,6 +193,9 @@
                     },
                     "subnetResourceId": {
                         "value": "[parameters('sharedFrontEndSubnetResourceId')]"
+                    },
+                    "vnetRouteAllEnabled": {
+                        "value": "[parameters('vnetRouteAllEnabled')]"
                     },
                     "appServiceAppSettings": {
                         "value": {
