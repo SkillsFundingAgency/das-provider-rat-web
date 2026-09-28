@@ -1,9 +1,7 @@
 ﻿using FluentValidation.TestHelper;
-using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Models.EmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Web.Validators;
-using SFA.DAS.Testing.AutoFixture;
 
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Web.UnitTests.Validators
