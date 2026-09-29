@@ -20,14 +20,14 @@
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.12" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.4.0" />
     <PackageReference Include="RestEase" Version="1.6.4" />
     <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.DfESignIn.Auth" Version="17.1.89" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.55" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.59" />
     <PackageReference Include="SFA.DAS.Validation" Version="6.0.30" />
     <PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.30" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
