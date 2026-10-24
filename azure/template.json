@@ -194,6 +194,9 @@
                     "subnetResourceId": {
                         "value": "[parameters('sharedFrontEndSubnetResourceId')]"
                     },
+                    "vnetRouteAllEnabled": {
+                        "value": "[parameters('vnetRouteAllEnabled')]"
+                    },
                     "appServiceAppSettings": {
                         "value": {
                             "array": [
